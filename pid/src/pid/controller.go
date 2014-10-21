@@ -67,9 +67,9 @@ func (s *System) RunToTemperature() {
 // It uses the Form from the web request.
 func (s *System) SetParameters(values url.Values) {
 	params := make(map[string][]parameter)
-  // Extract the parameters and their values for each component.
+	// Extract the parameters and their values for each component.
 	for k, v := range values {
-    // The form fields are name <component>_<parameter>.
+		// The form fields are name <component>_<parameter>.
 		parts := strings.SplitN(k, "_", 2)
 		if len(parts) == 2 && len(v) == 1 {
 			component, param := parts[0], parts[1]
@@ -81,7 +81,7 @@ func (s *System) SetParameters(values url.Values) {
 			params[component] = append(params[component], p)
 		}
 	}
-  // Now set the parameters for each component.
+	// Now set the parameters for each component.
 	for c, p := range params {
 		if s.Driver.Name() == c {
 			s.Driver.SetParameters(p)

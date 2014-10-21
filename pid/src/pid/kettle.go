@@ -133,7 +133,6 @@ func (k *Kettle) getLoss() float64 {
 	return lossCelcius
 }
 
-
 // A Burner is a thermal source for the Kettle.
 type Burner struct {
 	// How much the output power fluctuates (0.0 - 1.0)

@@ -32,7 +32,6 @@ func (h *indexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", indexData)
 }
 
-
 // A graphHandler handles graph requests.
 type graphHandler struct {
 }

@@ -8,27 +8,27 @@ import (
 )
 
 const (
-  // The title on the graph.
-	Title  = "Vessel temperature"
-  // The label of the X axis.
+	// The title on the graph.
+	Title = "Vessel temperature"
+	// The label of the X axis.
 	XLabel = "Seconds"
-  // The label of the Y axis.
+	// The label of the Y axis.
 	YLabel = "Celcius"
 )
 
 // A Graph is a plot of the PID system.
 type Graph struct {
-  // Plot is the plot struct.
-	Plot    *plot.Plot
-  // inputs are the values for the PID input.
-	inputs  plotter.XYs
-  // outputs are the values for the PID output.
+	// Plot is the plot struct.
+	Plot *plot.Plot
+	// inputs are the values for the PID input.
+	inputs plotter.XYs
+	// outputs are the values for the PID output.
 	outputs plotter.XYs
 }
 
 // A Point is a point on the graph.
 type Point struct {
-  // The co-ordinates of the point.
+	// The co-ordinates of the point.
 	X, Y float64
 }
 
