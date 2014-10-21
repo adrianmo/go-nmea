@@ -1,85 +1,80 @@
-
 package pid
 
 import (
-  "fmt"
-  "io/ioutil"
-  "net/http"
-  "path"
-  "strconv"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"path"
+	"strconv"
 )
 
 const (
-  indexFilename = "index.html"
+	indexFilename = "index.html"
 )
 
+// An indexHandler handles file requests.
 type indexHandler struct {
-
 }
 
+// ServeHTTP returns the contents of the requested file.
 func (h *indexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-  filename := path.Base(r.URL.Path)
-  if filename == "/" {
-    filename = indexFilename
-  }
-  fmt.Printf("Open: %s\n", filename)
-  indexData, err := ioutil.ReadFile(filename)
-  if err != nil {
-    fmt.Fprintf(w, "error reading %s: %s", indexFilename, err)
-    return
-  }
-  fmt.Fprintf(w, "%s", indexData)
+	filename := path.Base(r.URL.Path)
+	if filename == "/" {
+		filename = indexFilename
+	}
+	fmt.Printf("Open: %s\n", filename)
+	indexData, err := ioutil.ReadFile(filename)
+	if err != nil {
+		fmt.Fprintf(w, "error reading %s: %s", indexFilename, err)
+		return
+	}
+	fmt.Fprintf(w, "%s", indexData)
 }
 
-var (
-  float_params = []string{"loss", "setpoint", "maxpower", "inertia", "volume", "fluctuation", "kp", "kd", "ki"}
-)
 
+// A graphHandler handles graph requests.
 type graphHandler struct {
 }
 
-// parseFloats parses all of the floating point parameters.
-func (g *graphHandler) parseFloats(r *http.Request) (map[string]float64, error) {
-  m := make(map[string]float64)
-  for _, param := range float_params {
-    value, ok := r.Form[param]
-    if !ok {
-      return m, fmt.Errorf("missing param '%s'", param)
-    }
-    float, err := strconv.ParseFloat(value[0], 64)
-    if err != nil {
-      return m, fmt.Errorf("error parsing '%s': %s", param, err)
-    }
-    m[param] = float
-  }
-  return m, nil
-}
-
+// ServeHTTP returns the graph for the supplied parameters.
 func (g *graphHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-  if err := r.ParseForm() ; err != nil {
-    fmt.Printf("/graph error: %v\n", err)
-    return
-  }
-  floats, err := g.parseFloats(r)
-  if err != nil {
-    fmt.Printf("%s\n", err)
-    return
-  }
-  MaxPower = floats["maxpower"]
-  system := &System{}
-  system.Init()
-  system.Driver.PowerFluctuation = floats["fluctuation"]/1000
-  system.Driver.ThermalInertia = floats["inertia"]
-  system.Load.Volume = floats["volume"]
-  system.Load.ThermalLoss = floats["loss"]
-  system.Pid.SetTunings(floats["kp"], floats["ki"]/100, floats["kd"])
-  system.RunToTemperature(floats["setpoint"])
-  system.PngWriter().WriteTo(w)
+	if err := r.ParseForm(); err != nil {
+		fmt.Printf("/graph error: %v\n", err)
+		return
+	}
+	system := GenerateSystem("kettle")
+	system.SetParameters(r.Form)
+	system.RunToTemperature()
+	w.Header().Set("Content-Type", "image/png")
+	system.PngWriter().WriteTo(w)
 }
 
+// A systemsHandler handles the /systems URL.
+type systemsHandler struct{}
+
+// ServeHTTP returns the JSOn encoded description of the systems.
+func (s *systemsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	systems := make(map[string]map[string]interface{})
+	for name, description := range GetSystems() {
+		system := GenerateSystem(name)
+		systems[name] = make(map[string]interface{})
+		systems[name]["description"] = description
+
+		systems[name][system.Pid.Name()] = system.Pid.Parameters()
+		systems[name][system.Load.Name()] = system.Load.Parameters()
+		systems[name][system.Driver.Name()] = system.Driver.Parameters()
+		systems[name][system.Sensor.Name()] = system.Sensor.Parameters()
+	}
+	e := json.NewEncoder(w)
+	e.Encode(systems)
+}
+
+// StartHttp starts the HTTP server.
 func StartHttp() {
-  http.Handle("/", &indexHandler{})
-  http.Handle("/graph", &graphHandler{})
-  fmt.Printf("Ready to serve.\n")
-  http.ListenAndServe(":8080", nil)
+	http.Handle("/", &indexHandler{})
+	http.Handle("/graph", &graphHandler{})
+	http.Handle("/systems", &systemsHandler{})
+	fmt.Printf("Ready to serve.\n")
+	http.ListenAndServe(":8080", nil)
 }

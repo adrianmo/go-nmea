@@ -5,7 +5,7 @@
 package pid
 
 import (
-  "time"
+	"time"
 )
 
 const (
@@ -60,90 +60,101 @@ func timeMillis() int64 {
 // New returns a new PID object.
 func New(kp, ki, kd, setPoint float64, mode, direction int16) *PID {
 	p := new(PID)
-	p.Setpoint = setPoint
 	p.SetMode(mode)
 	p.SetSampleTime(defaultSampleTime)
-	p.SetTunings(kp, ki, kd)
 	p.SetControllerDirection(direction)
-	p.SetOutputLimits(defaultLimitLow, defaultLimitHigh)
-  SetComponentDefaults(p)
+	SetComponentDefaults(p)
 	p.lastTime = timeMillis() - defaultSampleTime
 	return p
 }
 
+// Parameters returns the parameters of the PID object.
 func (p *PID) Parameters() []parameter {
-  params := make([]parameter, 10)
-  kp := parameter{Name: "kp", Title: "kp",
-                  Minimum: 0, Maximum: 10000,
-                  Step: 10, Default: 6000, Unit: "",
-                }
-  params = append(params, kp)
-  ki := parameter{Name: "ki", Title: "ki",
-                  Minimum: 0, Maximum: 5,
-                  Step: 1, Default: 1, Unit: "",
-                }
-  params = append(params, ki)
-  kd := parameter{Name: "kd", Title: "kd",
-                  Minimum: 0, Maximum: 5000,
-                  Step: 10, Default: 1000, Unit: "",
-                }
-  params = append(params, kd)
-  sp := parameter{Name: "setpoint", Title: "Set Point",
-                  Minimum: 0, Maximum: 100,
-                  Step: 1, Default: 80, Unit: "deg",
-                }
-  params = append(params, sp)
-  lh := parameter{Name: "limit_high", Title: "High Limit",
-                  Minimum: 0, Maximum: 3000,
-                  Step: 1, Default: 2000, Unit: "",
-                }
-  params = append(params, lh)
-  ll := parameter{Name: "limit_low", Title: "Lower Limit",
-                  Minimum: 0, Maximum: 3000,
-                  Step: 1, Default: 0, Unit: "",
-                }
-  params = append(params, ll)
+	params := make([]parameter, 0)
+	sp := parameter{Name: "setpoint", Title: "Set Point",
+		Minimum: 0, Maximum: 100,
+		Step: 1, Default: 50, Unit: "deg",
+		Value: p.Setpoint,
+	}
+	params = append(params, sp)
+	kp := parameter{Name: "kp", Title: "kp",
+		Minimum: 0, Maximum: 10000,
+		Step: 10, Default: 6000, Unit: "",
+		Value: p.dispKp,
+	}
+	params = append(params, kp)
+	ki := parameter{Name: "ki", Title: "ki",
+		Minimum: 0, Maximum: 5,
+		Step: 0.1, Default: 0.1, Unit: "",
+		Value: p.dispKi,
+	}
+	params = append(params, ki)
+	kd := parameter{Name: "kd", Title: "kd",
+		Minimum: 0, Maximum: 5000,
+		Step: 10, Default: 10, Unit: "",
+		Value: p.dispKd,
+	}
+	params = append(params, kd)
+	lh := parameter{Name: "limit_high", Title: "High Limit",
+		Minimum: 0, Maximum: 3000,
+		Step: 1, Default: 2000, Unit: "",
+		Value: p.outMax,
+	}
+	params = append(params, lh)
+	ll := parameter{Name: "limit_low", Title: "Lower Limit",
+		Minimum: 0, Maximum: 3000,
+		Step: 1, Default: 0, Unit: "",
+		Value: p.outMin,
+	}
+	params = append(params, ll)
 
-  return params
+	return params
 }
 
+// SetParameters sets the parameters of the PID object.
 func (p *PID) SetParameters(params []parameter) {
-  var kp, ki, kd, ll, lh float64
-  for _, param := range params {
-    switch param.Name {
-    case "kp":
-      kp = param.Value
-    case "ki":
-      ki = param.Value
-    case "kd":
-      kd = param.Value
-    case "ll":
-      ll = param.Value
-    case "lh":
-      lh = param.Value
-    case "setpoint":
-      p.Setpoint = param.Value
-    }
-  }
-  p.SetTunings(kp, ki, kd)
-  p.SetOutputLimits(ll, lh)
+	var kp, ki, kd, ll, lh float64
+	for _, param := range params {
+		switch param.Name {
+		case "kp":
+			kp = param.Value
+		case "ki":
+			ki = param.Value
+		case "kd":
+			kd = param.Value
+		case "limit_high":
+			ll = param.Value
+		case "limit_low":
+			lh = param.Value
+		case "setpoint":
+			p.Setpoint = param.Value
+		}
+	}
+	p.SetTunings(kp, ki, kd)
+	p.SetOutputLimits(ll, lh)
 }
 
+// Name returns the name of the PID object.
+func (p *PID) Name() string {
+	return "PID"
+}
+
+// Output gets the output value of the PID.
 func (p *PID) Output() float64 {
-  return p.output
+	return p.output
 }
 
 // PID performs a PID computation.
 func (p *PID) SetInput(input float64) {
-  /*
-	now := timeMillis()
-	timeChange := now - p.lastTime
-	if timeChange <= p.sampleTime {
-		return false
-	}
-  */
+	/*
+		now := timeMillis()
+		timeChange := now - p.lastTime
+		if timeChange <= p.sampleTime {
+			return false
+		}
+	*/
 
-  p.input = input
+	p.input = input
 
 	err := p.Setpoint - p.input
 	p.iTerm += (p.input * err)
@@ -166,11 +177,12 @@ func (p *PID) SetInput(input float64) {
 	p.output = output
 
 	p.lastInput = p.input
-//	p.lastTime = now
+	//	p.lastTime = now
 }
 
+// Input returns the input value of the PID.
 func (p *PID) Input() float64 {
-  return p.input
+	return p.input
 }
 
 // SetTunings sets the Kp/Ki/Kd tuning parmeters.

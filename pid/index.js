@@ -3,10 +3,9 @@ var GetGraph = function() {
 
   // Populate image query attributes. Look for all 'slider' class elements
   // and query those for the value.
-  var imgAttrs = {}
+  var imgAttrs = {systemName: $('#system-selector')[0].value};
   $('.slider').each(function(idx, element) {
-    var name = element.id.split('-')[0];
-    imgAttrs[name] = $('#' + element.id).slider("value");
+    imgAttrs[element.formName] = $('#' + element.id).slider("value");
   });
 
   // Create the tentative img tag, set callback to put it in the page.
@@ -32,6 +31,7 @@ addSlider = function(element, name, title, min, max, step, value, unit) {
   var slider = document.createElement('div');
   slider.className = 'slider';
   slider.id = name + '-slider';
+  slider.formName = element.id + '_' + name;
   sliderBox.appendChild(slider);
 
   var sliderValue = document.createElement('div');
@@ -51,19 +51,67 @@ addSlider = function(element, name, title, min, max, step, value, unit) {
 $(document).ready(function() {
   console.log("Ready!");
   $('.graph').html("<img src='/graph'/>");
-  addSlider($('#tabs-1')[0], "setpoint", "Set Point", 30, 100, 1, 80, " deg");
-  addSlider($('#tabs-1')[0], "maxpower", "Max Power", 100, 2500, 100, 2000, "W");
-  addSlider($('#tabs-1')[0], "fluctuation", "Fluctuation", 0, 200, 2, 20, "%");
-  addSlider($('#tabs-1')[0], "inertia", "Thermal Inertia", 0, 1000, 10, 1000, "W/s");
-
-  addSlider($('#tabs-2')[0], "kp", "Kp", 1, 10000, 100, 6000, "");
-  addSlider($('#tabs-2')[0], "ki", "Ki", 0, 500, 10, 25, "");
-  addSlider($('#tabs-2')[0], "kd", "Kd", 0, 10000, 100, 5000, "");
-
-  addSlider($('#tabs-3')[0], "volume", "Volume", 0, 30, 1, 10, "L");
-  addSlider($('#tabs-3')[0], "loss", "Thermal Loss", 0, 30, 1, 13, "W/deg");
-
   $('#control-tabs').tabs();
+  $('#system-selector').change(function(event) {
+    loadSystem(event.target.value);
+  });
+  loadSystem('');
   GetGraph();
 });
 
+loadSystem = function(name) {
+  var allSystems = $.getJSON('systems', function(data) {
+    clearSystem();
+    // Add all the received ones.
+    for (var system in data) {
+      displaySystem(system, data[system], name == '' || system == name);
+    }
+    $('#control-tabs').tabs();
+  });
+}
+
+clearSystem = function() {
+  // Delete existing options.
+  $('#control-tabs').tabs('destroy');
+  $('.system-selector-option').remove()
+  $('.control-tab').remove()
+  $('.slider').slider('destroy');
+  $('.sliders').remove()
+}
+
+
+displaySystem = function(name, system, selected) {
+  var selector = new Option(system.description, name);
+  selector.className = 'system-selector-option';
+  $('#system-selector')[0].add(selector);
+  if (selected) {
+    selector.selected = true;
+    for (var param in system) {
+      if (param.indexOf('description') < 0) {
+        console.log('Add ' + param);
+        addTabAndParameters(param.split('_')[0], system[param]);
+      }
+    }
+  }
+}
+
+addTabAndParameters = function(name, parameters) {
+  var tabList = $('#control-tabs-list')[0];
+  var newTab = document.createElement('li');
+  newTab.className = 'control-tab';
+  var newTabA = document.createElement('a');
+  newTabA.href = '#' + name;
+  newTabA.innerText = name;
+  newTab.appendChild(newTabA);
+  tabList.appendChild(newTab);
+
+  var tabTop = $('#control-tabs')[0];
+  var tabDiv = document.createElement('div');
+  tabTop.appendChild(tabDiv);
+  tabDiv.className = 'sliders';
+  tabDiv.id = name;
+  for (var i = 0 ; i < parameters.length ; i++) {
+    var p = parameters[i];
+    addSlider(tabDiv, p.Name, p.Title, p.Minimum, p.Maximum, p.Step, p.Default, p.Unit);
+  }
+}
