@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path"
-	"strconv"
 )
 
 const (

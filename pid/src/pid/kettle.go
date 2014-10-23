@@ -18,7 +18,7 @@ const (
 
 	// Power fluctuation of the Burner. Each time Operate() is called, the input power
 	// will fluctuate by this percent (0.0-1.0).
-	PowerFluctuation = 0.03
+	PowerFluctuation = 3
 )
 
 type Kettle struct {
@@ -271,9 +271,10 @@ func (g KettleSystemGenerator) GenerateSystem() System {
 	SetComponentDefaults(s.Driver)
 	s.Sensor = NewThermometer()
 	SetComponentDefaults(s.Sensor)
-	s.Pid = New(kP, kI, kD, 80, Auto, Direct)
+	s.Pid = NewPID(Auto, Direct)
+  // Pid takes samples every 5 seconds.
 	s.Pid.SetSampleTime(5000)
-	s.Pid.SetOutputLimits(minPower, MaxPower)
+	s.Pid.SetOutputLimits(MinPower, MaxPower)
 	s.Pid.Initialize()
 	s.Init()
 	return s

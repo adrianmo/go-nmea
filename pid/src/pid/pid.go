@@ -58,7 +58,7 @@ func timeMillis() int64 {
 }
 
 // New returns a new PID object.
-func New(kp, ki, kd, setPoint float64, mode, direction int16) *PID {
+func NewPID(mode, direction int16) *PID {
 	p := new(PID)
 	p.SetMode(mode)
 	p.SetSampleTime(defaultSampleTime)
@@ -123,9 +123,9 @@ func (p *PID) SetParameters(params []parameter) {
 		case "kd":
 			kd = param.Value
 		case "limit_high":
-			ll = param.Value
-		case "limit_low":
 			lh = param.Value
+		case "limit_low":
+			ll = param.Value
 		case "setpoint":
 			p.Setpoint = param.Value
 		}
@@ -298,4 +298,8 @@ func (p *PID) GetMode() int32 {
 // GetDirection returns the in/out direction ratio.
 func (p *PID) GetDirection() int16 {
 	return p.direction
+}
+
+func (p *PID) GetSampleTime() int64 {
+  return p.sampleTime;
 }

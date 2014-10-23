@@ -16,7 +16,8 @@ body {
 }
 
 .graph {
-  border: 1px solid #aaa;
+  background: #eee;
+  border: 2px ridge #eed;
   display: inline-block;
   padding: 0.5em;
   vertical-align: top;
@@ -34,8 +35,10 @@ body {
 
 .control-header {
   background: #eed;
-  font-size: 1.3em;
+  border: 2px ridge #eed;
+  font-size: 1.5em;
   font-weight: bold;
+  padding: 0.1em;
 }
 
 .slider-box {
@@ -51,12 +54,13 @@ body {
 }
 
 .slider-header {
-  background: #cdf;
+  background: #bcf;
   padding: 0.2em;
 }
 .slider-value {
   padding-left: 0.5em;
   padding-bottom: 0.5em;
+  text-align: center;
 }
 
 .ui-slider-handle {

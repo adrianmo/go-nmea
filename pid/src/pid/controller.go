@@ -8,11 +8,12 @@ import (
 )
 
 const (
-	minPower     = 100
-	setPointTime = 200
+  // How long to run for (seconds).
+	runTime = 200
 )
 
 var (
+  MinPower = 0.0
 	MaxPower = 2500.0
 )
 
@@ -45,12 +46,14 @@ func (s *System) Init() {
 
 // RunToTemperature runs the controller with the given setpoint.
 func (s *System) RunToTemperature() {
-	for i := 0; i < setPointTime; i++ {
+  sampleInterval := int(s.Pid.GetSampleTime()/1000)
+	for i := 0; i < runTime; i++ {
 		// sensor -> controller
 		s.Pid.SetInput(s.Sensor.Output())
 		// controller -> driver
 		s.Driver.SetInput(s.Pid.Output())
-		for j := 0; j < 5; j++ {
+    // Allow driver to supply load for 5 seconds.
+		for j := 0; j < sampleInterval ; j++ {
 			// driver -> load
 			s.Load.SetInput(s.Driver.Output())
 			s.time++

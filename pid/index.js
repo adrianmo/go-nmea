@@ -26,6 +26,7 @@ addSlider = function(element, name, title, min, max, step, value, unit) {
 
   var sliderHeader = document.createElement('div');
   sliderHeader.innerText = title;
+  sliderHeader.className = 'slider-header';
   sliderBox.appendChild(sliderHeader);
 
   var slider = document.createElement('div');
