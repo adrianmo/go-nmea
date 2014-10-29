@@ -42,10 +42,21 @@ func (g *graphHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	system := GenerateSystem("kettle")
-	system.SetParameters(r.Form)
+	system.SetFormParameters(r.Form)
 	system.RunToTemperature()
 	w.Header().Set("Content-Type", "image/png")
 	system.PngWriter().WriteTo(w)
+}
+
+type systemDescriptor struct {
+  Name string
+  Description string
+  Components []*componentDescriptor
+}
+
+type componentDescriptor struct {
+  Name string
+  Parameters interface{}
 }
 
 // A systemsHandler handles the /systems URL.
@@ -53,16 +64,41 @@ type systemsHandler struct{}
 
 // ServeHTTP returns the JSOn encoded description of the systems.
 func (s *systemsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	systems := make(map[string]map[string]interface{})
+	//systems := make(map[string]map[string]interface{})
+  systems := make([]*systemDescriptor, 0)
 	for name, description := range GetSystems() {
 		system := GenerateSystem(name)
-		systems[name] = make(map[string]interface{})
-		systems[name]["description"] = description
+    sd := new(systemDescriptor)
+    sd.Name = name
+    sd.Description = description
+    sd.Components = make([]*componentDescriptor, 0)
 
-		systems[name][system.Pid.Name()] = system.Pid.Parameters()
-		systems[name][system.Load.Name()] = system.Load.Parameters()
-		systems[name][system.Driver.Name()] = system.Driver.Parameters()
-		systems[name][system.Sensor.Name()] = system.Sensor.Parameters()
+    cd := new(componentDescriptor)
+    cd.Name = system.Name()
+    cd.Parameters = system.Parameters()
+    sd.Components = append(sd.Components, cd)
+
+    cd = new(componentDescriptor)
+    cd.Name = system.Pid.Name()
+    cd.Parameters = system.Pid.Parameters()
+    sd.Components = append(sd.Components, cd)
+
+    cd = new(componentDescriptor)
+    cd.Name = system.Load.Name()
+    cd.Parameters = system.Load.Parameters()
+    sd.Components = append(sd.Components, cd)
+
+    cd = new(componentDescriptor)
+    cd.Name = system.Driver.Name()
+    cd.Parameters = system.Driver.Parameters()
+    sd.Components = append(sd.Components, cd)
+
+    cd = new(componentDescriptor)
+    cd.Name = system.Sensor.Name()
+    cd.Parameters = system.Sensor.Parameters()
+    sd.Components = append(sd.Components, cd)
+
+    systems = append(systems, sd)
 	}
 	e := json.NewEncoder(w)
 	e.Encode(systems)

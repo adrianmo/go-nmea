@@ -9,7 +9,7 @@ import (
 
 const (
   // How long to run for (seconds).
-	runTime = 200
+	runTime = 900
 )
 
 var (
@@ -29,6 +29,8 @@ type System struct {
 	Pid *PID
 	// Draw pretty graphs.
 	graph *Graph
+  // How long to run (seconds).
+  runTime float64
 	// Time since start, in seconds.
 	time float64
 }
@@ -44,16 +46,49 @@ func (s *System) Init() {
 	s.graph.AddOutput(s.time, s.Pid.Output())
 }
 
+func (s *System) Name() string {
+  return "System"
+}
+
+func (s *System) SetInput(v float64) {
+}
+func (s *System) Input() float64 {
+  return 0.0
+}
+
+func (s *System) Output() float64 {
+  return 0.0
+}
+
+func (s *System) Parameters() []parameter {
+  p := make([]parameter, 0)
+  v := parameter{Name: "runtime", Title: "Run Time",
+    Minimum: 0.0, Maximum: 1000.0,
+    Step: 1.0, Default: runTime, Unit: "s", Value: s.runTime}
+  p = append(p, v)
+  return p
+}
+
+// SetParameters sets the parameter values for the system.
+func (s *System) SetParameters(params []parameter) {
+	for _, p := range params {
+		switch p.Name {
+		case "runtime":
+			s.runTime = p.Value
+		}
+	}
+}
+
 // RunToTemperature runs the controller with the given setpoint.
 func (s *System) RunToTemperature() {
-  sampleInterval := int(s.Pid.GetSampleTime()/1000)
-	for i := 0; i < runTime; i++ {
+  sampleInterval := float64(s.Pid.GetSampleTime())/1000
+	for i := 0; i < int(s.runTime/sampleInterval); i++ {
 		// sensor -> controller
 		s.Pid.SetInput(s.Sensor.Output())
 		// controller -> driver
 		s.Driver.SetInput(s.Pid.Output())
     // Allow driver to supply load for 5 seconds.
-		for j := 0; j < sampleInterval ; j++ {
+		for j := 0; j < int(sampleInterval) ; j++ {
 			// driver -> load
 			s.Load.SetInput(s.Driver.Output())
 			s.time++
@@ -66,9 +101,9 @@ func (s *System) RunToTemperature() {
 	}
 }
 
-// SetParameters sets parameters of the system and components.
+// SetFormParameters sets parameters of the system and components.
 // It uses the Form from the web request.
-func (s *System) SetParameters(values url.Values) {
+func (s *System) SetFormParameters(values url.Values) {
 	params := make(map[string][]parameter)
 	// Extract the parameters and their values for each component.
 	for k, v := range values {
@@ -86,6 +121,9 @@ func (s *System) SetParameters(values url.Values) {
 	}
 	// Now set the parameters for each component.
 	for c, p := range params {
+		if s.Name() == c {
+			s.SetParameters(p)
+		}
 		if s.Driver.Name() == c {
 			s.Driver.SetParameters(p)
 		}

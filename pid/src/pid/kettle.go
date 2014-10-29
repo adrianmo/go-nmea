@@ -211,12 +211,15 @@ func (b *Burner) Output() float64 {
 
 // A Thermometer is a temperature sensor for the Kettle.
 type Thermometer struct {
+  // Current temperature in celcius.
 	temperature float64
+  // Granularity of the thermometer, in celcius.
+  granularity float64
 }
 
 // NewThermometer returns an initialised Thermometer object.
 func NewThermometer() *Thermometer {
-	return &Thermometer{}
+	return new(Thermometer)
 }
 
 // Name returns the name of the object.
@@ -227,11 +230,21 @@ func (t *Thermometer) Name() string {
 // Parameters returns the parameters of the Thermometer.
 func (t *Thermometer) Parameters() []parameter {
 	p := make([]parameter, 0)
+	f := parameter{Name: "granularity", Title: "Reading Granularity",
+		Minimum: 0, Maximum: 1,
+		Step: 0.01, Default: 0.0, Unit: "deg", Value: t.granularity}
+	p = append(p, f)
 	return p
 }
 
 // SetParameters sets the parameters of the Thermometer.
 func (t *Thermometer) SetParameters(params []parameter) {
+	for _, p := range params {
+		switch p.Name {
+		case "granularity":
+			t.granularity = p.Value
+		}
+	}
 }
 
 // SetInput sets the input value of the Thermometer.
@@ -246,6 +259,9 @@ func (t *Thermometer) Input() float64 {
 
 // Output gets the output value of the Thermometer.
 func (t *Thermometer) Output() float64 {
+  if t.granularity > 0 {
+    return math.Floor(t.temperature/t.granularity) * t.granularity
+  }
 	return t.temperature
 }
 
@@ -265,6 +281,7 @@ func (g KettleSystemGenerator) Description() string {
 // GenerateSystem returns an initialised Kettle system.
 func (g KettleSystemGenerator) GenerateSystem() System {
 	s := System{}
+	SetComponentDefaults(&s)
 	s.Load = NewKettle()
 	SetComponentDefaults(s.Load)
 	s.Driver = NewBurner()
