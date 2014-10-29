@@ -301,5 +301,5 @@ func (p *PID) GetDirection() int16 {
 }
 
 func (p *PID) GetSampleTime() int64 {
-  return p.sampleTime;
+	return p.sampleTime
 }

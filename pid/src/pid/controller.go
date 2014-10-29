@@ -8,12 +8,12 @@ import (
 )
 
 const (
-  // How long to run for (seconds).
+	// How long to run for (seconds).
 	runTime = 900
 )
 
 var (
-  MinPower = 0.0
+	MinPower = 0.0
 	MaxPower = 2500.0
 )
 
@@ -29,8 +29,8 @@ type System struct {
 	Pid *PID
 	// Draw pretty graphs.
 	graph *Graph
-  // How long to run (seconds).
-  runTime float64
+	// How long to run (seconds).
+	runTime float64
 	// Time since start, in seconds.
 	time float64
 }
@@ -47,26 +47,26 @@ func (s *System) Init() {
 }
 
 func (s *System) Name() string {
-  return "System"
+	return "System"
 }
 
 func (s *System) SetInput(v float64) {
 }
 func (s *System) Input() float64 {
-  return 0.0
+	return 0.0
 }
 
 func (s *System) Output() float64 {
-  return 0.0
+	return 0.0
 }
 
 func (s *System) Parameters() []parameter {
-  p := make([]parameter, 0)
-  v := parameter{Name: "runtime", Title: "Run Time",
-    Minimum: 0.0, Maximum: 1000.0,
-    Step: 1.0, Default: runTime, Unit: "s", Value: s.runTime}
-  p = append(p, v)
-  return p
+	p := make([]parameter, 0)
+	v := parameter{Name: "runtime", Title: "Run Time",
+		Minimum: 0.0, Maximum: 1000.0,
+		Step: 1.0, Default: runTime, Unit: "s", Value: s.runTime}
+	p = append(p, v)
+	return p
 }
 
 // SetParameters sets the parameter values for the system.
@@ -81,14 +81,14 @@ func (s *System) SetParameters(params []parameter) {
 
 // RunToTemperature runs the controller with the given setpoint.
 func (s *System) RunToTemperature() {
-  sampleInterval := float64(s.Pid.GetSampleTime())/1000
+	sampleInterval := float64(s.Pid.GetSampleTime()) / 1000
 	for i := 0; i < int(s.runTime/sampleInterval); i++ {
 		// sensor -> controller
 		s.Pid.SetInput(s.Sensor.Output())
 		// controller -> driver
 		s.Driver.SetInput(s.Pid.Output())
-    // Allow driver to supply load for 5 seconds.
-		for j := 0; j < int(sampleInterval) ; j++ {
+		// Allow driver to supply load for 5 seconds.
+		for j := 0; j < int(sampleInterval); j++ {
 			// driver -> load
 			s.Load.SetInput(s.Driver.Output())
 			s.time++

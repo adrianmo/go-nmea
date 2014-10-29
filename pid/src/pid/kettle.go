@@ -211,10 +211,10 @@ func (b *Burner) Output() float64 {
 
 // A Thermometer is a temperature sensor for the Kettle.
 type Thermometer struct {
-  // Current temperature in celcius.
+	// Current temperature in celcius.
 	temperature float64
-  // Granularity of the thermometer, in celcius.
-  granularity float64
+	// Granularity of the thermometer, in celcius.
+	granularity float64
 }
 
 // NewThermometer returns an initialised Thermometer object.
@@ -259,9 +259,9 @@ func (t *Thermometer) Input() float64 {
 
 // Output gets the output value of the Thermometer.
 func (t *Thermometer) Output() float64 {
-  if t.granularity > 0 {
-    return math.Floor(t.temperature/t.granularity) * t.granularity
-  }
+	if t.granularity > 0 {
+		return math.Floor(t.temperature/t.granularity) * t.granularity
+	}
 	return t.temperature
 }
 
@@ -289,7 +289,7 @@ func (g KettleSystemGenerator) GenerateSystem() System {
 	s.Sensor = NewThermometer()
 	SetComponentDefaults(s.Sensor)
 	s.Pid = NewPID(Auto, Direct)
-  // Pid takes samples every 5 seconds.
+	// Pid takes samples every 5 seconds.
 	s.Pid.SetSampleTime(5000)
 	s.Pid.SetOutputLimits(MinPower, MaxPower)
 	s.Pid.Initialize()
