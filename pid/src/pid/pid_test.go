@@ -37,17 +37,17 @@ func TestSetParameters(t *testing.T) {
 	pid := new(PID)
 	pid.SetSampleTime(5000)
 	params := make([]parameter, 0)
-	p := parameter{Name: "kp", Value: 1000}
+  p := parameter{Name: "kp", Value: 1000, Minimum: 0, Maximum: 2000}
 	params = append(params, p)
-	p = parameter{Name: "ki", Value: 2}
+  p = parameter{Name: "ki", Value: 2, Minimum: 0, Maximum: 100}
 	params = append(params, p)
-	p = parameter{Name: "kd", Value: 3}
+  p = parameter{Name: "kd", Value: 3, Minimum: 0, Maximum: 100}
 	params = append(params, p)
-	p = parameter{Name: "limit_high", Value: 2000}
+  p = parameter{Name: "limit_high", Value: 2000, Minimum: 0, Maximum: 3000}
 	params = append(params, p)
-	p = parameter{Name: "limit_low", Value: 100}
+  p = parameter{Name: "limit_low", Value: 100, Minimum: 0, Maximum: 500}
 	params = append(params, p)
-	p = parameter{Name: "setpoint", Value: 500}
+  p = parameter{Name: "setpoint", Value: 500, Minimum: 0, Maximum: 500}
 	params = append(params, p)
 	pid.SetParameters(params)
 	if pid.outMax != 2000 {

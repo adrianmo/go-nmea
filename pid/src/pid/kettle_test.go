@@ -14,8 +14,8 @@ func TestThermometer(t *testing.T) {
 	if th.Input() != 69.9 {
 		t.Errorf("Input got %v, expected %v", th.Input(), 69.9)
 	}
-	if th.Output() != 69.9 {
-		t.Errorf("Output got %v, expected %v", th.Output(), 69.9)
+	if th.Output(1.0) != 69.9 {
+		t.Errorf("Output got %v, expected %v", th.Output(1.0), 69.9)
 	}
 
 	params := make([]parameter, 0)
@@ -24,8 +24,8 @@ func TestThermometer(t *testing.T) {
 	if th.granularity != 0.25 {
 		t.Errorf("Granularity got %v, expected %v", th.granularity, 0.25)
 	}
-	if th.Output() != 69.75 {
-		t.Errorf("Output got %v, expected %v", th.Output(), 69.75)
+	if th.Output(1.0) != 69.75 {
+		t.Errorf("Output got %v, expected %v", th.Output(1.0), 69.75)
 	}
 }
 

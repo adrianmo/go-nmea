@@ -10,6 +10,9 @@ import (
 const (
 	// How long to run for (seconds).
 	runTime = 900
+
+  // default iteration interval (seconds).
+  interval = 5.0
 )
 
 var (
@@ -33,6 +36,8 @@ type System struct {
 	runTime float64
 	// Time since start, in seconds.
 	time float64
+  // Interval between system iterations (simulated).
+  interval float64
 }
 
 // Init initalises the System, setting up graphing.
@@ -42,8 +47,6 @@ func (s *System) Init() {
 	if err != nil {
 		panic(err)
 	}
-	s.graph.AddInput(s.time, s.Sensor.Output())
-	s.graph.AddOutput(s.time, s.Pid.Output())
 }
 
 func (s *System) Name() string {
@@ -56,15 +59,19 @@ func (s *System) Input() float64 {
 	return 0.0
 }
 
-func (s *System) Output() float64 {
+func (s *System) Output(i float64) float64 {
 	return 0.0
 }
 
 func (s *System) Parameters() []parameter {
 	p := make([]parameter, 0)
 	v := parameter{Name: "runtime", Title: "Run Time",
-		Minimum: 0.0, Maximum: 1000.0,
+		Minimum: 1.0, Maximum: 1000.0,
 		Step: 1.0, Default: runTime, Unit: "s", Value: s.runTime}
+	p = append(p, v)
+	v = parameter{Name: "interval", Title: "Run Interval",
+		Minimum: 0.1, Maximum: 10.0,
+		Step: 0.1, Default: interval, Unit: "s", Value: s.interval}
 	p = append(p, v)
 	return p
 }
@@ -75,29 +82,27 @@ func (s *System) SetParameters(params []parameter) {
 		switch p.Name {
 		case "runtime":
 			s.runTime = p.Value
+		case "interval":
+			s.interval = p.Value
 		}
 	}
 }
 
 // RunToTemperature runs the controller with the given setpoint.
 func (s *System) RunToTemperature() {
-	sampleInterval := float64(s.Pid.GetSampleTime()) / 1000
-	for i := 0; i < int(s.runTime/sampleInterval); i++ {
+  for s.time = 0 ; s.time < s.runTime ; s.time += s.interval {
 		// sensor -> controller
-		s.Pid.SetInput(s.Sensor.Output())
+    sensOut := s.Sensor.Output(s.interval)
+		s.Pid.SetInput(sensOut)
+		s.graph.AddInput(s.time, sensOut)
 		// controller -> driver
-		s.Driver.SetInput(s.Pid.Output())
-		// Allow driver to supply load for 5 seconds.
-		for j := 0; j < int(sampleInterval); j++ {
-			// driver -> load
-			s.Load.SetInput(s.Driver.Output())
-			s.time++
-		}
+		s.Driver.SetInput(s.Pid.Output(s.interval))
+    // driver -> load
+    driveOut := s.Driver.Output(s.interval)
+		s.Load.SetInput(driveOut)
+		s.graph.AddOutput(s.time, 100*driveOut/MaxPower)
 		// load -> sensor
-		s.Sensor.SetInput(s.Load.Output())
-		// Graph this run.
-		s.graph.AddInput(s.time, s.Sensor.Output())
-		s.graph.AddOutput(s.time, 100*s.Driver.Output()/MaxPower)
+		s.Sensor.SetInput(s.Load.Output(s.interval))
 	}
 }
 

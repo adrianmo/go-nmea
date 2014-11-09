@@ -36,6 +36,9 @@ type Kettle struct {
 
 	// Watts of power being supplied.
 	Watts float64
+
+  // Interval since last operation.
+  interval float64
 }
 
 // NewKettle returns an initialised Kettle object.
@@ -89,25 +92,22 @@ func (k *Kettle) Name() string {
 }
 
 // Operate operates the kettle for the given time.
-func (k *Kettle) operate(seconds int) {
+func (k *Kettle) operate() {
 	/* To work out the current temperature of the kettle:
 	 *
 	 * - Work out the total heat supplied (Watts*Time/Volume/ThermalMass).
 	 * - Work out the total heat lost (ThermalLoss * time * dT).
 	 * - Get the difference.
 	 */
-	for s := 0; s < seconds; s++ {
-		// Work out heat added to the kettle.
-		k.Temperature += k.getIncrease()
-		// Work out and subtract heat lost.
-		k.Temperature -= k.getLoss()
-	}
+  // Work out heat added to the kettle.
+  k.Temperature += k.getIncrease()
+  // Work out and subtract heat lost.
+  k.Temperature -= k.getLoss()
 }
 
 // SetInput sets the target input watts to the kettle.
 func (k *Kettle) SetInput(watts float64) {
 	k.Watts = watts
-	k.operate(1)
 }
 
 // GetInput returns the configured input watts.
@@ -116,19 +116,21 @@ func (k *Kettle) Input() float64 {
 }
 
 // GetOutput returns the kettle temperature.
-func (k *Kettle) Output() float64 {
+func (k *Kettle) Output(interval float64) float64 {
+  k.interval = interval
+	k.operate()
 	return k.Temperature
 }
 
 // getIncrease calculates the thermal increase from the heat.
 func (k *Kettle) getIncrease() float64 {
-	tempRise := k.Watts / (k.Volume * 1e3) / ThermalMass
+	tempRise := (k.Watts * k.interval) / (k.Volume * 1e3) / ThermalMass
 	return tempRise
 }
 
 // getLoss calculates the thermal loss of the vessel in one second.
 func (k *Kettle) getLoss() float64 {
-	lossWatts := (k.Temperature - k.AmbientTemperature) * k.ThermalLoss
+	lossWatts := (k.Temperature - k.AmbientTemperature) * k.ThermalLoss * k.interval
 	lossCelcius := lossWatts / (k.Volume * 1e3) / ThermalMass
 	return lossCelcius
 }
@@ -196,11 +198,11 @@ func (b *Burner) Input() float64 {
 }
 
 // Output fetches the current output value of the Burner.
-func (b *Burner) Output() float64 {
+func (b *Burner) Output(interval float64) float64 {
 	if b.outputPowerLevel > b.inputPowerLevel {
-		b.outputPowerLevel = math.Max(b.inputPowerLevel, b.outputPowerLevel-ThermalInertia)
+		b.outputPowerLevel = math.Max(b.inputPowerLevel, b.outputPowerLevel-(ThermalInertia * interval))
 	} else if b.outputPowerLevel < b.inputPowerLevel {
-		b.outputPowerLevel = math.Min(b.inputPowerLevel, b.outputPowerLevel+ThermalInertia)
+		b.outputPowerLevel = math.Min(b.inputPowerLevel, b.outputPowerLevel+(ThermalInertia * interval))
 	}
 	if b.PowerFluctuation > 0 {
 		fluctuation := (rand.Float64()*2.0 - 1.0) * b.PowerFluctuation
@@ -258,7 +260,7 @@ func (t *Thermometer) Input() float64 {
 }
 
 // Output gets the output value of the Thermometer.
-func (t *Thermometer) Output() float64 {
+func (t *Thermometer) Output(interval float64) float64 {
 	if t.granularity > 0 {
 		return math.Floor(t.temperature/t.granularity) * t.granularity
 	}

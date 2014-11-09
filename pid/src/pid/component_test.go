@@ -13,7 +13,7 @@ type testComponent struct {
 func (c *testComponent) Name() string       { return "testComponent" }
 func (c *testComponent) SetInput(i float64) {}
 func (c *testComponent) Input() float64     { return 0.0 }
-func (c *testComponent) Output() float64    { return 0.0 }
+func (c *testComponent) Output(i float64) float64    { return 0.0 }
 func (c *testComponent) Parameters() []parameter {
 	p1 := &parameter{Name: "min", Default: 5.0, Value: 0.0}
 	p2 := &parameter{Name: "max", Default: 10.0, Value: 0.0}

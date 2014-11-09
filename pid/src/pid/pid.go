@@ -42,7 +42,6 @@ type PID struct {
 	dispKd float64
 	// Millis between samples.
 	sampleTime int64
-	lastTime   int64
 	// Minimum and maximum output values.
 	outMin float64
 	outMax float64
@@ -64,7 +63,6 @@ func NewPID(mode, direction int16) *PID {
 	p.SetSampleTime(defaultSampleTime)
 	p.SetControllerDirection(direction)
 	SetComponentDefaults(p)
-	p.lastTime = timeMillis() - defaultSampleTime
 	return p
 }
 
@@ -140,21 +138,8 @@ func (p *PID) Name() string {
 }
 
 // Output gets the output value of the PID.
-func (p *PID) Output() float64 {
-	return p.output
-}
-
-// PID performs a PID computation.
-func (p *PID) SetInput(input float64) {
-	/*
-		now := timeMillis()
-		timeChange := now - p.lastTime
-		if timeChange <= p.sampleTime {
-			return false
-		}
-	*/
-
-	p.input = input
+func (p *PID) Output(interval float64) float64 {
+  p.SetSampleTime(int64(interval * 1e3))
 
 	err := p.Setpoint - p.input
 	p.iTerm += (p.input * err)
@@ -177,7 +162,12 @@ func (p *PID) SetInput(input float64) {
 	p.output = output
 
 	p.lastInput = p.input
-	//	p.lastTime = now
+	return p.output
+}
+
+// PID performs a PID computation.
+func (p *PID) SetInput(input float64) {
+	p.input = input
 }
 
 // Input returns the input value of the PID.

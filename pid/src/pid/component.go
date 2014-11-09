@@ -17,8 +17,8 @@ type IOComponent interface {
 	SetInput(float64)
 	// Input gets the input value for the component.
 	Input() float64
-	// Output gets the output value for the component.
-	Output() float64
+	// Output gets the output value for the component, after the given duration has elapsed.
+	Output(duration float64) float64
 	// Parameters gets the settable parameters of the component.
 	Parameters() []parameter
 	// SetParameters sets the parameters of the component.
