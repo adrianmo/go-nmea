@@ -3,16 +3,14 @@ package pid
 import (
 	"io"
 	"net/url"
-	"strconv"
-	"strings"
 )
 
 const (
 	// How long to run for (seconds).
 	runTime = 900
 
-  // default iteration interval (seconds).
-  interval = 5.0
+	// default iteration interval (seconds).
+	interval = 5.0
 )
 
 var (
@@ -36,16 +34,36 @@ type System struct {
 	runTime float64
 	// Time since start, in seconds.
 	time float64
-  // Interval between system iterations (simulated).
-  interval float64
+	// Interval between system iterations (simulated).
+	interval float64
+	// Parameters loaded from JSON
+	parameters systemParameters
 }
 
 // Init initalises the System, setting up graphing.
-func (s *System) Init() {
+// JSON system data is read from f.
+func (s *System) Init(f string) {
 	var err error
 	s.graph, err = NewGraph()
 	if err != nil {
 		panic(err)
+	}
+	err = s.parameters.ReadJson(f)
+	if err != nil {
+		panic(err)
+	}
+	s.SetParameters(s.parameters[s.Name()])
+	if s.Load != nil {
+		s.Load.SetParameters(s.parameters[s.Load.Name()])
+	}
+	if s.Driver != nil {
+		s.Driver.SetParameters(s.parameters[s.Driver.Name()])
+	}
+	if s.Sensor != nil {
+		s.Sensor.SetParameters(s.parameters[s.Sensor.Name()])
+	}
+	if s.Pid != nil {
+		s.Pid.SetParameters(s.parameters[s.Pid.Name()])
 	}
 }
 
@@ -63,42 +81,36 @@ func (s *System) Output(i float64) float64 {
 	return 0.0
 }
 
-func (s *System) Parameters() []parameter {
-	p := make([]parameter, 0)
-	v := parameter{Name: "runtime", Title: "Run Time",
-		Minimum: 1.0, Maximum: 1000.0,
-		Step: 1.0, Default: runTime, Unit: "s", Value: s.runTime}
-	p = append(p, v)
-	v = parameter{Name: "interval", Title: "Run Interval",
-		Minimum: 0.1, Maximum: 10.0,
-		Step: 0.1, Default: interval, Unit: "s", Value: s.interval}
-	p = append(p, v)
+// Parameters returns all parameters set by the system.
+func (s *System) Parameters() parameters {
+	p := make(parameters, 0)
+	ps, ok := s.parameters[s.Name()]
+	if !ok {
+		return p
+	}
+	for _, param := range ps {
+		p = append(p, param.Copy())
+	}
 	return p
 }
 
 // SetParameters sets the parameter values for the system.
-func (s *System) SetParameters(params []parameter) {
-	for _, p := range params {
-		switch p.Name {
-		case "runtime":
-			s.runTime = p.Value
-		case "interval":
-			s.interval = p.Value
-		}
-	}
+func (s *System) SetParameters(params parameters) {
+	s.runTime = params.GetValue("runtime")
+	s.interval = params.GetValue("interval")
 }
 
 // RunToTemperature runs the controller with the given setpoint.
 func (s *System) RunToTemperature() {
-  for s.time = 0 ; s.time < s.runTime ; s.time += s.interval {
+	for s.time = 0; s.time < s.runTime; s.time += s.interval {
 		// sensor -> controller
-    sensOut := s.Sensor.Output(s.interval)
+		sensOut := s.Sensor.Output(s.interval)
 		s.Pid.SetInput(sensOut)
 		s.graph.AddInput(s.time, sensOut)
 		// controller -> driver
 		s.Driver.SetInput(s.Pid.Output(s.interval))
-    // driver -> load
-    driveOut := s.Driver.Output(s.interval)
+		// driver -> load
+		driveOut := s.Driver.Output(s.interval)
 		s.Load.SetInput(driveOut)
 		s.graph.AddOutput(s.time, 100*driveOut/MaxPower)
 		// load -> sensor
@@ -109,38 +121,23 @@ func (s *System) RunToTemperature() {
 // SetFormParameters sets parameters of the system and components.
 // It uses the Form from the web request.
 func (s *System) SetFormParameters(values url.Values) {
-	params := make(map[string][]parameter)
-	// Extract the parameters and their values for each component.
-	for k, v := range values {
-		// The form fields are name <component>_<parameter>.
-		parts := strings.SplitN(k, "_", 2)
-		if len(parts) == 2 && len(v) == 1 {
-			component, param := parts[0], parts[1]
-			val, err := strconv.ParseFloat(v[0], 64)
-			if err != nil {
-				continue
-			}
-			p := parameter{Name: param, Value: val}
-			params[component] = append(params[component], p)
-		}
-	}
+	params := systemParameters{}
+	params.ReadURLValues(values)
 	// Now set the parameters for each component.
-	for c, p := range params {
-		if s.Name() == c {
-			s.SetParameters(p)
-		}
-		if s.Driver.Name() == c {
-			s.Driver.SetParameters(p)
-		}
-		if s.Load.Name() == c {
-			s.Load.SetParameters(p)
-		}
-		if s.Sensor.Name() == c {
-			s.Sensor.SetParameters(p)
-		}
-		if s.Pid.Name() == c {
-			s.Pid.SetParameters(p)
-		}
+	if p, ok := params[s.Name()]; ok {
+		s.SetParameters(p)
+	}
+	if p, ok := params[s.Driver.Name()]; ok {
+		s.Driver.SetParameters(p)
+	}
+	if p, ok := params[s.Load.Name()]; ok {
+		s.Load.SetParameters(p)
+	}
+	if p, ok := params[s.Sensor.Name()]; ok {
+		s.Sensor.SetParameters(p)
+	}
+	if p, ok := params[s.Pid.Name()]; ok {
+		s.Pid.SetParameters(p)
 	}
 }
 

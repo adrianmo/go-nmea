@@ -10,17 +10,18 @@ type testComponent struct {
 	now float64
 }
 
-func (c *testComponent) Name() string       { return "testComponent" }
-func (c *testComponent) SetInput(i float64) {}
-func (c *testComponent) Input() float64     { return 0.0 }
-func (c *testComponent) Output(i float64) float64    { return 0.0 }
-func (c *testComponent) Parameters() []parameter {
-	p1 := &parameter{Name: "min", Default: 5.0, Value: 0.0}
-	p2 := &parameter{Name: "max", Default: 10.0, Value: 0.0}
-	p3 := &parameter{Name: "now", Default: 7.0, Value: 0.0}
-	return []parameter{*p1, *p2, *p3}
+func (c *testComponent) Name() string             { return "testComponent" }
+func (c *testComponent) SetInput(i float64)       {}
+func (c *testComponent) Input() float64           { return 0.0 }
+func (c *testComponent) Output(i float64) float64 { return 0.0 }
+func (c *testComponent) Parameters() parameters {
+	p := parameters{}
+	p = append(p, &parameter{Name: "min", Default: 5.0, Value: 0.0})
+	p = append(p, &parameter{Name: "max", Default: 10.0, Value: 0.0})
+	p = append(p, &parameter{Name: "now", Default: 7.0, Value: 0.0})
+	return p
 }
-func (c *testComponent) SetParameters(params []parameter) {
+func (c *testComponent) SetParameters(params parameters) {
 	for _, p := range params {
 		switch p.Name {
 		case "min":
@@ -30,20 +31,6 @@ func (c *testComponent) SetParameters(params []parameter) {
 		case "now":
 			c.now = p.Value
 		}
-	}
-}
-
-func TestSetComponentDefaults(t *testing.T) {
-	tc := new(testComponent)
-	SetComponentDefaults(tc)
-	if tc.min != 5.0 {
-		t.Errorf("Parameter 'min' got %v, expected %v", tc.min, 5.0)
-	}
-	if tc.max != 10.0 {
-		t.Errorf("Parameter 'max' got %v, expected %v", tc.max, 10.0)
-	}
-	if tc.now != 7.0 {
-		t.Errorf("Parameter 'now' got %v, expected %v", tc.min, 7.0)
 	}
 }
 

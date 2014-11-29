@@ -19,6 +19,8 @@ const (
 	// Power fluctuation of the Burner. Each time Operate() is called, the input power
 	// will fluctuate by this percent (0.0-1.0).
 	PowerFluctuation = 3
+
+	kettleJson = "kettle.json"
 )
 
 type Kettle struct {
@@ -37,53 +39,34 @@ type Kettle struct {
 	// Watts of power being supplied.
 	Watts float64
 
-  // Interval since last operation.
-  interval float64
+	// Interval since last operation.
+	interval float64
+
+	// System of ths Kettle.
+	system *System
 }
 
 // NewKettle returns an initialised Kettle object.
-func NewKettle() *Kettle {
-	k := &Kettle{}
-	SetComponentDefaults(k)
+func NewKettle(s *System) *Kettle {
+	k := &Kettle{system: s}
 	return k
 }
 
-// Parameters returns the parameters for the kettle.
-func (k *Kettle) Parameters() []parameter {
-	p := make([]parameter, 0)
-	v := parameter{Name: "volume", Title: "Liquid Volume",
-		Minimum: 0.0, Maximum: 20.0,
-		Step: 1.0, Default: 10.0, Unit: "L", Value: k.Volume}
-	p = append(p, v)
-	t := parameter{Name: "ambient", Title: "Ambient Temperature",
-		Minimum: 0.0, Maximum: 30.0,
-		Step: 2.0, Default: 25.0, Unit: "degC", Value: k.AmbientTemperature}
-	p = append(p, t)
-	x := parameter{Name: "temperature", Title: "Initial Temperature",
-		Minimum: 0.0, Maximum: 100.0,
-		Step: 1.0, Default: 25.0, Unit: "degC", Value: k.Temperature}
-	p = append(p, x)
-	l := parameter{Name: "thermal_loss", Title: "Thermal Loss",
-		Minimum: 0.0, Maximum: 30.0,
-		Step: 1.0, Default: ThermalLoss, Unit: "W/deg", Value: k.ThermalLoss}
-	p = append(p, l)
+func (k *Kettle) Parameters() parameters {
+	p := k.system.parameters[k.Name()]
+	p.SetValue("volume", k.Volume)
+	p.SetValue("ambient", k.AmbientTemperature)
+	p.SetValue("temperature", k.Temperature)
+	p.SetValue("thermal_loss", k.ThermalLoss)
 	return p
 }
 
 // SetParameters sets the parameter values for the kettle.
-func (k *Kettle) SetParameters(params []parameter) {
-	for _, p := range params {
-		switch p.Name {
-		case "thermal_loss":
-			k.ThermalLoss = p.Value
-		case "ambient":
-			k.AmbientTemperature = p.Value
-		case "temperature":
-			k.Temperature = p.Value
-		case "volume":
-			k.Volume = p.Value
-		}
-	}
+func (k *Kettle) SetParameters(params parameters) {
+	k.ThermalLoss = params.GetValue("thermal_loss")
+	k.AmbientTemperature = params.GetValue("ambient")
+	k.Temperature = params.GetValue("temperature")
+	k.Volume = params.GetValue("volume")
 }
 
 // Name returns the name of the kettle.
@@ -99,10 +82,10 @@ func (k *Kettle) operate() {
 	 * - Work out the total heat lost (ThermalLoss * time * dT).
 	 * - Get the difference.
 	 */
-  // Work out heat added to the kettle.
-  k.Temperature += k.getIncrease()
-  // Work out and subtract heat lost.
-  k.Temperature -= k.getLoss()
+	// Work out heat added to the kettle.
+	k.Temperature += k.getIncrease()
+	// Work out and subtract heat lost.
+	k.Temperature -= k.getLoss()
 }
 
 // SetInput sets the target input watts to the kettle.
@@ -117,7 +100,7 @@ func (k *Kettle) Input() float64 {
 
 // GetOutput returns the kettle temperature.
 func (k *Kettle) Output(interval float64) float64 {
-  k.interval = interval
+	k.interval = interval
 	k.operate()
 	return k.Temperature
 }
@@ -146,40 +129,28 @@ type Burner struct {
 	inputPowerLevel float64
 	// Output power value (Watts)
 	outputPowerLevel float64
+	// System of ths Kettle.
+	system *System
 }
 
 // NewBurner returns an initialised Burner object.
-func NewBurner() *Burner {
-	b := &Burner{}
-	SetComponentDefaults(b)
+func NewBurner(s *System) *Burner {
+	b := &Burner{system: s}
 	return b
 }
 
 // Parameters returns the parameters for the Burner.
-func (b *Burner) Parameters() []parameter {
-	p := make([]parameter, 0)
-	f := parameter{Name: "fluctuation", Title: "Power Fluctuation",
-		Minimum: 0, Maximum: 50,
-		Step: 1, Default: PowerFluctuation, Unit: "%", Value: b.PowerFluctuation * 100}
-	p = append(p, f)
-	i := parameter{Name: "inertia", Title: "Thermal Inertia",
-		Minimum: 0, Maximum: 5000.0,
-		Step: 10.0, Default: ThermalInertia, Unit: "W/s", Value: b.ThermalInertia}
-	p = append(p, i)
-
+func (b *Burner) Parameters() parameters {
+	p := b.system.parameters[b.Name()]
+	p.SetValue("fluctuation", b.PowerFluctuation*100)
+	p.SetValue("inertia", b.ThermalInertia)
 	return p
 }
 
 // SetParameters sets the parameters for the Burner.
-func (b *Burner) SetParameters(params []parameter) {
-	for _, p := range params {
-		switch p.Name {
-		case "fluctuation":
-			b.PowerFluctuation = p.Value / 100
-		case "inertia":
-			b.ThermalInertia = p.Value
-		}
-	}
+func (b *Burner) SetParameters(params parameters) {
+	b.PowerFluctuation = params.GetValue("fluctuation") / 100
+	b.ThermalInertia = params.GetValue("inertia")
 }
 
 // Name returns the name of the Burner.
@@ -200,9 +171,9 @@ func (b *Burner) Input() float64 {
 // Output fetches the current output value of the Burner.
 func (b *Burner) Output(interval float64) float64 {
 	if b.outputPowerLevel > b.inputPowerLevel {
-		b.outputPowerLevel = math.Max(b.inputPowerLevel, b.outputPowerLevel-(ThermalInertia * interval))
+		b.outputPowerLevel = math.Max(b.inputPowerLevel, b.outputPowerLevel-(ThermalInertia*interval))
 	} else if b.outputPowerLevel < b.inputPowerLevel {
-		b.outputPowerLevel = math.Min(b.inputPowerLevel, b.outputPowerLevel+(ThermalInertia * interval))
+		b.outputPowerLevel = math.Min(b.inputPowerLevel, b.outputPowerLevel+(ThermalInertia*interval))
 	}
 	if b.PowerFluctuation > 0 {
 		fluctuation := (rand.Float64()*2.0 - 1.0) * b.PowerFluctuation
@@ -217,11 +188,13 @@ type Thermometer struct {
 	temperature float64
 	// Granularity of the thermometer, in celcius.
 	granularity float64
+	// System of ths Thermometer.
+	system *System
 }
 
 // NewThermometer returns an initialised Thermometer object.
-func NewThermometer() *Thermometer {
-	return new(Thermometer)
+func NewThermometer(s *System) *Thermometer {
+	return &Thermometer{system: s}
 }
 
 // Name returns the name of the object.
@@ -230,23 +203,15 @@ func (t *Thermometer) Name() string {
 }
 
 // Parameters returns the parameters of the Thermometer.
-func (t *Thermometer) Parameters() []parameter {
-	p := make([]parameter, 0)
-	f := parameter{Name: "granularity", Title: "Reading Granularity",
-		Minimum: 0, Maximum: 1,
-		Step: 0.01, Default: 0.0, Unit: "deg", Value: t.granularity}
-	p = append(p, f)
+func (t *Thermometer) Parameters() parameters {
+	p := t.system.parameters[t.Name()]
+	p.SetValue("granularity", t.granularity)
 	return p
 }
 
 // SetParameters sets the parameters of the Thermometer.
-func (t *Thermometer) SetParameters(params []parameter) {
-	for _, p := range params {
-		switch p.Name {
-		case "granularity":
-			t.granularity = p.Value
-		}
-	}
+func (t *Thermometer) SetParameters(params parameters) {
+	t.granularity = params.GetValue("granularity")
 }
 
 // SetInput sets the input value of the Thermometer.
@@ -283,19 +248,15 @@ func (g KettleSystemGenerator) Description() string {
 // GenerateSystem returns an initialised Kettle system.
 func (g KettleSystemGenerator) GenerateSystem() System {
 	s := System{}
-	SetComponentDefaults(&s)
-	s.Load = NewKettle()
-	SetComponentDefaults(s.Load)
-	s.Driver = NewBurner()
-	SetComponentDefaults(s.Driver)
-	s.Sensor = NewThermometer()
-	SetComponentDefaults(s.Sensor)
-	s.Pid = NewPID(Auto, Direct)
+	s.Load = NewKettle(&s)
+	s.Driver = NewBurner(&s)
+	s.Sensor = NewThermometer(&s)
+	s.Pid = NewPID(&s, Auto, Direct)
 	// Pid takes samples every 5 seconds.
 	s.Pid.SetSampleTime(5000)
 	s.Pid.SetOutputLimits(MinPower, MaxPower)
 	s.Pid.Initialize()
-	s.Init()
+	s.Init(kettleJson)
 	return s
 }
 

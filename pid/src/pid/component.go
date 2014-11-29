@@ -20,29 +20,9 @@ type IOComponent interface {
 	// Output gets the output value for the component, after the given duration has elapsed.
 	Output(duration float64) float64
 	// Parameters gets the settable parameters of the component.
-	Parameters() []parameter
+	Parameters() parameters
 	// SetParameters sets the parameters of the component.
-	SetParameters([]parameter)
-}
-
-// A parameter is a configurable parameter for an IOComponent.
-type parameter struct {
-	// Name is the shortname of the parameter.
-	Name string
-	// Title is a more human readable name (for UI display)
-	Title string
-	// Minimum value of the parameter.
-	Minimum float64
-	// Maximum value of the parameter.
-	Maximum float64
-	// The desired step size of the parameter.
-	Step float64
-	// The default value.
-	Default float64
-	// The units to display.
-	Unit string
-	// The value (for setting parameters)
-	Value float64
+	SetParameters(parameters)
 }
 
 type Driver interface {
@@ -55,15 +35,6 @@ type Load interface {
 
 type Sensor interface {
 	IOComponent
-}
-
-// SetComponentDefaults sets the parameters of the component to its defaults.
-func SetComponentDefaults(c IOComponent) {
-	params := c.Parameters()
-	for i := 0; i < len(params); i++ {
-		params[i].Value = params[i].Default
-	}
-	c.SetParameters(params)
 }
 
 // A SystemGenerator is registered on init, and is used to build a complete

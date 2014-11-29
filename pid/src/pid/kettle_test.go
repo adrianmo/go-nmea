@@ -5,7 +5,8 @@ import (
 )
 
 func TestThermometer(t *testing.T) {
-	th := NewThermometer()
+	s := &System{}
+	th := NewThermometer(s)
 	if th.Name() != "Thermometer" {
 		t.Errorf("Name got %v, expected %v", th.Name(), "Thermometer")
 	}
@@ -18,8 +19,8 @@ func TestThermometer(t *testing.T) {
 		t.Errorf("Output got %v, expected %v", th.Output(1.0), 69.9)
 	}
 
-	params := make([]parameter, 0)
-	params = append(params, parameter{Name: "granularity", Value: 0.25})
+	params := make(parameters, 0)
+	params = append(params, &parameter{Name: "granularity", Value: 0.25})
 	th.SetParameters(params)
 	if th.granularity != 0.25 {
 		t.Errorf("Granularity got %v, expected %v", th.granularity, 0.25)
@@ -30,7 +31,8 @@ func TestThermometer(t *testing.T) {
 }
 
 func TestBurner(t *testing.T) {
-	b := NewBurner()
+	s := &System{}
+	b := NewBurner(s)
 	if b.Name() != "Burner" {
 		t.Errorf("Name got %v, expected %v", b.Name(), "Burner")
 	}

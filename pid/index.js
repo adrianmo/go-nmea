@@ -154,6 +154,6 @@ addTabAndParameters = function(name, parameters) {
   tabDiv.id = name;
   for (var i = 0 ; i < parameters.length ; i++) {
     var p = parameters[i];
-    addSlider(tabDiv, p.Name, p.Title, p.Minimum, p.Maximum, p.Step, p.Default, p.Unit);
+    addSlider(tabDiv, p.Name, p.Title, p.Minimum, p.Maximum, p.Step, p.Value, p.Unit);
   }
 }

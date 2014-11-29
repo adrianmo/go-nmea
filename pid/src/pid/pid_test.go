@@ -35,19 +35,21 @@ func TestPIDDirection(t *testing.T) {
 
 func TestSetParameters(t *testing.T) {
 	pid := new(PID)
+	pid.system = &System{}
+	pid.system.Init("testdata/kettle.json")
 	pid.SetSampleTime(5000)
-	params := make([]parameter, 0)
-  p := parameter{Name: "kp", Value: 1000, Minimum: 0, Maximum: 2000}
+	params := make(parameters, 0)
+	p := &parameter{Name: "kp", Value: 1000, Minimum: 0, Maximum: 2000}
 	params = append(params, p)
-  p = parameter{Name: "ki", Value: 2, Minimum: 0, Maximum: 100}
+	p = &parameter{Name: "ki", Value: 2, Minimum: 0, Maximum: 100}
 	params = append(params, p)
-  p = parameter{Name: "kd", Value: 3, Minimum: 0, Maximum: 100}
+	p = &parameter{Name: "kd", Value: 3, Minimum: 0, Maximum: 100}
 	params = append(params, p)
-  p = parameter{Name: "limit_high", Value: 2000, Minimum: 0, Maximum: 3000}
+	p = &parameter{Name: "limit_high", Value: 2000, Minimum: 0, Maximum: 3000}
 	params = append(params, p)
-  p = parameter{Name: "limit_low", Value: 100, Minimum: 0, Maximum: 500}
+	p = &parameter{Name: "limit_low", Value: 100, Minimum: 0, Maximum: 500}
 	params = append(params, p)
-  p = parameter{Name: "setpoint", Value: 500, Minimum: 0, Maximum: 500}
+	p = &parameter{Name: "setpoint", Value: 500, Minimum: 0, Maximum: 500}
 	params = append(params, p)
 	pid.SetParameters(params)
 	if pid.outMax != 2000 {
@@ -66,11 +68,12 @@ func TestSetParameters(t *testing.T) {
 		t.Errorf("Kd got %v, wanted %v", pid.Kd, 0.6)
 	}
 
-	paramValues := []float64{500, 1000, 2, 3, 2000, 100}
+	paramValues := map[string]float64{
+		"setpoint": 500, "kp": 1000, "ki": 2, "kd": 3, "limit_high": 2000, "limit_low": 100}
 	params = pid.Parameters()
-	for i := range paramValues {
-		if params[i].Value != paramValues[i] {
-			t.Errorf("Param got %v, wanted %v", params[i].Value, paramValues[i])
+	for k, v := range paramValues {
+		if params.GetValue(k) != v {
+			t.Errorf("Param %s got %v, wanted %v", k, params.GetValue(k), v)
 		}
 	}
 }
