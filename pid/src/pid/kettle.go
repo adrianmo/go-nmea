@@ -20,7 +20,7 @@ const (
 	// will fluctuate by this percent (0.0-1.0).
 	PowerFluctuation = 3
 
-	kettleJson = "kettle.json"
+	kettleJson = "systems.json"
 )
 
 type Kettle struct {
@@ -256,7 +256,7 @@ func (g KettleSystemGenerator) GenerateSystem() System {
 	s.Pid.SetSampleTime(5000)
 	s.Pid.SetOutputLimits(MinPower, MaxPower)
 	s.Pid.Initialize()
-	s.Init(kettleJson)
+	s.Init(g.Name())
 	return s
 }
 

@@ -8,21 +8,30 @@ import (
 	"strings"
 )
 
-// systemParameters contains all parameters for an entire system.
-type systemParameters map[string]parameters
+
+// allSystems contains all of the above systems.
+type allSystems map[string]allSystem
 
 // ReadJson reads a Json encoded file into this object.
-func (s *systemParameters) ReadJson(f string) error {
+func (a *allSystems) ReadJson(f string) error {
 	data, err := ioutil.ReadFile(f)
 	if err != nil {
 		return err
 	}
-	err = json.Unmarshal(data, s)
+	err = json.Unmarshal(data, a)
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
+type allSystem struct {
+  Description string
+  Components systemParameters
+}
+
+// systemParameters contains all parameters for an entire system.
+type systemParameters map[string]parameters
 
 // ReadURLValues reads URL form values into this object.
 func (s systemParameters) ReadURLValues(values url.Values) {

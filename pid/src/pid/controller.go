@@ -1,6 +1,7 @@
 package pid
 
 import (
+  "fmt"
 	"io"
 	"net/url"
 )
@@ -11,11 +12,14 @@ const (
 
 	// default iteration interval (seconds).
 	interval = 5.0
+
 )
 
 var (
 	MinPower = 0.0
 	MaxPower = 2500.0
+  // The JSON file holding the system definitions.
+  systemJson = "systems.json"
 )
 
 // A System is a closed loop PID controlled system.
@@ -41,17 +45,23 @@ type System struct {
 }
 
 // Init initalises the System, setting up graphing.
-// JSON system data is read from f.
-func (s *System) Init(f string) {
+// n is the system name to load from systemJson.
+func (s *System) Init(n string) {
 	var err error
 	s.graph, err = NewGraph()
 	if err != nil {
 		panic(err)
 	}
-	err = s.parameters.ReadJson(f)
+  var all allSystems
+	err = all.ReadJson(systemJson)
 	if err != nil {
 		panic(err)
 	}
+  paras, ok := all[n]
+  if !ok {
+    panic(fmt.Errorf("Cant find system %s in %s", n, systemJson))
+  }
+  s.parameters = paras.Components
 	s.SetParameters(s.parameters[s.Name()])
 	if s.Load != nil {
 		s.Load.SetParameters(s.parameters[s.Load.Name()])

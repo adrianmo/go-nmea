@@ -103,12 +103,12 @@ $(document).ready(function() {
 });
 
 loadSystem = function(name) {
-  var allSystems = $.getJSON('systems', function(data) {
+  var allSystems = $.getJSON('systems.json', function(data) {
     clearSystem();
     // Add all the received ones.
-    for (var i = 0 ; i < data.length ; i++) {
-      var system = data[i];
-      displaySystem(system, name == '' || system.Name == name);
+    for (sys in data) {
+      var system = data[sys];
+      displaySystem(system, sys, name == '' || sys == name);
     }
     $('#control-tabs').tabs();
   });
@@ -124,15 +124,15 @@ clearSystem = function() {
 }
 
 
-displaySystem = function(system, selected) {
-  var selector = new Option(system.Description, system.Name);
+displaySystem = function(system, name, selected) {
+  var selector = new Option(system.Description, name);
   selector.className = 'system-selector-option';
   $('#system-selector')[0].add(selector);
   if (selected) {
     selector.selected = true;
-    for (var i = 0 ; i < system.Components.length ; i++) {
-      var component = system.Components[i];
-      addTabAndParameters(component.Name, component.Parameters);
+    for (compName in system.Components) {
+      var component = system.Components[compName];
+      addTabAndParameters(compName, component);
     }
   }
 }

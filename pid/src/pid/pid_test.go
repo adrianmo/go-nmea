@@ -34,9 +34,10 @@ func TestPIDDirection(t *testing.T) {
 }
 
 func TestSetParameters(t *testing.T) {
+  systemJson = "testdata/systems.json"
 	pid := new(PID)
 	pid.system = &System{}
-	pid.system.Init("testdata/kettle.json")
+	pid.system.Init("kettle")
 	pid.SetSampleTime(5000)
 	params := make(parameters, 0)
 	p := &parameter{Name: "kp", Value: 1000, Minimum: 0, Maximum: 2000}
