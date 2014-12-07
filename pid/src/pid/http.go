@@ -42,7 +42,7 @@ func (g *graphHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	system := GenerateSystem("kettle")
 	system.SetFormParameters(r.Form)
-	system.RunToTemperature()
+	system.Run()
 	w.Header().Set("Content-Type", "image/png")
 	system.PngWriter().WriteTo(w)
 }

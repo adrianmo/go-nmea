@@ -109,24 +109,6 @@ func (s *System) SetParameters(params parameters) {
 	s.interval = params.GetValue("interval")
 }
 
-// RunToTemperature runs the controller with the given setpoint.
-func (s *System) RunToTemperature() {
-	for s.time = 0; s.time < s.runTime; s.time += s.interval {
-		// sensor -> controller
-		sensOut := s.Sensor.Output(s.interval)
-		s.Pid.SetInput(sensOut)
-		s.graph.AddInput(s.time, sensOut)
-		// controller -> driver
-		s.Driver.SetInput(s.Pid.Output(s.interval))
-		// driver -> load
-		driveOut := s.Driver.Output(s.interval)
-		s.Load.SetInput(driveOut)
-		s.graph.AddOutput(s.time, 100*driveOut/MaxPower)
-		// load -> sensor
-		s.Sensor.SetInput(s.Load.Output(s.interval))
-	}
-}
-
 // SetFormParameters sets parameters of the system and components.
 // It uses the Form from the web request.
 func (s *System) SetFormParameters(values url.Values) {
@@ -147,6 +129,29 @@ func (s *System) SetFormParameters(values url.Values) {
 	}
 	if p, ok := params[s.Pid.Name()]; ok {
 		s.Pid.SetParameters(p)
+	}
+}
+
+// Process run the controller for one interval cycle.
+func (s *System) ProcessInterval() {
+	// sensor -> controller
+	sensOut := s.Sensor.Output(s.interval)
+	s.Pid.SetInput(sensOut)
+	s.graph.AddInput(s.time, sensOut)
+	// controller -> driver
+	s.Driver.SetInput(s.Pid.Output(s.interval))
+	// driver -> load
+	driveOut := s.Driver.Output(s.interval)
+	s.Load.SetInput(driveOut)
+	s.graph.AddOutput(s.time, 100*driveOut/MaxPower)
+	// load -> sensor
+	s.Sensor.SetInput(s.Load.Output(s.interval))
+}
+
+// Run runs the controller for the full runtime.
+func (s *System) Run() {
+	for s.time = 0; s.time < s.runTime; s.time += s.interval {
+		s.ProcessInterval()
 	}
 }
 
