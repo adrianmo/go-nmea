@@ -1,7 +1,7 @@
 package pid
 
 import (
-  "fmt"
+	"fmt"
 	"io"
 	"net/url"
 )
@@ -12,14 +12,13 @@ const (
 
 	// default iteration interval (seconds).
 	interval = 5.0
-
 )
 
 var (
 	MinPower = 0.0
 	MaxPower = 2500.0
-  // The JSON file holding the system definitions.
-  systemJson = "systems.json"
+	// The JSON file holding the system definitions.
+	systemJson = "systems.json"
 )
 
 // A System is a closed loop PID controlled system.
@@ -52,16 +51,16 @@ func (s *System) Init(n string) {
 	if err != nil {
 		panic(err)
 	}
-  var all allSystems
+	var all allSystems
 	err = all.ReadJson(systemJson)
 	if err != nil {
 		panic(err)
 	}
-  paras, ok := all[n]
-  if !ok {
-    panic(fmt.Errorf("Cant find system %s in %s", n, systemJson))
-  }
-  s.parameters = paras.Components
+	paras, ok := all[n]
+	if !ok {
+		panic(fmt.Errorf("Cant find system %s in %s", n, systemJson))
+	}
+	s.parameters = paras.Components
 	s.SetParameters(s.parameters[s.Name()])
 	if s.Load != nil {
 		s.Load.SetParameters(s.parameters[s.Load.Name()])

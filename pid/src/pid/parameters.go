@@ -8,7 +8,6 @@ import (
 	"strings"
 )
 
-
 // allSystems contains all of the above systems.
 type allSystems map[string]allSystem
 
@@ -26,8 +25,8 @@ func (a *allSystems) ReadJson(f string) error {
 }
 
 type allSystem struct {
-  Description string
-  Components systemParameters
+	Description string
+	Components  systemParameters
 }
 
 // systemParameters contains all parameters for an entire system.

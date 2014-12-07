@@ -34,7 +34,7 @@ func TestPIDDirection(t *testing.T) {
 }
 
 func TestSetParameters(t *testing.T) {
-  systemJson = "testdata/systems.json"
+	systemJson = "testdata/systems.json"
 	pid := new(PID)
 	pid.system = &System{}
 	pid.system.Init("kettle")
