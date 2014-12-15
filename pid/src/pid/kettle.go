@@ -27,7 +27,7 @@ type Kettle struct {
 	// Volume of the kettle, in litres.
 	Volume float64
 
-	// Ambient temperature, in Celcius.
+	// Ambient air temperature, in Celcius.
 	AmbientTemperature float64
 
 	// Kettle temperature, in Celcius.
@@ -52,6 +52,15 @@ func NewKettle(s *System) *Kettle {
 	return k
 }
 
+// Status returns the input and output values.
+func (k *Kettle) Status() parameters {
+	p := k.system.values[k.Name()]
+	p.SetValue("input", k.Watts)
+	p.SetValue("output", k.Temperature)
+	return p
+}
+
+// Parameters returns the parameters and values for the kettle.
 func (k *Kettle) Parameters() parameters {
 	p := k.system.parameters[k.Name()]
 	p.SetValue("volume", k.Volume)
@@ -63,10 +72,10 @@ func (k *Kettle) Parameters() parameters {
 
 // SetParameters sets the parameter values for the kettle.
 func (k *Kettle) SetParameters(params parameters) {
-	k.ThermalLoss = params.GetValue("thermal_loss")
-	k.AmbientTemperature = params.GetValue("ambient")
-	k.Temperature = params.GetValue("temperature")
-	k.Volume = params.GetValue("volume")
+	params.GetValueIfPresent("thermal_loss", &k.ThermalLoss)
+	params.GetValueIfPresent("ambient", &k.AmbientTemperature)
+	params.GetValueIfPresent("temperature", &k.Temperature)
+	params.GetValueIfPresent("volume", &k.Volume)
 }
 
 // Name returns the name of the kettle.
@@ -139,6 +148,14 @@ func NewBurner(s *System) *Burner {
 	return b
 }
 
+// Status returns the input and output values.
+func (b *Burner) Status() parameters {
+	p := b.system.values[b.Name()]
+	p.SetValue("input", b.inputPowerLevel)
+	p.SetValue("output", b.outputPowerLevel)
+	return p
+}
+
 // Parameters returns the parameters for the Burner.
 func (b *Burner) Parameters() parameters {
 	p := b.system.parameters[b.Name()]
@@ -149,8 +166,10 @@ func (b *Burner) Parameters() parameters {
 
 // SetParameters sets the parameters for the Burner.
 func (b *Burner) SetParameters(params parameters) {
-	b.PowerFluctuation = params.GetValue("fluctuation") / 100
-	b.ThermalInertia = params.GetValue("inertia")
+	if p, ok := params.Get("fluctuation"); ok {
+		b.PowerFluctuation = p.Value / 100
+	}
+	params.GetValueIfPresent("inertia", &b.ThermalInertia)
 }
 
 // Name returns the name of the Burner.
@@ -202,6 +221,14 @@ func (t *Thermometer) Name() string {
 	return "Thermometer"
 }
 
+// Status returns the input and output values.
+func (t *Thermometer) Status() parameters {
+	p := t.system.values[t.Name()]
+	p.SetValue("input", t.temperature)
+	p.SetValue("output", t.temperature)
+	return p
+}
+
 // Parameters returns the parameters of the Thermometer.
 func (t *Thermometer) Parameters() parameters {
 	p := t.system.parameters[t.Name()]
@@ -211,7 +238,7 @@ func (t *Thermometer) Parameters() parameters {
 
 // SetParameters sets the parameters of the Thermometer.
 func (t *Thermometer) SetParameters(params parameters) {
-	t.granularity = params.GetValue("granularity")
+	params.GetValueIfPresent("granularity", &t.granularity)
 }
 
 // SetInput sets the input value of the Thermometer.

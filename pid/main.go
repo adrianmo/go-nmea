@@ -7,7 +7,10 @@ import (
   "time"
 )
 
+
 func main() {
   rand.Seed( time.Now().UTC().UnixNano())
-  pid.StartHttp()
+  //pid.StartSimulation()
+  rt := pid.RealTime{}
+  rt.Begin("kettle")
 }

@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+var (
+	// readOnlyValues are parameter names that cannot be set by the web client.
+	readOnlyValues = []string{}
+)
+
 // allSystems contains all of the above systems.
 type allSystems map[string]allSystem
 
@@ -25,8 +30,12 @@ func (a *allSystems) ReadJson(f string) error {
 }
 
 type allSystem struct {
+	// The description of the system.
 	Description string
-	Components  systemParameters
+	// Parameters of all the system components.
+	Components systemParameters
+	// Input/output values for each component.
+	Values systemParameters
 }
 
 // systemParameters contains all parameters for an entire system.
@@ -35,10 +44,20 @@ type systemParameters map[string]parameters
 // ReadURLValues reads URL form values into this object.
 func (s systemParameters) ReadURLValues(values url.Values) {
 	for k, v := range values {
+		skip := false
 		// The form fields are name <component>_<parameter>.
 		parts := strings.SplitN(k, "_", 2)
 		if len(parts) == 2 && len(v) == 1 {
 			component, param := parts[0], parts[1]
+			for _, roValue := range readOnlyValues {
+				if roValue == param {
+					skip = true
+					break
+				}
+			}
+			if skip {
+				continue
+			}
 			val, err := strconv.ParseFloat(v[0], 64)
 			if err != nil {
 				continue
@@ -82,6 +101,13 @@ func (p parameters) GetValue(n string) float64 {
 		}
 	}
 	return 0.0
+}
+
+// GetValueIfPresent populates the supplied float if the parameter name is present.
+func (p parameters) GetValueIfPresent(n string, v *float64) {
+	if f, ok := p.Get(n); ok {
+		*v = f.Value
+	}
 }
 
 // A parameter is a configurable parameter for an IOComponent.

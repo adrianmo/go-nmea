@@ -62,20 +62,19 @@ func TestParameters(t *testing.T) {
 }
 
 func TestReadJson(t *testing.T) {
-  var a allSystems
+	var a allSystems
 
-  if err := a.ReadJson("testdata/systems.json") ; err != nil {
-    t.Fatalf("Error reading JSON file: %v", err)
-  }
+	if err := a.ReadJson("testdata/systems.json"); err != nil {
+		t.Fatalf("Error reading JSON file: %v", err)
+	}
 
-  as, ok := a["kettle"]
-  if !ok {
-    t.Fatalf("Could not find system 'kettle'")
-  }
+	as, ok := a["kettle"]
+	if !ok {
+		t.Fatalf("Could not find system 'kettle'")
+	}
 
-  exp := "A kettle of liquid with a heating element"
-  if as.Description != exp {
-    t.Errorf("System description: Got %s, wanted %s", as.Description, exp)
-  }
+	exp := "A kettle of liquid with a heating element"
+	if as.Description != exp {
+		t.Errorf("System description: Got %s, wanted %s", as.Description, exp)
+	}
 }
-

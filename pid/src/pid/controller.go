@@ -41,6 +41,12 @@ type System struct {
 	interval float64
 	// Parameters loaded from JSON
 	parameters systemParameters
+	// Values of the system components.
+	values systemParameters
+	// The name of the full system.
+	systemName string
+	// The description of the system.
+	Description string
 }
 
 // Init initalises the System, setting up graphing.
@@ -51,16 +57,19 @@ func (s *System) Init(n string) {
 	if err != nil {
 		panic(err)
 	}
+	s.systemName = n
 	var all allSystems
 	err = all.ReadJson(systemJson)
 	if err != nil {
 		panic(err)
 	}
-	paras, ok := all[n]
+	paras, ok := all[s.systemName]
 	if !ok {
-		panic(fmt.Errorf("Cant find system %s in %s", n, systemJson))
+		panic(fmt.Errorf("Cant find system %s in %s", s.systemName, systemJson))
 	}
+	s.Description = paras.Description
 	s.parameters = paras.Components
+	s.values = paras.Values
 	s.SetParameters(s.parameters[s.Name()])
 	if s.Load != nil {
 		s.Load.SetParameters(s.parameters[s.Load.Name()])
@@ -90,6 +99,33 @@ func (s *System) Output(i float64) float64 {
 	return 0.0
 }
 
+// AllParameters returns the parameters and current values for the system.
+func (s *System) AllParameters() allSystems {
+	// all systenms,
+	as := make(allSystems)
+	// System parameters.
+	sp := make(systemParameters)
+	sys := allSystem{}
+
+	sp[s.Name()] = s.Parameters()
+	sp[s.Load.Name()] = s.Load.Parameters()
+	sp[s.Driver.Name()] = s.Driver.Parameters()
+	sp[s.Sensor.Name()] = s.Sensor.Parameters()
+	sp[s.Pid.Name()] = s.Pid.Parameters()
+
+	s.Load.Status()
+	s.Driver.Status()
+	s.Sensor.Status()
+	s.Pid.Status()
+
+	sys.Description = s.Description
+	sys.Components = sp
+	sys.Values = s.values
+
+	as[s.systemName] = sys
+	return as
+}
+
 // Parameters returns all parameters set by the system.
 func (s *System) Parameters() parameters {
 	p := make(parameters, 0)
@@ -105,8 +141,8 @@ func (s *System) Parameters() parameters {
 
 // SetParameters sets the parameter values for the system.
 func (s *System) SetParameters(params parameters) {
-	s.runTime = params.GetValue("runtime")
-	s.interval = params.GetValue("interval")
+	params.GetValueIfPresent("runtime", &s.runTime)
+	params.GetValueIfPresent("interval", &s.interval)
 }
 
 // SetFormParameters sets parameters of the system and components.

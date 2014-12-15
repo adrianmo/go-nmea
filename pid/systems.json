@@ -1,6 +1,57 @@
 {
   "kettle": {
     "Description": "A kettle of liquid with a heating element",
+    "Values":
+    {
+      "Kettle": [
+        {
+          "Name": "input",
+          "Title": "Heat input",
+          "Unit": "W"
+        },
+        {
+          "Name": "output",
+          "Title": "Temperature",
+          "Unit": "C"
+        }
+      ],
+      "Burner": [
+        {
+          "Name": "input",
+          "Title": "Servo input",
+          "Unit": ""
+        },
+        {
+          "Name": "output",
+          "Title": "Heat output",
+          "Unit": "W"
+        }
+      ],
+      "Thermometer": [
+        {
+          "Name": "input",
+          "Title": "Temperature",
+          "Unit": "C"
+        },
+        {
+          "Name": "output",
+          "Title": "Temperature",
+          "Unit": "C"
+        }
+      ],
+      "PID": [
+        {
+          "Name": "input",
+          "Title": "PID input",
+          "Unit": ""
+        },
+        {
+          "Name": "output",
+          "Title": "PID output",
+          "Unit": ""
+        }
+      ]
+    },
     "Components": 
       {
         "System": [
@@ -44,7 +95,7 @@
         },
         {
           "Name": "temperature",
-          "Title": "Initial Temperature",
+          "Title": "Current Temperature",
           "Minimum": 0.0,
           "Maximum": 100.0,
           "Step": 1.0,

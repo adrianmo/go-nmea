@@ -35,15 +35,7 @@ type Point struct {
 // NewGraph creates a new Graph object.
 func NewGraph() (*Graph, error) {
 	g := &Graph{}
-	var err error
-	g.Plot, err = plot.New()
-	if err != nil {
-		return nil, err
-	}
-	g.Plot.Add(plotter.NewGrid())
-	g.Plot.Title.Text = Title
-	g.Plot.X.Label.Text = XLabel
-	g.Plot.Y.Label.Text = YLabel
+
 	g.inputs = make(plotter.XYs, 100)
 	g.outputs = make(plotter.XYs, 100)
 	return g, nil
@@ -67,6 +59,16 @@ func (g *Graph) AddOutput(x, y float64) {
 
 // Draw renders the graph.
 func (g *Graph) Draw() error {
+	var err error
+	g.Plot, err = plot.New()
+	if err != nil {
+		return err
+	}
+	g.Plot.Add(plotter.NewGrid())
+	g.Plot.Title.Text = Title
+	g.Plot.X.Label.Text = XLabel
+	g.Plot.Y.Label.Text = YLabel
+
 	l, err := plotter.NewLine(g.inputs)
 	if err != nil {
 		return err

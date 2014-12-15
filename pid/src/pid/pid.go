@@ -68,6 +68,14 @@ func NewPID(s *System, mode, direction int16) *PID {
 	return p
 }
 
+// Status returns the input and output values.
+func (p *PID) Status() parameters {
+	s := p.system.values[p.Name()]
+	s.SetValue("input", p.input)
+	s.SetValue("output", p.output)
+	return s
+}
+
 // Parameters returns the parameters of the PID object.
 func (p *PID) Parameters() parameters {
 	pa := p.system.parameters[p.Name()]
@@ -83,12 +91,12 @@ func (p *PID) Parameters() parameters {
 // SetParameters sets the parameters of the PID object.
 func (p *PID) SetParameters(params parameters) {
 	var kp, ki, kd, ll, lh float64
-	kp = params.GetValue("kp")
-	ki = params.GetValue("ki")
-	kd = params.GetValue("kd")
-	lh = params.GetValue("limit_high")
-	ll = params.GetValue("limit_low")
-	p.Setpoint = params.GetValue("setpoint")
+	params.GetValueIfPresent("kp", &kp)
+	params.GetValueIfPresent("ki", &ki)
+	params.GetValueIfPresent("kd", &kd)
+	params.GetValueIfPresent("limit_high", &lh)
+	params.GetValueIfPresent("limit_low", &ll)
+	params.GetValueIfPresent("setpoint", &p.Setpoint)
 	p.SetTunings(kp, ki, kd)
 	p.SetOutputLimits(ll, lh)
 }

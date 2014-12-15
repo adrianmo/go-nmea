@@ -5,6 +5,10 @@
 // 'true' indicates a request is inflight, but another request is pending.
 var outstandingRequests = null;
 
+var autoRefresh = null;
+
+var updating = false;
+
 var GetGraph = function() {
   if (outstandingRequests == null) {
     // No current inflight/outstanding requests.
@@ -17,6 +21,7 @@ var GetGraph = function() {
     // Already inflight and outstanding;
     return;
   }
+  updateParameters($('#system-selector')[0].value);
   // Populate image query attributes. Look for all 'slider' class elements
   // and query those for the value.
   var imgAttrs = {systemName: $('#system-selector')[0].value};
@@ -37,7 +42,15 @@ var GetGraph = function() {
         outstandingRequests = null;
       }
   };
+  imgAttrs['x'] = (new Date).getTime();
   img.src = '/graph?' + $.param(imgAttrs)
+  console.log('graph!');
+}
+
+updateOnChange = function() {
+  if (!updating) {
+    GetGraph();
+  }
 }
 
 // Change a slider on mousewheel scroll event.
@@ -79,11 +92,11 @@ addSlider = function(element, name, title, min, max, step, value, unit) {
   $('#' + name + '-slider').slider({min: min, max: max, step: step, value: value});
   $('#' + name + '-slider').on("slide", function(event, ui) {
     $('#' + name + '-value').html(ui.value + unit);
-    GetGraph();
+    updateOnChange();
   });
   $('#' + name + '-slider').on("slidechange", function(event, ui) {
     $('#' + name + '-value').html(ui.value + unit);
-    GetGraph();
+    updateOnChange();
   });
   $('#' + name + '-slider').bind('mousewheel DOMMouseScroll', function(e) {
     onMouseScroll($(this), e);
@@ -103,7 +116,7 @@ $(document).ready(function() {
 });
 
 loadSystem = function(name) {
-  var allSystems = $.getJSON('systems.json', function(data) {
+  var allSystems = $.getJSON('/config', function(data) {
     clearSystem();
     // Add all the received ones.
     for (sys in data) {
@@ -134,6 +147,16 @@ displaySystem = function(system, name, selected) {
       var component = system.Components[compName];
       addTabAndParameters(compName, component);
     }
+    $('#refresh').button();
+    $('#refresh').click(function() {
+      var on = $('#refresh')[0].checked;
+      if (on) {
+        autoRefresh = setInterval(GetGraph, 5000);
+      } else if (autoRefresh != null) {
+        clearInterval(autoRefresh);
+        autoRefresh = null;
+      }
+    });
   }
 }
 
@@ -156,4 +179,23 @@ addTabAndParameters = function(name, parameters) {
     var p = parameters[i];
     addSlider(tabDiv, p.Name, p.Title, p.Minimum, p.Maximum, p.Step, p.Value, p.Unit);
   }
+}
+
+updateSystemParameters = function(data) {
+  updating = true;
+  for (var c in data['Components']) {
+    var component = data['Components'][c];
+    for (var p in component) {
+      var slider = '#' + component[p].Name + '-slider';
+      var value = component[p].Value;
+      $(slider).slider("value", value);
+    }
+  }
+  updating = false;
+}
+
+updateParameters = function(system) {
+  var allSystems = $.getJSON('/config', function(data) {
+    updateSystemParameters(data[system]);
+  });
 }

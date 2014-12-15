@@ -66,3 +66,7 @@ body {
 .ui-slider-handle {
   border: 1px solid #9c9c9c !important;
 }
+
+.ui-button {
+  margin: 0.2em;
+}

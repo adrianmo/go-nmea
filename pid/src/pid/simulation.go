@@ -1,6 +1,7 @@
 package pid
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -22,10 +23,20 @@ func (g *graphHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	system.PngWriter().WriteTo(w)
 }
 
+// configHandler returns the current paramters and settings.
+func configHandler(w http.ResponseWriter, rq *http.Request) {
+	system := GenerateSystem("kettle")
+	enc := json.NewEncoder(w)
+	w.Header().Set("Content-Type", "text/plain")
+	enc.Encode(system.AllParameters())
+}
+
 // StartHttp starts the HTTP server.
 func StartSimulation() {
+	readOnlyValues = []string{}
 	http.Handle("/", &indexHandler{})
+	http.HandleFunc("/config", configHandler)
 	http.Handle("/graph", &graphHandler{})
-	fmt.Printf("Ready to serve.\n")
+	fmt.Printf("Simulation ready to serve.\n")
 	http.ListenAndServe(":8080", nil)
 }
