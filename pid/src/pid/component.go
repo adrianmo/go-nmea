@@ -1,7 +1,7 @@
 package pid
 
 import (
-	"fmt"
+	"log"
 )
 
 var (
@@ -68,5 +68,5 @@ func RegisterSystemGenerator(g SystemGenerator) {
 		SystemGenerators = make(map[string]SystemGenerator)
 	}
 	SystemGenerators[g.Name()] = g
-	fmt.Printf("Registered system: %s\n", g.Name())
+	log.Printf("Registered system: %s\n", g.Name())
 }

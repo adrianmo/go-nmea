@@ -3,6 +3,7 @@ package pid
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"path"
 )
@@ -21,7 +22,7 @@ func (h *indexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if filename == "/" {
 		filename = indexFilename
 	}
-	fmt.Printf("Open: %s\n", filename)
+	log.Printf("Open: %s\n", filename)
 	indexData, err := ioutil.ReadFile(filename)
 	if err != nil {
 		fmt.Fprintf(w, "error reading %s: %s", indexFilename, err)

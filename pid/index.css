@@ -15,6 +15,10 @@ body {
   padding: 1em;
 }
 
+.outputData {
+  display: inline-block;
+}
+
 .graph {
   background: #eee;
   border: 2px ridge #eed;
@@ -23,7 +27,7 @@ body {
   vertical-align: top;
 }
 
-.controls {
+.box {
   border: 1px solid #aaa;
   display: inline-block;
   font-size: 8pt;
@@ -31,6 +35,10 @@ body {
   margin-right: 0.5em;
   padding: 0.5em;
   width: 35em;
+}
+
+.controls {
+  position: absolute;
 }
 
 .control-header {
@@ -69,4 +77,43 @@ body {
 
 .ui-button {
   margin: 0.2em;
+}
+
+#values {
+}
+
+.value-component {
+  background: #def;
+  border: 1px solid #aae;
+  margin: 0.5em;
+  padding: 0.1em;
+}
+
+.value-label {
+  background: #bcf;
+  font-size: 10pt;
+  font-weight: bold;
+  padding: 0.2em;
+}
+
+.value-title {
+  background: #def;
+  font-weight: bold;
+  display: inline-block;
+  padding: 0.2em;
+  width: 10em;
+}
+
+.value-value {
+  display: inline-block;
+  padding: 0.2em;
+  width: 5em;
+}
+
+.select-label {
+  display: inline-block;
+  border: 1px solid #aaa;
+  font-weight: bold;
+  margin: 0.2em;
+  padding: 0.1em;
 }

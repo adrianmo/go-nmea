@@ -13,6 +13,11 @@ var (
 	readOnlyValues = []string{}
 )
 
+const (
+	Realtime = iota
+	Simulation
+)
+
 // allSystems contains all of the above systems.
 type allSystems map[string]allSystem
 
@@ -32,6 +37,8 @@ func (a *allSystems) ReadJson(f string) error {
 type allSystem struct {
 	// The description of the system.
 	Description string
+	// The type of system (realtime or simulation)
+	Type int
 	// Parameters of all the system components.
 	Components systemParameters
 	// Input/output values for each component.

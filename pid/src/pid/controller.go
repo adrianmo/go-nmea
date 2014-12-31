@@ -47,6 +47,8 @@ type System struct {
 	systemName string
 	// The description of the system.
 	Description string
+	// The type of run (Realtime or Simulation)
+	runType int
 }
 
 // Init initalises the System, setting up graphing.
@@ -70,6 +72,7 @@ func (s *System) Init(n string) {
 	s.Description = paras.Description
 	s.parameters = paras.Components
 	s.values = paras.Values
+	s.runType = paras.Type
 	s.SetParameters(s.parameters[s.Name()])
 	if s.Load != nil {
 		s.Load.SetParameters(s.parameters[s.Load.Name()])
@@ -121,6 +124,7 @@ func (s *System) AllParameters() allSystems {
 	sys.Description = s.Description
 	sys.Components = sp
 	sys.Values = s.values
+	sys.Type = s.runType
 
 	as[s.systemName] = sys
 	return as

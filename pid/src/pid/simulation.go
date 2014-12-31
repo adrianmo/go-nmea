@@ -2,7 +2,7 @@ package pid
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -13,7 +13,7 @@ type graphHandler struct {
 // ServeHTTP returns the graph for the supplied parameters.
 func (g *graphHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		fmt.Printf("/graph error: %v\n", err)
+		log.Printf("/graph error: %v\n", err)
 		return
 	}
 	system := GenerateSystem("kettle")
@@ -37,6 +37,6 @@ func StartSimulation() {
 	http.Handle("/", &indexHandler{})
 	http.HandleFunc("/config", configHandler)
 	http.Handle("/graph", &graphHandler{})
-	fmt.Printf("Simulation ready to serve.\n")
+	log.Printf("Simulation ready to serve.\n")
 	http.ListenAndServe(":8080", nil)
 }

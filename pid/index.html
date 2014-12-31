@@ -12,11 +12,29 @@
   <body>
     <div class="title">PID controller</div>
     <div class="mainBody">
-      <div class="graph"></div>
-      <div class="controls">
+      <div class="outputData">
+        <div class="graph"></div>
+        <p/>
+        <div class="box" id="values">
+          <div class="control-header">PID values</div>
+          <div id="values-box"></div>
+        </div>
+      </div>
+      <div class="controls box">
         <div class="control-header">PID controls</div>
-        <select id="system-selector" name="system-select"></select>
-        <input type="checkbox" id="refresh"><label for="refresh">Autorefresh</label>
+        <div class="control-global">
+          <select id="system-selector" name="system-select"></select>
+          <div class="select-label">
+            Refresh: <select id="refresh" name="refresh">
+              <option value=0>Off</option>
+              <option value=10>10s</option>
+              <option value=30>30s</option>
+              <option value=60>1m</option>
+            </select>
+          </div>
+          <br/>
+          <button id="reset">Reset all</button>
+        </div>
         <div id="control-tabs">
           <ul id="control-tabs-list">
             <li class="control-tab"><a href="#tabs-1">System</a></li>
@@ -29,7 +47,6 @@
           </div>
           <div class="sliders" id="tabs-3">
           </div>
-
         </div>
       </div>
     </div>

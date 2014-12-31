@@ -21,7 +21,6 @@ var GetGraph = function() {
     // Already inflight and outstanding;
     return;
   }
-  updateParameters($('#system-selector')[0].value);
   // Populate image query attributes. Look for all 'slider' class elements
   // and query those for the value.
   var imgAttrs = {systemName: $('#system-selector')[0].value};
@@ -41,6 +40,8 @@ var GetGraph = function() {
       } else {
         outstandingRequests = null;
       }
+      updateParameters($('#system-selector')[0].value);
+      loadValues($('#system-selector')[0].value);
   };
   imgAttrs['x'] = (new Date).getTime();
   img.src = '/graph?' + $.param(imgAttrs)
@@ -108,10 +109,19 @@ $(document).ready(function() {
   console.log("Ready!");
   $('.graph').html("<img src='/graph'/>");
   $('#control-tabs').tabs();
+  $('#refresh').change(function(event) {
+    updateRefresh(event.target.value);
+  });
   $('#system-selector').change(function(event) {
     loadSystem(event.target.value);
   });
   loadSystem('');
+  $('#reset').button();
+  $('#reset').on('click', function() {
+    if (confirm('Reset controller?')) {
+      ResetAll();
+    }
+  });
   GetGraph();
 });
 
@@ -126,6 +136,55 @@ loadSystem = function(name) {
     $('#control-tabs').tabs();
   });
 }
+
+ResetAll = function() {
+  console.log('Resetting..');
+  $.getJSON('/reset', function(data) {
+    console.log('refresh..');
+    location.reload();
+  });
+}
+
+loadValues = function(name) {
+  var allSystems = $.getJSON('/config', function(data) {
+    for (sys in data) {
+      var system = data[sys];
+      displayValues(system, sys, name == '' || sys == name);
+    }
+  });
+}
+
+displayValues = function(system, name, selected) {
+  var valBox = $('#values-box')[0];
+  for (var i = valBox.children.length-1 ; i > -1 ; i--) {
+    valBox.removeChild(valBox.children[i]);
+  }
+  for (var component in system.Values) {
+    var vals  = system.Values[component];
+    var compDiv = document.createElement('div');
+    compDiv.className = 'value-component';
+    valBox.appendChild(compDiv);
+
+    var compLabel = document.createElement('div');
+    compLabel.innerText = component;
+    compLabel.className = 'value-label';
+    compDiv.appendChild(compLabel);
+
+    for (var value in vals) {
+      var div = document.createElement('div');
+      div.innerText = vals[value].Title;
+      div.className = 'value-title';
+      compDiv.appendChild(div);
+
+      var div = document.createElement('div');
+      div.innerText = vals[value].Value.toFixed(2) + vals[value].Unit;
+      div.className = 'value-value';
+      compDiv.appendChild(div);
+
+    }
+  }
+}
+
 
 clearSystem = function() {
   // Delete existing options.
@@ -147,16 +206,16 @@ displaySystem = function(system, name, selected) {
       var component = system.Components[compName];
       addTabAndParameters(compName, component);
     }
-    $('#refresh').button();
-    $('#refresh').click(function() {
-      var on = $('#refresh')[0].checked;
-      if (on) {
-        autoRefresh = setInterval(GetGraph, 5000);
-      } else if (autoRefresh != null) {
-        clearInterval(autoRefresh);
-        autoRefresh = null;
-      }
-    });
+  }
+}
+
+updateRefresh = function(value) {
+  console.log(value);
+  if (value > 0) {
+    autoRefresh = setInterval(GetGraph, value * 1000);
+  } else {
+    clearInterval(autoRefresh);
+    autoRefresh = null;
   }
 }
 
