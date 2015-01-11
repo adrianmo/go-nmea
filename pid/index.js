@@ -112,6 +112,7 @@ $(document).ready(function() {
   $('#refresh').change(function(event) {
     updateRefresh(event.target.value);
   });
+  updateRefresh($('#refresh')[0].value);
   $('#system-selector').change(function(event) {
     loadSystem(event.target.value);
   });
@@ -210,7 +211,6 @@ displaySystem = function(system, name, selected) {
 }
 
 updateRefresh = function(value) {
-  console.log(value);
   if (value > 0) {
     autoRefresh = setInterval(GetGraph, value * 1000);
   } else {

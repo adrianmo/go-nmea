@@ -21,6 +21,7 @@ type RealTime struct {
 	Name   string
 	system System
 	mu     sync.Mutex
+	stop   chan bool
 }
 
 // Begin begins the realtime controller.
@@ -30,8 +31,7 @@ func (r *RealTime) Begin(name string) error {
 		return errors.New("Must specify a system.")
 	}
 	r.Name = name
-	r.system = GenerateSystem(r.Name)
-	r.system.runType = Realtime
+	r.stop = make(chan bool)
 	http.Handle("/", &indexHandler{})
 	http.HandleFunc("/config", r.configHandler)
 	http.HandleFunc("/graph", r.graphHandler)
@@ -39,11 +39,13 @@ func (r *RealTime) Begin(name string) error {
 	log.Printf("Realtime ready to serve.\n")
 	go r.Run()
 	http.ListenAndServe(":8080", nil)
-	return nil
+	select {}
 }
 
 // Run loops through the realtime processing.
 func (r *RealTime) Run() {
+	r.system = GenerateSystem(r.Name)
+	r.system.runType = Realtime
 	for {
 		select {
 		case <-time.After(time.Duration(r.system.interval) * time.Second):
@@ -52,6 +54,9 @@ func (r *RealTime) Run() {
 			r.system.ProcessInterval()
 			r.system.time += r.system.interval
 			r.mu.Unlock()
+		case <-r.stop:
+			log.Printf("Stopping.")
+			break
 		}
 		if r.system.time > r.system.runTime {
 			// Terminate processing if we exceed runtime.
@@ -59,7 +64,6 @@ func (r *RealTime) Run() {
 			break
 		}
 	}
-	select {}
 }
 
 // ServeHTTP returns the graph for the supplied parameters.
@@ -84,8 +88,9 @@ func (r *RealTime) configHandler(w http.ResponseWriter, rq *http.Request) {
 }
 
 func (r *RealTime) resetHandler(w http.ResponseWriter, rq *http.Request) {
-	log.Printf("Resetting controller (not yet implemented).")
-	r.system.Init(r.system.systemName)
+	log.Printf("Resetting controller.")
+	r.stop <- true
+	go r.Run()
 	enc := json.NewEncoder(w)
 	w.Header().Set("Content-Type", "text/plain")
 	enc.Encode(nil)
