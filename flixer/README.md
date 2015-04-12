@@ -23,6 +23,7 @@ The following are required for a successful Flixer installation:
 
 TODO
 ----
+- Tidy file locations.
 - Installation documentation.
 - Complete unit tests.
 - More features.?
