@@ -1,0 +1,6 @@
+iptables -t nat -F
+{{range .}}
+iptables -t nat -A PREROUTING -i eth0 -j DNAT -s {{.ClientIP}} --protocol tcp --dport 443 --to {{.ProxyIP}}
+iptables -t nat -A PREROUTING -i eth0 -j DNAT -s {{.ClientIP}} --protocol tcp --dport 80 --to {{.ProxyIP}}
+{{end}}
+#iptables -t nat -A PREROUTING -i eth0 -j DNAT -s 0.0.0.0 --protocol tcp --dport 80 --to 172.31.6.35:8080
