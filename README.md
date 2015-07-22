@@ -1,4 +1,4 @@
-# go-nmea
+# go-nmea [![Build Status](https://travis-ci.org/adrianmo/go-nmea.svg?branch=master)](https://travis-ci.org/adrianmo/go-nmea)
 
 This is a NMEA library for the Go programming language (http://golang.org).
 
