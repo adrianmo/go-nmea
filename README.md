@@ -14,7 +14,7 @@ After this command *go-nmea* is ready to use. Its source will be in:
 
 ## Example
 
-```golang
+```go
 package main
 
 import (
