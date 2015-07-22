@@ -1,4 +1,4 @@
-# go-nmea [![Build Status](https://travis-ci.org/adrianmo/go-nmea.svg?branch=master)](https://travis-ci.org/adrianmo/go-nmea) [![Coverage Status](https://coveralls.io/repos/adrianmo/go-nmea/badge.svg?branch=master&service=github)](https://coveralls.io/github/adrianmo/go-nmea?branch=master) [![GoDoc](https://godoc.org/github.com/adrianmo/go-nmea/nmea?status.svg)](https://godoc.org/github.com/adrianmo/go-nmea/nmea)
+# go-nmea [![Build Status](https://travis-ci.org/adrianmo/go-nmea.svg?branch=master)](https://travis-ci.org/adrianmo/go-nmea) [![Coverage Status](https://coveralls.io/repos/adrianmo/go-nmea/badge.svg?branch=master&service=github)](https://coveralls.io/github/adrianmo/go-nmea?branch=master) [![GoDoc](https://godoc.org/github.com/adrianmo/go-nmea?status.svg)](https://godoc.org/github.com/adrianmo/go-nmea)
 
 This is a NMEA library for the Go programming language (http://golang.org).
 
@@ -6,11 +6,11 @@ This is a NMEA library for the Go programming language (http://golang.org).
 
 ### Using `go get`
 
-    go get github.com/adrianmo/go-nmea/nmea
+    go get github.com/adrianmo/go-nmea
 
 After this command *go-nmea* is ready to use. Its source will be in:
 
-    $GOPATH/src/github.com/adrianmo/go-nmea/nmea
+    $GOPATH/src/github.com/adrianmo/go-nmea
 
 ## Example
 
@@ -19,7 +19,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/adrianmo/go-nmea/nmea"
+	"github.com/adrianmo/go-nmea"
 )
 
 func main() {
