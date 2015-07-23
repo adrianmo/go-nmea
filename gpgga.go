@@ -39,32 +39,44 @@ type GPGGA struct {
 	DGPSId string
 }
 
+// NewGPGGA constructor
+func NewGPGGA(sentence Sentence) GPGGA {
+	s := new(GPGGA)
+	s.Sentence = sentence
+	return *s
+}
+
+// GetSentence getter
+func (s GPGGA) GetSentence() Sentence {
+	return s.Sentence
+}
+
 // Parse parses the GPGGA sentence into this struct.
 // e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
-func (g *GPGGA) parse() error {
+func (s *GPGGA) parse() error {
 	var err error
 
-	if g.Type != PrefixGPGGA {
-		return fmt.Errorf("%s is not a %s", g.Type, PrefixGPGGA)
+	if s.Type != PrefixGPGGA {
+		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPGGA)
 	}
-	g.Time = g.Fields[0]
-	g.Latitude, err = NewLatLong(fmt.Sprintf("%s %s", g.Fields[1], g.Fields[2]))
+	s.Time = s.Fields[0]
+	s.Latitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[1], s.Fields[2]))
 	if err != nil {
 		return fmt.Errorf("GPGGA decode error: %s", err)
 	}
-	g.Longitude, err = NewLatLong(fmt.Sprintf("%s %s", g.Fields[3], g.Fields[4]))
+	s.Longitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[3], s.Fields[4]))
 	if err != nil {
 		return fmt.Errorf("GPGGA decode error: %s", err)
 	}
-	g.FixQuality = g.Fields[5]
-	if g.FixQuality != Invalid && g.FixQuality != GPS && g.FixQuality != DGPS {
-		return fmt.Errorf("Invalid fix quality [%s]", g.FixQuality)
+	s.FixQuality = s.Fields[5]
+	if s.FixQuality != Invalid && s.FixQuality != GPS && s.FixQuality != DGPS {
+		return fmt.Errorf("Invalid fix quality [%s]", s.FixQuality)
 	}
-	g.NumSatellites = g.Fields[6]
-	g.HDOP = g.Fields[7]
-	g.Altitude = g.Fields[8]
-	g.Separation = g.Fields[10]
-	g.DGPSAge = g.Fields[12]
-	g.DGPSId = g.Fields[13]
+	s.NumSatellites = s.Fields[6]
+	s.HDOP = s.Fields[7]
+	s.Altitude = s.Fields[8]
+	s.Separation = s.Fields[10]
+	s.DGPSAge = s.Fields[12]
+	s.DGPSId = s.Fields[13]
 	return nil
 }
