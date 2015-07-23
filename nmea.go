@@ -14,12 +14,22 @@ const (
 	checksumSep = "*"
 )
 
+//SentenceI interface for all NMEA sentence
+type SentenceI interface {
+	GetSentence() Sentence
+}
+
 // Sentence contains the information about the NMEA sentence
 type Sentence struct {
 	Type     string   // The sentence type (e.g $GPGSA)
 	Fields   []string // Array of fields
 	Checksum string   // Checksum
 	Raw      string   // The raw NMEA sentence received
+}
+
+// GetSentence getter
+func (s Sentence) GetSentence() Sentence {
+	return s
 }
 
 func (s *Sentence) parse(input string) error {
@@ -55,7 +65,11 @@ func (s *Sentence) sumOk() error {
 	for i := 1; i < len(s.Raw) && string(s.Raw[i]) != checksumSep; i++ {
 		checksum ^= s.Raw[i]
 	}
+
 	calculated := fmt.Sprintf("%X", checksum)
+	if len(calculated) == 1 {
+		calculated = "0" + calculated
+	}
 	if calculated != s.Checksum {
 		return fmt.Errorf("[%s != %s]", calculated, s.Checksum)
 	}
@@ -63,25 +77,26 @@ func (s *Sentence) sumOk() error {
 }
 
 // Parse parses the given string into the correct sentence type.
-func Parse(s string) (interface{}, error) {
+func Parse(s string) (SentenceI, error) {
 	sentence := Sentence{}
 	if err := sentence.parse(s); err != nil {
 		return nil, err
 	}
 
 	if sentence.Type == PrefixGPRMC {
-		gprmc := GPRMC{Sentence: sentence}
+		gprmc := NewGPRMC(sentence)
 		if err := gprmc.parse(); err != nil {
 			return nil, err
 		}
 		return gprmc, nil
-	} else if sentence.Type == PrefixGPGGA {
-		gpgga := GPGGA{Sentence: sentence}
-		if err := gpgga.parse(); err != nil {
-			return nil, err
-		}
-		return gpgga, nil
 	}
+	//  else if sentence.Type == PrefixGPGGA {
+	// 	gpgga := GPGGA{Sentence: sentence}
+	// 	if err := gpgga.parse(); err != nil {
+	// 		return nil, err
+	// 	}
+	// 	return gpgga, nil
+	// }
 
 	err := fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
 	return nil, err

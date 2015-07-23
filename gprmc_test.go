@@ -11,6 +11,10 @@ func TestGPRMC(t *testing.T) {
 		t.Fatalf("Parse error: %s", err)
 	}
 
+	if s.GetSentence().Type != PrefixGPRMC {
+		t.Errorf("Returned type is not GPRMC")
+	}
+
 	sentence := s.(GPRMC)
 
 	if sentence.Time != "220516" {
@@ -63,7 +67,7 @@ func TestGPRMC(t *testing.T) {
 	if err != nil {
 		t.Errorf("Parse error: %v", err)
 	}
-	if _, ok := result.(GPRMC); !ok {
+	if result.GetSentence().Type != PrefixGPRMC {
 		t.Errorf("Returned type is not GPRMC")
 	}
 
