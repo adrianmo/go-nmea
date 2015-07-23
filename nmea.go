@@ -75,6 +75,12 @@ func Parse(s string) (interface{}, error) {
 			return nil, err
 		}
 		return gprmc, nil
+	} else if sentence.Type == PrefixGPGGA {
+		gpgga := GPGGA{Sentence: sentence}
+		if err := gpgga.parse(); err != nil {
+			return nil, err
+		}
+		return gpgga, nil
 	}
 
 	err := fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
