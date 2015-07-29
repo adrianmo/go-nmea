@@ -6,11 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type AttrTest struct {
-	Attribute string
-	Value     string
-}
-
 func TestGPGGAGoodSentence(t *testing.T) {
 	goodMsg := "$GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*51"
 	sentence, err := Parse(goodMsg)
@@ -40,6 +35,30 @@ func TestGPGGAGoodSentence(t *testing.T) {
 	}
 
 	assert.EqualValues(t, expected, sentence, "Sentence values do not match")
+}
+
+func TestGPGGABadType(t *testing.T) {
+	badType := "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70"
+	s, err := Parse(badType)
+
+	assert.NoError(t, err, "Unexpected error parsing sentence")
+	assert.NotEqual(t, "GPGGA", s.GetSentence().Type, "Unexpected sentence type")
+}
+
+func TestGPGGABadLatitude(t *testing.T) {
+	badLat := "$GPGGA,034225.077,A,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*3A"
+	_, err := Parse(badLat)
+
+	assert.Error(t, err, "Parse error not returned")
+	assert.Equal(t, "GPGGA decode error: cannot parse [A S], unknown format", err.Error(), "Error message does not match")
+}
+
+func TestGPGGABadLongitude(t *testing.T) {
+	badLon := "$GPGGA,034225.077,3356.4650,S,A,E,1,03,9.7,-25.0,M,21.0,M,,0000*0C"
+	_, err := Parse(badLon)
+
+	assert.Error(t, err, "Parse error not returned")
+	assert.Equal(t, "GPGGA decode error: cannot parse [A E], unknown format", err.Error(), "Error message does not match")
 }
 
 func TestGPGGABadFixQuality(t *testing.T) {
