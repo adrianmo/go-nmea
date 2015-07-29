@@ -95,6 +95,12 @@ func Parse(s string) (SentenceI, error) {
 			return nil, err
 		}
 		return gpgga, nil
+	} else if sentence.Type == PrefixGPGSA {
+		gpgsa := NewGPGSA(sentence)
+		if err := gpgsa.parse(); err != nil {
+			return nil, err
+		}
+		return gpgsa, nil
 	}
 
 	err := fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
