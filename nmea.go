@@ -90,7 +90,7 @@ func Parse(s string) (SentenceI, error) {
 		}
 		return gprmc, nil
 	} else if sentence.Type == PrefixGPGGA {
-		gpgga := GPGGA{Sentence: sentence}
+		gpgga := NewGPGGA(sentence)
 		if err := gpgga.parse(); err != nil {
 			return nil, err
 		}
