@@ -12,6 +12,16 @@ After this command *go-nmea* is ready to use. Its source will be in:
 
     $GOPATH/src/github.com/adrianmo/go-nmea
 
+## Supported sentences
+
+At this moment, this library supports the following sentence types:
+
+- [RMC](http://aprs.gids.nl/nmea/#rmc) - Recommended minimum specific GPS/Transit data
+- [GGA](http://aprs.gids.nl/nmea/#gga) - Global Positioning System Fix Data
+- [GSA](http://aprs.gids.nl/nmea/#gsa) - GPS DOP and active satellites
+
+I will implement new types whenever I find some time. Also feel free to implement it yourself and send a pull-request to include it to the library.
+
 ## Example
 
 ```go
