@@ -20,6 +20,7 @@ At this moment, this library supports the following sentence types:
 - [GPGGA](http://aprs.gids.nl/nmea/#gga) - Global Positioning System Fix Data
 - [GPGSA](http://aprs.gids.nl/nmea/#gsa) - GPS DOP and active satellites
 - [GPGLL](http://aprs.gids.nl/nmea/#gll) - Geographic Position, Latitude / Longitude and time
+- [PGRME](http://aprs.gids.nl/nmea/#rme) - Estimated Position Error (Garmin proprietary sentence)
 
 I will implement new types whenever I find some time. Also feel free to implement it yourself and send a pull-request to include it to the library.
 

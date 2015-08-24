@@ -107,6 +107,12 @@ func Parse(s string) (SentenceI, error) {
 			return nil, err
 		}
 		return gpgll, nil
+	} else if sentence.Type == PrefixPGRME {
+		pgrme := NewPGRME(sentence)
+		if err := pgrme.parse(); err != nil {
+			return nil, err
+		}
+		return pgrme, nil
 	}
 
 	err := fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
