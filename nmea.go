@@ -101,6 +101,12 @@ func Parse(s string) (SentenceI, error) {
 			return nil, err
 		}
 		return gpgsa, nil
+	} else if sentence.Type == PrefixGPGLL {
+		gpgll := NewGPGLL(sentence)
+		if err := gpgll.parse(); err != nil {
+			return nil, err
+		}
+		return gpgll, nil
 	}
 
 	err := fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
