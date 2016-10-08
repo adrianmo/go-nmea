@@ -34,9 +34,9 @@ func TestGPRMCBadSentence(t *testing.T) {
 }
 
 func TestGPRMCWrongSentence(t *testing.T) {
-	wrongMsg := "$GPVTG,A,3,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*26"
+	wrongMsg := "$GPXTE,A,A,4.07,L,N*6D"
 	_, err := Parse(wrongMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "Sentence type 'GPVTG' not implemented", err.Error(), "Incorrect error message")
+	assert.Equal(t, "Sentence type 'GPXTE' not implemented", err.Error(), "Incorrect error message")
 }
