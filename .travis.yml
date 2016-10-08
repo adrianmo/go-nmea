@@ -5,8 +5,8 @@
 language: go
 
 go:
-    - 1.4
-    - 1.5
+    - 1.6
+    - 1.7
     - tip
 
 matrix:
@@ -16,6 +16,7 @@ before_install:
     - go get golang.org/x/tools/cmd/cover
     - go get github.com/golang/lint/golint
     - go get github.com/mattn/goveralls
+    - go get github.com/stretchr/testify/assert
 
 install:
     - go get -d -v ./... && go build -v ./...
