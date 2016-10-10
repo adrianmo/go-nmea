@@ -107,6 +107,18 @@ func Parse(s string) (SentenceI, error) {
 			return nil, err
 		}
 		return gpgll, nil
+	} else if sentence.Type == PrefixGPVTG {
+		gpvtg := NewGPVTG(sentence)
+		if err := gpvtg.parse(); err != nil {
+			return nil, err
+		}
+		return gpvtg, nil
+	} else if sentence.Type == PrefixGPZDA {
+		gpzda := NewGPZDA(sentence)
+		if err := gpzda.parse(); err != nil {
+			return nil, err
+		}
+		return gpzda, nil
 	} else if sentence.Type == PrefixPGRME {
 		pgrme := NewPGRME(sentence)
 		if err := pgrme.parse(); err != nil {
