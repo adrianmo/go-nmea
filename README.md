@@ -19,6 +19,7 @@ At this moment, this library supports the following sentence types:
 - [GPRMC](http://aprs.gids.nl/nmea/#rmc) - Recommended minimum specific GPS/Transit data
 - [GPGGA](http://aprs.gids.nl/nmea/#gga) - Global Positioning System Fix Data
 - [GPGSA](http://aprs.gids.nl/nmea/#gsa) - GPS DOP and active satellites
+- [GPGSV](http://aprs.gids.nl/nmea/#gsa) - GPS Satellites in view
 - [GPGLL](http://aprs.gids.nl/nmea/#gll) - Geographic Position, Latitude / Longitude and time
 - [GPVTG](http://aprs.gids.nl/nmea/#vtg) - Track Made Good and Ground Speed
 - [GPZDA](http://aprs.gids.nl/nmea/#zda) - Date & time data
