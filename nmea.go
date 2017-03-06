@@ -125,6 +125,12 @@ func Parse(s string) (SentenceI, error) {
 			return nil, err
 		}
 		return pgrme, nil
+	} else if sentence.Type == PrefixGPGSV {
+		gpgsv := NewGPGSV(sentence)
+		if err := gpgsv.parse(); err != nil {
+			return nil, err
+		}
+		return gpgsv, nil
 	}
 
 	err := fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
