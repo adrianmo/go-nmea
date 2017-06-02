@@ -36,16 +36,15 @@ func (s *Sentence) parse(input string) error {
 	s.Raw = input
 
 	// Start the sentence from the $ character
-	startPosition := strings.LastIndex(s.Raw, sentenceStart)
+	startPosition := strings.Index(s.Raw, sentenceStart)
 	if startPosition < 0 {
 		return fmt.Errorf("Sentence does not contain a '$'")
 	}
+	if startPosition > 0 {
+		return fmt.Errorf("Sentence does not start with a '$'")
+	}
 
 	sentence := s.Raw[startPosition+1:]
-	if startPosition > 0 {
-		// Rewrite s.Raw with the shortened sentence
-		s.Raw = s.Raw[startPosition:]
-	}
 
 	fieldSum := strings.Split(sentence, checksumSep)
 	if len(fieldSum) != 2 {

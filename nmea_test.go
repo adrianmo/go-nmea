@@ -63,38 +63,28 @@ func TestGoodRawSentence(t *testing.T) {
 	assert.Equal(t, raw, m.GetSentence().Raw, "Bad raw sentence")
 }
 
-func TestStartDelimiterSentence(t *testing.T) {
-	var sentences = []string{
-		"$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
-		"abc$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
-		"$$$$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
-		"$GPFOO,99999,9999,99999$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
-		"$GPFOO,99999,9999,99999*5$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
-	}
-	expectedFields := []string{"235236", "A", "3925.9479", "N", "11945.9211", "W", "44.7", "153.6", "250905", "15.2", "E", "A"}
-
-	for _, sentence := range sentences {
-		m, err := Parse(sentence)
-		assert.NotNil(t, m, "Result should be not nil")
-		assert.Nil(t, err, "Err should be nil")
-		assert.EqualValues(t, expectedFields, m.GetSentence().Fields, "Got '%q', expected '%q'", m.GetSentence().Fields, expectedFields)
-	}
+func TestMultipleStartDelimiterSentence(t *testing.T) {
+	raw := "$$$$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C"
+	result, err := Parse(raw)
+	assert.Nil(t, result, "Result should be nil")
+	assert.NotNil(t, err, "Err should be an error")
+	assert.Equal(t, "Sentence checksum mismatch [28 != 0C]", err.Error(), "Error sentence mismatch")
 }
 
 func TestNoStartDelimiterSentence(t *testing.T) {
+	raw := "abc$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C"
+	result, err := Parse(raw)
+	assert.Nil(t, result, "Result should be nil")
+	assert.NotNil(t, err, "Err should be an error")
+	assert.Equal(t, "Sentence does not start with a '$'", err.Error(), "Error sentence mismatch")
+}
+
+func TestNoContainDelimiterSentence(t *testing.T) {
 	raw := "GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C"
 	result, err := Parse(raw)
 	assert.Nil(t, result, "Result should be nil")
 	assert.NotNil(t, err, "Err should be an error")
 	assert.Equal(t, "Sentence does not contain a '$'", err.Error(), "Error sentence mismatch")
-}
-
-func TestNoChecksum(t *testing.T) {
-	raw := "$GPFOO,99999,9999,99999*5$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A"
-	result, err := Parse(raw)
-	assert.Nil(t, result, "Result should be nil")
-	assert.NotNil(t, err, "Err should be an error")
-	assert.Equal(t, "Sentence does not contain single checksum separator", err.Error(), "Error sentence mismatch")
 }
 
 func TestReturnValues(t *testing.T) {
