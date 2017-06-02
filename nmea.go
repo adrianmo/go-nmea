@@ -44,7 +44,7 @@ func (s *Sentence) parse(input string) error {
 	}
 
 	// remove the $ character
-	sentence := strings.Split(s.Raw, sentenceStart)[1]
+	sentence := strings.TrimPrefix(s.Raw, sentenceStart)
 
 	fieldSum := strings.Split(sentence, checksumSep)
 	fields := strings.Split(fieldSum[0], fieldSep)
