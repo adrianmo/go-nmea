@@ -35,18 +35,22 @@ func (s Sentence) GetSentence() Sentence {
 func (s *Sentence) parse(input string) error {
 	s.Raw = input
 
-	if strings.Count(s.Raw, checksumSep) != 1 {
+	// Start the sentence from the $ character
+	startPosition := strings.Index(s.Raw, sentenceStart)
+	if startPosition < 0 {
+		return fmt.Errorf("Sentence does not contain a '$'")
+	}
+	if startPosition > 0 {
+		return fmt.Errorf("Sentence does not start with a '$'")
+	}
+
+	sentence := s.Raw[startPosition+1:]
+
+	fieldSum := strings.Split(sentence, checksumSep)
+	if len(fieldSum) != 2 {
 		return fmt.Errorf("Sentence does not contain single checksum separator")
 	}
 
-	if !strings.Contains(s.Raw, sentenceStart) {
-		return fmt.Errorf("Sentence does not contain a '$'")
-	}
-
-	// remove the $ character
-	sentence := strings.Split(s.Raw, sentenceStart)[1]
-
-	fieldSum := strings.Split(sentence, checksumSep)
 	fields := strings.Split(fieldSum[0], fieldSep)
 	s.Type = fields[0]
 	s.Fields = fields[1:]
