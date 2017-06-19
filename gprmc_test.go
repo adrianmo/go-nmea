@@ -6,23 +6,67 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func MustParseGPS(s string) LatLong {
+	ll, err := ParseGPS(s)
+	if err != nil {
+		panic(err)
+	}
+	return ll
+}
+
+var gprmctests = []struct {
+	Input  string
+	Output GPRMC
+}{
+	{
+		"$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70",
+		GPRMC{
+			Time:      "220516",
+			Validity:  "A",
+			Speed:     173.8,
+			Course:    231.8,
+			Date:      "130694",
+			Variation: -4.2,
+			Latitude:  MustParseGPS("5133.82 N"),
+			Longitude: MustParseGPS("00042.24 W"),
+		},
+	},
+	{
+		"$GPRMC,142754.0,A,4302.539570,N,07920.379823,W,0.0,,070617,0.0,E,A*3F",
+		GPRMC{
+			Time:      "142754.0",
+			Validity:  "A",
+			Speed:     0,
+			Course:    0,
+			Date:      "070617",
+			Variation: 0,
+			Latitude:  MustParseGPS("4302.539570 N"),
+			Longitude: MustParseGPS("07920.379823 W"),
+		},
+	},
+}
+
 func TestGPRMCGoodSentence(t *testing.T) {
-	goodMsg := "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70"
-	s, err := Parse(goodMsg)
 
-	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGPRMC, s.GetSentence().Type, "Prefix does not match")
+	for _, tt := range gprmctests {
 
-	sentence := s.(GPRMC)
+		s, err := Parse(tt.Input)
 
-	assert.Equal(t, "220516", sentence.Time, "Time does not match")
-	assert.Equal(t, "A", sentence.Validity, "Status does not match")
-	assert.Equal(t, 173.8, sentence.Speed, "Speed does not match")
-	assert.Equal(t, 231.8, sentence.Course, "Course does not match")
-	assert.Equal(t, "130694", sentence.Date, "Date does not match")
-	assert.Equal(t, -4.2, sentence.Variation, "Variation does not match")
-	assert.Equal(t, "5133.8200", sentence.Latitude.PrintGPS(), "Latitude does not match")
-	assert.Equal(t, "042.2400", sentence.Longitude.PrintGPS(), "Longitude does not match")
+		assert.NoError(t, err, "Unexpected error parsing good sentence")
+		assert.Equal(t, PrefixGPRMC, s.GetSentence().Type, "Prefix does not match")
+
+		sentence := s.(GPRMC)
+
+		assert.Equal(t, tt.Output.Time, sentence.Time, "Time does not match")
+		assert.Equal(t, tt.Output.Validity, sentence.Validity, "Status does not match")
+		assert.Equal(t, tt.Output.Speed, sentence.Speed, "Speed does not match")
+		assert.Equal(t, tt.Output.Course, sentence.Course, "Course does not match")
+		assert.Equal(t, tt.Output.Date, sentence.Date, "Date does not match")
+		assert.Equal(t, tt.Output.Variation, sentence.Variation, "Variation does not match")
+		assert.Equal(t, tt.Output.Latitude, sentence.Latitude, "Latitude does not match")
+		assert.Equal(t, tt.Output.Longitude, sentence.Longitude, "Longitude does not match")
+	}
+
 }
 
 func TestGPRMCBadSentence(t *testing.T) {
