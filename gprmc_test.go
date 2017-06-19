@@ -31,6 +31,19 @@ var gprmctests = []struct {
 			Longitude: MustParseGPS("00042.24 W"),
 		},
 	},
+	{
+		"$GPRMC,142754.0,A,4302.539570,N,07920.379823,W,0.0,,070617,0.0,E,A*3F",
+		GPRMC{
+			Time:      "142754.0",
+			Validity:  "A",
+			Speed:     0,
+			Course:    0,
+			Date:      "070617",
+			Variation: 0,
+			Latitude:  MustParseGPS("4302.539570 N"),
+			Longitude: MustParseGPS("07920.379823 W"),
+		},
+	},
 }
 
 func TestGPRMCGoodSentence(t *testing.T) {
