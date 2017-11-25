@@ -93,12 +93,24 @@ func Parse(s string) (SentenceI, error) {
 			return nil, err
 		}
 		return gprmc, nil
+	} else if sentence.Type == PrefixGNRMC {
+		gnrmc := NewGNRMC(sentence)
+		if err := gnrmc.parse(); err != nil {
+			return nil, err
+		}
+		return gnrmc, nil
 	} else if sentence.Type == PrefixGPGGA {
 		gpgga := NewGPGGA(sentence)
 		if err := gpgga.parse(); err != nil {
 			return nil, err
 		}
 		return gpgga, nil
+	} else if sentence.Type == PrefixGNGGA {
+		gngga := NewGNGGA(sentence)
+		if err := gngga.parse(); err != nil {
+			return nil, err
+		}
+		return gngga, nil
 	} else if sentence.Type == PrefixGPGSA {
 		gpgsa := NewGPGSA(sentence)
 		if err := gpgsa.parse(); err != nil {
@@ -135,6 +147,12 @@ func Parse(s string) (SentenceI, error) {
 			return nil, err
 		}
 		return gpgsv, nil
+	} else if sentence.Type == PrefixGLGSV {
+		glgsv := NewGLGSV(sentence)
+		if err := glgsv.parse(); err != nil {
+			return nil, err
+		}
+		return glgsv, nil
 	}
 
 	err := fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
