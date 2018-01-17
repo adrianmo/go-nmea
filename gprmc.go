@@ -18,7 +18,7 @@ const (
 // http://aprs.gids.nl/nmea/#rmc
 type GPRMC struct {
 	Sentence
-	Time      string  // Time Stamp
+	Time      Time    // Time Stamp
 	Validity  string  // validity - A-ok, V-invalid
 	Latitude  LatLong // Latitude
 	Longitude LatLong // Longitude
@@ -46,7 +46,7 @@ func (s *GPRMC) parse() error {
 	if s.Type != PrefixGPRMC {
 		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPRMC)
 	}
-	s.Time = s.Fields[0]
+	s.Time = ParseTime(s.Fields[0])
 	s.Validity = s.Fields[1]
 
 	if s.Validity != ValidRMC && s.Validity != InvalidRMC {

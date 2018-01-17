@@ -17,7 +17,7 @@ type GPGLL struct {
 	Sentence
 	Latitude  LatLong // Latitude
 	Longitude LatLong // Longitude
-	Time      string  // Time Stamp
+	Time      Time    // Time Stamp
 	Validity  string  // validity - A-valid
 }
 
@@ -49,7 +49,7 @@ func (s *GPGLL) parse() error {
 		return fmt.Errorf("GPGLL decode longitude error: %s", err)
 	}
 
-	s.Time = s.Fields[4]
+	s.Time = ParseTime(s.Fields[4])
 	s.Validity = s.Fields[5]
 
 	if s.Validity != ValidGLL && s.Validity != InvalidGLL {

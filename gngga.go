@@ -10,7 +10,7 @@ const (
 type GNGGA struct {
 	Sentence
 	// Time of fix.
-	Time string
+	Time Time
 	// Latitude.
 	Latitude LatLong
 	// Longitude.
@@ -47,7 +47,7 @@ func (s *GNGGA) parse() error {
 	if s.Type != PrefixGNGGA {
 		return fmt.Errorf("%s is not a %s", s.Type, PrefixGNGGA)
 	}
-	s.Time = s.Fields[0]
+	s.Time = ParseTime(s.Fields[0])
 	s.Latitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[1], s.Fields[2]))
 	if err != nil {
 		return fmt.Errorf("GNGGA decode error: %s", err)

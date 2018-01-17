@@ -61,3 +61,20 @@ func TestLatLongPrint(t *testing.T) {
 		t.Errorf("PrintDMS() got %s expected %s", s, exp)
 	}
 }
+
+func TestTimeParse(t *testing.T) {
+	timetests := []struct {
+		value    string
+		expected Time
+	}{
+		{"123456", Time{true, 12, 34, 56, 0}},
+		{"", Time{}},
+		{"112233.123", Time{true, 11, 22, 33, 123}},
+		{"010203.04", Time{true, 1, 2, 3, 4}},
+	}
+	for _, tt := range timetests {
+		if actual := ParseTime(tt.value); actual != tt.expected {
+			t.Errorf("ParseTime(%s) got %s expected %s", tt.value, actual, tt.expected)
+		}
+	}
+}
