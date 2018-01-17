@@ -1,7 +1,5 @@
 package nmea
 
-import "fmt"
-
 const (
 	// PrefixGPGSA prefix of GPGSA sentence type
 	PrefixGPGSA = "GPGSA"
@@ -50,30 +48,26 @@ func (s GPGSA) GetSentence() Sentence {
 // Parse parses the GPGSA sentence into this struct.
 func (s *GPGSA) parse() error {
 
-	if s.Type != PrefixGPGSA {
-		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPGSA)
-	}
-	// Selection mode.
-	s.Mode = s.Fields[0]
+	p := newParser(s.Sentence, PrefixGPGSA)
+
+	s.Mode = p.String(0, "selection mode")
 	if s.Mode != Auto && s.Mode != Manual {
-		return fmt.Errorf("Invalid selection mode [%s]", s.Mode)
+		p.SetErr("selection mode", s.Mode)
 	}
-	// Fix type.
-	s.FixType = s.Fields[1]
-	if s.FixType != FixNone && s.FixType != Fix2D &&
-		s.FixType != Fix3D {
-		return fmt.Errorf("Invalid fix type [%s]", s.FixType)
+	s.FixType = p.String(1, "fix type")
+	if s.FixType != FixNone && s.FixType != Fix2D && s.FixType != Fix3D {
+		p.SetErr("fix type", s.FixType)
 	}
 	// Satellites in view.
 	for i := 2; i < 14; i++ {
-		if s.Fields[i] != "" {
-			s.SV = append(s.SV, s.Fields[i])
+		if v := p.String(i, "satelite in view"); v != "" {
+			s.SV = append(s.SV, v)
 		}
 	}
 	// Dilution of precision.
-	s.PDOP = s.Fields[14]
-	s.HDOP = s.Fields[15]
-	s.VDOP = s.Fields[16]
+	s.PDOP = p.String(14, "pdop")
+	s.HDOP = p.String(15, "hdop")
+	s.VDOP = p.String(16, "vdop")
 
-	return nil
+	return p.Err()
 }

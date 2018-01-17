@@ -37,54 +37,36 @@ func (s GNRMC) GetSentence() Sentence {
 }
 
 func (s *GNRMC) parse() error {
-	var err error
+	p := newParser(s.Sentence, PrefixGNRMC)
 
-	if s.Type != PrefixGNRMC {
-		return fmt.Errorf("%s is not a %s", s.Type, PrefixGNRMC)
-	}
-	s.Time, err = ParseTime(s.Fields[0])
-	if err != nil {
-		return fmt.Errorf("GNRMC decode error: %s", err)
-	}
-	s.Validity = s.Fields[1]
-
+	s.Time = p.Time(0, "time")
+	s.Validity = p.String(1, "validity")
 	if s.Validity != ValidRMC && s.Validity != InvalidRMC {
-		return fmt.Errorf("GNRMC decode, invalid validity '%s'", s.Validity)
+		return fmt.Errorf("GNRMC invalid validity: %s", s.Validity)
 	}
 
-	s.Latitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[2], s.Fields[3]))
-	if err != nil {
-		return fmt.Errorf("GNRMC decode latitude error: %s", err)
-	}
-	s.Longitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[4], s.Fields[5]))
-	if err != nil {
-		return fmt.Errorf("GNRMC decode longitude error: %s", err)
-	}
-	if s.Fields[6] != "" {
-		s.Speed, err = strconv.ParseFloat(s.Fields[6], 64)
-		if err != nil {
-			return fmt.Errorf("GNRMC decode speed error: %s", s.Fields[6])
-		}
-	}
-	if s.Fields[7] != "" {
-		s.Course, err = strconv.ParseFloat(s.Fields[7], 64)
-		if err != nil {
-			return fmt.Errorf("GNRMC decode course error: %s", s.Fields[7])
-		}
-	}
-	s.Date = s.Fields[8]
+	s.Latitude = p.LatLong(2, 3, "latitude")
+	s.Longitude = p.LatLong(4, 5, "longitude")
+	s.Speed = p.Float64(6, "speed")
+	s.Course = p.Float64(7, "course")
+	s.Date = p.String(8, "date")
 
+	if err := p.Err(); err != nil {
+		return err
+	}
+
+	var err error
 	if s.Fields[9] != "" {
 		s.Variation, err = strconv.ParseFloat(s.Fields[9], 64)
 		if err != nil {
-			return fmt.Errorf("GNRMC decode variation error: %s", s.Fields[9])
+			return fmt.Errorf("GNRMC invalid variation: %s", s.Fields[9])
 		}
 		if s.Fields[10] == "W" {
 			s.Variation = 0 - s.Variation
 		} else if s.Fields[10] != "E" {
-			return fmt.Errorf("GNRMC decode variation error for: %s", s.Fields[10])
+			return fmt.Errorf("GNRMC invalid variation: %s", s.Fields[10])
 		}
 	}
 
-	return nil
+	return p.Err()
 }

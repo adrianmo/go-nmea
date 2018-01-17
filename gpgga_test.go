@@ -50,7 +50,7 @@ func TestGPGGABadLatitude(t *testing.T) {
 	_, err := Parse(badLat)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPGGA decode error: cannot parse [A S], unknown format", err.Error(), "Error message does not match")
+	assert.Equal(t, "GPGGA invalid latitude: cannot parse [A S], unknown format", err.Error(), "Error message does not match")
 }
 
 func TestGPGGABadLongitude(t *testing.T) {
@@ -58,7 +58,7 @@ func TestGPGGABadLongitude(t *testing.T) {
 	_, err := Parse(badLon)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPGGA decode error: cannot parse [A E], unknown format", err.Error(), "Error message does not match")
+	assert.Equal(t, "GPGGA invalid longitude: cannot parse [A E], unknown format", err.Error(), "Error message does not match")
 }
 
 func TestGPGGABadFixQuality(t *testing.T) {
@@ -67,5 +67,5 @@ func TestGPGGABadFixQuality(t *testing.T) {
 	_, err := Parse(badMode)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, err.Error(), "Invalid fix quality [5]", "Error message not as expected")
+	assert.Equal(t, err.Error(), "GPGGA invalid fix quality: 5", "Error message not as expected")
 }

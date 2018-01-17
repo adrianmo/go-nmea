@@ -26,7 +26,7 @@ func TestGPGLLBadSentence(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPGLL decode, invalid validity 'D'", err.Error(), "Incorrect error message")
+	assert.Equal(t, "GPGLL invalid validity: D", err.Error(), "Incorrect error message")
 }
 
 func TestGPGLLWrongSentence(t *testing.T) {

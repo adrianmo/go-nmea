@@ -1,7 +1,5 @@
 package nmea
 
-import "fmt"
-
 const (
 	// PrefixGNGGA prefix
 	PrefixGNGGA = "GNGGA"
@@ -42,32 +40,24 @@ func (s GNGGA) GetSentence() Sentence {
 }
 
 func (s *GNGGA) parse() error {
-	var err error
+	p := newParser(s.Sentence, PrefixGNGGA)
+	if err := p.Err(); err != nil {
+		return err
+	}
 
-	if s.Type != PrefixGNGGA {
-		return fmt.Errorf("%s is not a %s", s.Type, PrefixGNGGA)
-	}
-	s.Time, err = ParseTime(s.Fields[0])
-	if err != nil {
-		return fmt.Errorf("GNGGA decode error: %s", err)
-	}
-	s.Latitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[1], s.Fields[2]))
-	if err != nil {
-		return fmt.Errorf("GNGGA decode error: %s", err)
-	}
-	s.Longitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[3], s.Fields[4]))
-	if err != nil {
-		return fmt.Errorf("GNGGA decode error: %s", err)
-	}
-	s.FixQuality = s.Fields[5]
+	s.Time = p.Time(0, "time")
+	s.Latitude = p.LatLong(1, 2, "latitude")
+	s.Longitude = p.LatLong(3, 4, "longitude")
+
+	s.FixQuality = p.String(5, "fix quality")
 	if s.FixQuality != Invalid && s.FixQuality != GPS && s.FixQuality != DGPS {
-		return fmt.Errorf("Invalid fix quality [%s]", s.FixQuality)
+		p.SetErr("fix quality", s.FixQuality)
 	}
-	s.NumSatellites = s.Fields[6]
-	s.HDOP = s.Fields[7]
-	s.Altitude = s.Fields[8]
-	s.Separation = s.Fields[10]
-	s.DGPSAge = s.Fields[12]
-	s.DGPSId = s.Fields[13]
-	return nil
+	s.NumSatellites = p.String(6, "number of satelites")
+	s.HDOP = p.String(7, "hdop")
+	s.Altitude = p.String(8, "altitude")
+	s.Separation = p.String(10, "separation")
+	s.DGPSAge = p.String(12, "dgps age")
+	s.DGPSId = p.String(13, "dgps id")
+	return p.Err()
 }

@@ -66,7 +66,7 @@ func TestGNRMCBadSentence(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GNRMC decode, invalid validity 'D'", err.Error(), "Incorrect error message")
+	assert.Equal(t, "GNRMC invalid validity: D", err.Error(), "Incorrect error message")
 }
 
 func TestGNRMCWrongSentence(t *testing.T) {
