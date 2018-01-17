@@ -22,7 +22,7 @@ func TestGPGGAGoodSentence(t *testing.T) {
 			Checksum: "51",
 			Raw:      "$GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*51",
 		},
-		Time:          "034225.077",
+		Time:          Time{true, 3, 42, 25, 77},
 		Latitude:      lat,
 		Longitude:     lon,
 		FixQuality:    GPS,

@@ -22,7 +22,7 @@ func TestGNGGAGoodSentence(t *testing.T) {
 			Checksum: "7C",
 			Raw:      "$GNGGA,203415.000,6325.6138,N,01021.4290,E,1,8,2.42,72.5,M,41.5,M,,*7C",
 		},
-		Time:          "203415.000",
+		Time:          Time{true, 20, 34, 15, 0},
 		Latitude:      lat,
 		Longitude:     lon,
 		FixQuality:    GPS,

@@ -14,10 +14,10 @@ const (
 // http://aprs.gids.nl/nmea/#zda
 type GPZDA struct {
 	Sentence
-	Time string
-	Day int64
+	Time  Time
+	Day   int64
 	Month int64
-	Year int64
+	Year  int64
 	// Local time zone offset from GMT, hours
 	OffsetHours int64
 	// Local time zone offset from GMT, minutes
@@ -44,8 +44,10 @@ func (s *GPZDA) parse() error {
 		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPZDA)
 	}
 
-	s.Time = s.Fields[0]
-
+	s.Time, err = ParseTime(s.Fields[0])
+	if err != nil {
+		return fmt.Errorf("GPZDA decode error: %s", err)
+	}
 	s.Day, err = strconv.ParseInt(s.Fields[1], 10, 64)
 	if err != nil {
 		return fmt.Errorf("GPZDA decode day error: %s", s.Fields[1])

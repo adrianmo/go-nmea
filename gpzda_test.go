@@ -15,7 +15,7 @@ func TestGPZDAGoodSentence(t *testing.T) {
 
 	sentence := s.(GPZDA)
 
-	assert.Equal(t, "172809.456", sentence.Time, "Time does not match")
+	assert.Equal(t, Time{true, 17, 28, 9, 456}, sentence.Time, "Time does not match")
 	assert.Equal(t, int64(12), sentence.Day, "Day does not match")
 	assert.Equal(t, int64(7), sentence.Month, "Month does not match")
 	assert.Equal(t, int64(1996), sentence.Year, "Yeah does not match")

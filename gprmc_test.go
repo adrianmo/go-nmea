@@ -21,7 +21,7 @@ var gprmctests = []struct {
 	{
 		"$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70",
 		GPRMC{
-			Time:      "220516",
+			Time:      Time{true, 22, 05, 16, 0},
 			Validity:  "A",
 			Speed:     173.8,
 			Course:    231.8,
@@ -34,7 +34,7 @@ var gprmctests = []struct {
 	{
 		"$GPRMC,142754.0,A,4302.539570,N,07920.379823,W,0.0,,070617,0.0,E,A*3F",
 		GPRMC{
-			Time:      "142754.0",
+			Time:      Time{true, 14, 27, 54, 0},
 			Validity:  "A",
 			Speed:     0,
 			Course:    0,
