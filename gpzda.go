@@ -44,7 +44,10 @@ func (s *GPZDA) parse() error {
 		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPZDA)
 	}
 
-	s.Time = ParseTime(s.Fields[0])
+	s.Time, err = ParseTime(s.Fields[0])
+	if err != nil {
+		return fmt.Errorf("GPZDA decode error: %s", err)
+	}
 	s.Day, err = strconv.ParseInt(s.Fields[1], 10, 64)
 	if err != nil {
 		return fmt.Errorf("GPZDA decode day error: %s", s.Fields[1])

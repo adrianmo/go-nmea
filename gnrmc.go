@@ -42,7 +42,7 @@ func (s *GNRMC) parse() error {
 	if s.Type != PrefixGNRMC {
 		return fmt.Errorf("%s is not a %s", s.Type, PrefixGNRMC)
 	}
-	s.Time = ParseTime(s.Fields[0])
+	s.Time, err = ParseTime(s.Fields[0])
 	if err != nil {
 		return fmt.Errorf("GNRMC decode error: %s", err)
 	}

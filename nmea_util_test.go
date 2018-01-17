@@ -66,15 +66,24 @@ func TestTimeParse(t *testing.T) {
 	timetests := []struct {
 		value    string
 		expected Time
+		ok       bool
 	}{
-		{"123456", Time{true, 12, 34, 56, 0}},
-		{"", Time{}},
-		{"112233.123", Time{true, 11, 22, 33, 123}},
-		{"010203.04", Time{true, 1, 2, 3, 4}},
+		{"123456", Time{true, 12, 34, 56, 0}, true},
+		{"", Time{}, true},
+		{"112233.123", Time{true, 11, 22, 33, 123}, true},
+		{"010203.04", Time{true, 1, 2, 3, 4}, true},
+		{"10203.04", Time{}, true},
 	}
 	for _, tt := range timetests {
-		if actual := ParseTime(tt.value); actual != tt.expected {
-			t.Errorf("ParseTime(%s) got %s expected %s", tt.value, actual, tt.expected)
+		actual, err := ParseTime(tt.value)
+		if !tt.ok {
+			if err == nil {
+				t.Errorf("ParseTime(%s) expected error")
+			}
+		} else {
+			if actual != tt.expected {
+				t.Errorf("ParseTime(%s) got %s expected %s", tt.value, actual, tt.expected)
+			}
 		}
 	}
 }

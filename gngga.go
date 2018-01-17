@@ -47,7 +47,10 @@ func (s *GNGGA) parse() error {
 	if s.Type != PrefixGNGGA {
 		return fmt.Errorf("%s is not a %s", s.Type, PrefixGNGGA)
 	}
-	s.Time = ParseTime(s.Fields[0])
+	s.Time, err = ParseTime(s.Fields[0])
+	if err != nil {
+		return fmt.Errorf("GNGGA decode error: %s", err)
+	}
 	s.Latitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[1], s.Fields[2]))
 	if err != nil {
 		return fmt.Errorf("GNGGA decode error: %s", err)

@@ -49,7 +49,10 @@ func (s *GPGLL) parse() error {
 		return fmt.Errorf("GPGLL decode longitude error: %s", err)
 	}
 
-	s.Time = ParseTime(s.Fields[4])
+	s.Time, err = ParseTime(s.Fields[4])
+	if err != nil {
+		fmt.Errorf("GPGLL decode error: %s", err)
+	}
 	s.Validity = s.Fields[5]
 
 	if s.Validity != ValidGLL && s.Validity != InvalidGLL {

@@ -59,7 +59,7 @@ func (s *GPGGA) parse() error {
 	if s.Type != PrefixGPGGA {
 		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPGGA)
 	}
-	s.Time = ParseTime(s.Fields[0])
+	s.Time, err = ParseTime(s.Fields[0])
 	if err != nil {
 		return fmt.Errorf("GPGGA decode error: %s", err)
 	}

@@ -190,29 +190,33 @@ func (t Time) String() string {
 
 // Parse wall clock time.
 // e.g. hhmmss.ssss
-func ParseTime(s string) Time {
+// An empty time string will result in an invalid time.
+func ParseTime(s string) (Time, error) {
+	if s == "" {
+		return Time{}, nil
+	}
 	ms := "0000"
 	if parts := strings.SplitN(s, ".", 2); len(parts) > 1 {
 		s, ms = parts[0], parts[1]
 	}
 	if len(s) != 6 {
-		return Time{}
+		return Time{}, fmt.Errorf("parse time: exptected hhmmss.ss format, got '%s'", s)
 	}
 	hour, err := strconv.Atoi(s[0:2])
 	if err != nil {
-		return Time{}
+		return Time{}, fmt.Errorf("parse time: %s", err)
 	}
 	minute, err := strconv.Atoi(s[2:4])
 	if err != nil {
-		return Time{}
+		return Time{}, fmt.Errorf("parse time: %s", err)
 	}
 	second, err := strconv.Atoi(s[4:6])
 	if err != nil {
-		return Time{}
+		return Time{}, fmt.Errorf("parse time: %s", err)
 	}
 	millisecond, err := strconv.Atoi(ms)
 	if err != nil {
-		return Time{}
+		return Time{}, fmt.Errorf("parse time: %s", err)
 	}
-	return Time{true, hour, minute, second, millisecond}
+	return Time{true, hour, minute, second, millisecond}, nil
 }
