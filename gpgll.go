@@ -1,7 +1,5 @@
 package nmea
 
-import "fmt"
-
 const (
 	// PrefixGPGLL prefix for GPGLL sentence type
 	PrefixGPGLL = "GPGLL"
@@ -34,30 +32,13 @@ func (s GPGLL) GetSentence() Sentence {
 }
 
 func (s *GPGLL) parse() error {
-	var err error
-
-	if s.Type != PrefixGPGLL {
-		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPGLL)
-	}
-
-	s.Latitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[0], s.Fields[1]))
-	if err != nil {
-		return fmt.Errorf("GPGLL decode latitude error: %s", err)
-	}
-	s.Longitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[2], s.Fields[3]))
-	if err != nil {
-		return fmt.Errorf("GPGLL decode longitude error: %s", err)
-	}
-
-	s.Time, err = ParseTime(s.Fields[4])
-	if err != nil {
-		fmt.Errorf("GPGLL decode error: %s", err)
-	}
-	s.Validity = s.Fields[5]
-
+	p := newParser(s.Sentence, PrefixGPGLL)
+	s.Latitude = p.LatLong(0, 1, "latitude")
+	s.Longitude = p.LatLong(2, 3, "longitude")
+	s.Time = p.Time(4, "time")
+	s.Validity = p.String(5, "validity")
 	if s.Validity != ValidGLL && s.Validity != InvalidGLL {
-		return fmt.Errorf("GPGLL decode, invalid validity '%s'", s.Validity)
+		p.SetErr("validity", s.Validity)
 	}
-
-	return nil
+	return p.Err()
 }

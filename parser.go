@@ -7,19 +7,26 @@ import (
 
 type parser struct {
 	Sentence
-	context string
-	err     error
+	prefix string
+	err    error
 }
 
-func newParser(s Sentence) *parser {
-	return &parser{Sentence: s}
+func newParser(s Sentence, prefix string) *parser {
+	p := &parser{Sentence: s, prefix: prefix}
+	if p.Type != prefix {
+		p.SetErr("prefix", p.Type)
+	}
+	return p
 }
 
 func (p *parser) Err() error {
-	if p.err != nil {
-		return fmt.Errorf("%s %s", p.context, p.err)
+	return p.err
+}
+
+func (p *parser) SetErr(context, value string) {
+	if p.err == nil {
+		p.err = fmt.Errorf("%s invalid %s: %s", p.prefix, context, value)
 	}
-	return nil
 }
 
 func (p *parser) String(i int, context string) string {
@@ -27,8 +34,7 @@ func (p *parser) String(i int, context string) string {
 		return ""
 	}
 	if i < 0 || i >= len(p.Fields) {
-		p.context = context
-		p.err = fmt.Errorf("index out of range %d", i)
+		p.SetErr(context, strconv.Itoa(i))
 	}
 	return p.Fields[i]
 }
@@ -38,10 +44,12 @@ func (p *parser) Int64(i int, context string) int64 {
 	if p.err != nil {
 		return 0
 	}
+	if s == "" {
+		return 0
+	}
 	v, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
-		p.context = context
-		p.err = err
+		p.SetErr(context, s)
 	}
 	return v
 }
@@ -51,10 +59,12 @@ func (p *parser) Float64(i int, context string) float64 {
 	if p.err != nil {
 		return 0
 	}
+	if s == "" {
+		return 0
+	}
 	v, err := strconv.ParseFloat(s, 64)
 	if err != nil {
-		p.context = context
-		p.err = err
+		p.SetErr(context, s)
 	}
 	return v
 }
@@ -66,8 +76,7 @@ func (p *parser) Time(i int, context string) Time {
 	}
 	v, err := ParseTime(s)
 	if err != nil {
-		p.context = context
-		p.err = err
+		p.SetErr(context, s)
 	}
 	return v
 }
@@ -81,8 +90,7 @@ func (p *parser) LatLong(i, j int, context string) LatLong {
 	s := fmt.Sprintf("%s %s", a, b)
 	v, err := NewLatLong(s)
 	if err != nil {
-		p.context = context
-		p.err = err
+		p.SetErr(context, err.Error())
 	}
 	return v
 }

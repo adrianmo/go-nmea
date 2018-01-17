@@ -1,10 +1,5 @@
 package nmea
 
-import (
-	"fmt"
-	"strconv"
-)
-
 const (
 	// PrefixGPZDA prefix
 	PrefixGPZDA = "GPZDA"
@@ -38,40 +33,12 @@ func (s GPZDA) GetSentence() Sentence {
 
 // Parse parses the GPZDA sentence into this struct.
 func (s *GPZDA) parse() error {
-	var err error
-
-	if s.Type != PrefixGPZDA {
-		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPZDA)
-	}
-
-	s.Time, err = ParseTime(s.Fields[0])
-	if err != nil {
-		return fmt.Errorf("GPZDA decode error: %s", err)
-	}
-	s.Day, err = strconv.ParseInt(s.Fields[1], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode day error: %s", s.Fields[1])
-	}
-
-	s.Month, err = strconv.ParseInt(s.Fields[2], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode month error: %s", s.Fields[2])
-	}
-
-	s.Year, err = strconv.ParseInt(s.Fields[3], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode year error: %s", s.Fields[3])
-	}
-
-	s.OffsetHours, err = strconv.ParseInt(s.Fields[4], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode offset (hours) error: %s", s.Fields[4])
-	}
-
-	s.OffsetMinutes, err = strconv.ParseInt(s.Fields[5], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode offset (minutes) error: %s", s.Fields[5])
-	}
-
-	return nil
+	p := newParser(s.Sentence, PrefixGPZDA)
+	s.Time = p.Time(0, "time")
+	s.Day = p.Int64(1, "day")
+	s.Month = p.Int64(2, "month")
+	s.Year = p.Int64(3, "year")
+	s.OffsetHours = p.Int64(4, "offset (hours)")
+	s.OffsetMinutes = p.Int64(5, "offset (minutes)")
+	return p.Err()
 }

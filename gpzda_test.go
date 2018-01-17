@@ -28,7 +28,7 @@ func TestGPZDABadSentence(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPZDA decode day error: D", err.Error(), "Incorrect error message")
+	assert.Equal(t, "GPZDA invalid day: D", err.Error(), "Incorrect error message")
 }
 
 func TestGPZDAWrongSentence(t *testing.T) {

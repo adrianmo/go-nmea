@@ -74,7 +74,7 @@ func TestGPRMCBadSentence(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPRMC decode, invalid validity 'D'", err.Error(), "Incorrect error message")
+	assert.Equal(t, "GPRMC invalid validity: D", err.Error(), "Incorrect error message")
 }
 
 func TestGPRMCWrongSentence(t *testing.T) {
