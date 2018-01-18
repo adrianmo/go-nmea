@@ -73,12 +73,13 @@ func TestTimeParse(t *testing.T) {
 		{"112233.123", Time{true, 11, 22, 33, 123}, true},
 		{"010203.04", Time{true, 1, 2, 3, 4}, true},
 		{"10203.04", Time{}, true},
+		{"x0u2xd", Time{}, false},
 	}
 	for _, tt := range timetests {
 		actual, err := ParseTime(tt.value)
 		if !tt.ok {
 			if err == nil {
-				t.Errorf("ParseTime(%s) expected error")
+				t.Errorf("ParseTime(%s) expected error", tt.value)
 			}
 		} else {
 			if actual != tt.expected {
