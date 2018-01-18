@@ -22,9 +22,9 @@ func TestGPGSAGoodSentence(t *testing.T) {
 		},
 		Mode:    Auto,
 		FixType: Fix3D,
-		PDOP:    "3.1",
-		HDOP:    "2.0",
-		VDOP:    "2.4",
+		PDOP:    3.1,
+		HDOP:    2.0,
+		VDOP:    2.4,
 		SV:      []string{"22", "19", "18", "27", "14", "03"},
 	}
 

@@ -22,9 +22,9 @@ type GPGSA struct {
 	Mode    string   // The selection mode.
 	FixType string   // The fix type.
 	SV      []string // List of satellite PRNs used for this fix.
-	PDOP    string   // Dilution of precision.
-	HDOP    string   // Horizontal dilution of precision.
-	VDOP    string   // Vertical dilution of precision.
+	PDOP    float64  // Dilution of precision.
+	HDOP    float64  // Horizontal dilution of precision.
+	VDOP    float64  // Vertical dilution of precision.
 }
 
 // NewGPGSA parses the GPGSA sentence into this struct.
@@ -42,9 +42,9 @@ func NewGPGSA(s Sentence) (GPGSA, error) {
 		}
 	}
 	// Dilution of precision.
-	m.PDOP = p.String(14, "pdop")
-	m.HDOP = p.String(15, "hdop")
-	m.VDOP = p.String(16, "vdop")
+	m.PDOP = p.Float64(14, "pdop")
+	m.HDOP = p.Float64(15, "hdop")
+	m.VDOP = p.Float64(16, "vdop")
 	return m, p.Err()
 }
 
