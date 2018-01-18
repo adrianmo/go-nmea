@@ -35,12 +35,10 @@ func NewGPRMC(s Sentence) (GPRMC, error) {
 		Speed:     p.Float64(6, "speed"),
 		Course:    p.Float64(7, "course"),
 		Date:      p.String(8, "date"),
+		Variation: p.Float64(9, "variation"),
 	}
-	if !p.Empty(9, "variation") {
-		m.Variation = p.Float64(9, "variation")
-		if p.EnumString(10, "variation", "W", "E") == "W" {
-			m.Variation = 0 - m.Variation
-		}
+	if p.EnumString(10, "variation", "W", "E") == "W" {
+		m.Variation = 0 - m.Variation
 	}
 	return m, p.Err()
 }
