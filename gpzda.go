@@ -18,10 +18,10 @@ type GPZDA struct {
 }
 
 // NewGPZDA constructor
-func NewGPZDA(sentence Sentence) (GPZDA, error) {
-	p := newParser(sentence, PrefixGPZDA)
+func NewGPZDA(s Sentence) (GPZDA, error) {
+	p := newParser(s, PrefixGPZDA)
 	return GPZDA{
-		Sentence:      sentence,
+		Sentence:      s,
 		Time:          p.Time(0, "time"),
 		Day:           p.Int64(1, "day"),
 		Month:         p.Int64(2, "month"),

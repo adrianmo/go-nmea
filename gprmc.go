@@ -24,10 +24,10 @@ type GPRMC struct {
 }
 
 // NewGPRMC constructor
-func NewGPRMC(sentence Sentence) (GPRMC, error) {
-	p := newParser(sentence, PrefixGPRMC)
-	s := GPRMC{
-		Sentence:  sentence,
+func NewGPRMC(s Sentence) (GPRMC, error) {
+	p := newParser(s, PrefixGPRMC)
+	m := GPRMC{
+		Sentence:  s,
 		Time:      p.Time(0, "time"),
 		Validity:  p.EnumString(1, "validity", ValidRMC, InvalidRMC),
 		Latitude:  p.LatLong(2, 3, "latitude"),
@@ -37,12 +37,12 @@ func NewGPRMC(sentence Sentence) (GPRMC, error) {
 		Date:      p.String(8, "date"),
 	}
 	if !p.Empty(9, "variation") {
-		s.Variation = p.Float64(9, "variation")
+		m.Variation = p.Float64(9, "variation")
 		if p.EnumString(10, "variation", "W", "E") == "W" {
-			s.Variation = 0 - s.Variation
+			m.Variation = 0 - m.Variation
 		}
 	}
-	return s, p.Err()
+	return m, p.Err()
 }
 
 // GetSentence getter

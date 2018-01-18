@@ -20,10 +20,10 @@ type GNRMC struct {
 }
 
 // NewGNRMC constructor
-func NewGNRMC(sentence Sentence) (GNRMC, error) {
-	p := newParser(sentence, PrefixGNRMC)
-	s := GNRMC{
-		Sentence:  sentence,
+func NewGNRMC(s Sentence) (GNRMC, error) {
+	p := newParser(s, PrefixGNRMC)
+	m := GNRMC{
+		Sentence:  s,
 		Time:      p.Time(0, "time"),
 		Validity:  p.EnumString(1, "validity", ValidRMC, InvalidRMC),
 		Latitude:  p.LatLong(2, 3, "latitude"),
@@ -33,12 +33,12 @@ func NewGNRMC(sentence Sentence) (GNRMC, error) {
 		Date:      p.String(8, "date"),
 	}
 	if !p.Empty(9, "variation") {
-		s.Variation = p.Float64(9, "variation")
+		m.Variation = p.Float64(9, "variation")
 		if p.EnumString(10, "direction", "W", "E") == "W" {
-			s.Variation = 0 - s.Variation
+			m.Variation = 0 - m.Variation
 		}
 	}
-	return s, p.Err()
+	return m, p.Err()
 }
 
 // GetSentence getter

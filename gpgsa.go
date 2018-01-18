@@ -28,24 +28,24 @@ type GPGSA struct {
 }
 
 // NewGPGSA parses the GPGSA sentence into this struct.
-func NewGPGSA(sentence Sentence) (GPGSA, error) {
-	s := GPGSA{Sentence: sentence}
-	p := newParser(s.Sentence, PrefixGPGSA)
-
-	s.Mode = p.EnumString(0, "selection mode", Auto, Manual)
-	s.FixType = p.EnumString(1, "fix type", FixNone, Fix2D, Fix3D)
+func NewGPGSA(s Sentence) (GPGSA, error) {
+	p := newParser(s, PrefixGPGSA)
+	m := GPGSA{
+		Sentence: s,
+		Mode:     p.EnumString(0, "selection mode", Auto, Manual),
+		FixType:  p.EnumString(1, "fix type", FixNone, Fix2D, Fix3D),
+	}
 	// Satellites in view.
 	for i := 2; i < 14; i++ {
 		if v := p.String(i, "satelite in view"); v != "" {
-			s.SV = append(s.SV, v)
+			m.SV = append(m.SV, v)
 		}
 	}
 	// Dilution of precision.
-	s.PDOP = p.String(14, "pdop")
-	s.HDOP = p.String(15, "hdop")
-	s.VDOP = p.String(16, "vdop")
-
-	return s, p.Err()
+	m.PDOP = p.String(14, "pdop")
+	m.HDOP = p.String(15, "hdop")
+	m.VDOP = p.String(16, "vdop")
+	return m, p.Err()
 }
 
 // GetSentence getter

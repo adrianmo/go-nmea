@@ -20,10 +20,10 @@ type GPGLL struct {
 }
 
 // NewGPGLL constructor
-func NewGPGLL(sentence Sentence) (GPGLL, error) {
-	p := newParser(sentence, PrefixGPGLL)
+func NewGPGLL(s Sentence) (GPGLL, error) {
+	p := newParser(s, PrefixGPGLL)
 	return GPGLL{
-		Sentence:  sentence,
+		Sentence:  s,
 		Latitude:  p.LatLong(0, 1, "latitude"),
 		Longitude: p.LatLong(2, 3, "longitude"),
 		Time:      p.Time(4, "time"),

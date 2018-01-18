@@ -19,10 +19,10 @@ type GNGGA struct {
 	DGPSId        string  // DGPS reference station ID.
 }
 
-func NewGNGGA(sentence Sentence) (GNGGA, error) {
-	p := newParser(sentence, PrefixGNGGA)
+func NewGNGGA(s Sentence) (GNGGA, error) {
+	p := newParser(s, PrefixGNGGA)
 	return GNGGA{
-		Sentence:      sentence,
+		Sentence:      s,
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),

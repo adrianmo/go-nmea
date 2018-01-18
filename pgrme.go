@@ -17,8 +17,8 @@ type PGRME struct {
 }
 
 // NewPGRME constructor
-func NewPGRME(sentence Sentence) (PGRME, error) {
-	p := newParser(sentence, PrefixPGRME)
+func NewPGRME(s Sentence) (PGRME, error) {
+	p := newParser(s, PrefixPGRME)
 
 	horizontal := p.Float64(0, "horizontal error")
 	_ = p.EnumString(1, "horizontal error unit", ErrorUnit)
@@ -30,7 +30,7 @@ func NewPGRME(sentence Sentence) (PGRME, error) {
 	_ = p.EnumString(5, "spherical error unit", ErrorUnit)
 
 	return PGRME{
-		Sentence:   sentence,
+		Sentence:   s,
 		Horizontal: horizontal,
 		Vertical:   vertial,
 		Spherical:  spherical,
