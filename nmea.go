@@ -27,6 +27,11 @@ type Sentence struct {
 	Raw      string   // The raw NMEA sentence received
 }
 
+func ParseSentence(input string) (Sentence, error) {
+	var s Sentence
+	return s, s.parse(input)
+}
+
 // GetSentence getter
 func (s Sentence) GetSentence() Sentence {
 	return s
@@ -79,8 +84,8 @@ func (s *Sentence) sumOk() error {
 
 // Parse parses the given string into the correct sentence type.
 func Parse(s string) (SentenceI, error) {
-	var sentence Sentence
-	if err := sentence.parse(s); err != nil {
+	sentence, err := ParseSentence(s)
+	if err != nil {
 		return nil, err
 	}
 
