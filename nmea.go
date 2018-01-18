@@ -79,7 +79,7 @@ func (s *Sentence) sumOk() error {
 
 // Parse parses the given string into the correct sentence type.
 func Parse(s string) (SentenceI, error) {
-	sentence := Sentence{}
+	var sentence Sentence
 	if err := sentence.parse(s); err != nil {
 		return nil, err
 	}
