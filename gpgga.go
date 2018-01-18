@@ -11,6 +11,12 @@ const (
 	GPS = "1"
 	// DGPS fix quality
 	DGPS = "2"
+	// PPS fix
+	PPS = "3"
+	// Real Time Kinematic fix
+	RTK = "4"
+	// Float RTK fix
+	FRTK = "5"
 )
 
 // GPGGA represents fix data.
@@ -69,7 +75,7 @@ func (s *GPGGA) parse() error {
 		return fmt.Errorf("GPGGA decode error: %s", err)
 	}
 	s.FixQuality = s.Fields[5]
-	if s.FixQuality != Invalid && s.FixQuality != GPS && s.FixQuality != DGPS {
+	if s.FixQuality != Invalid && s.FixQuality != GPS && s.FixQuality != DGPS && s.FixQuality != PPS  && s.FixQuality != RTK  && s.FixQuality != FRTK {
 		return fmt.Errorf("Invalid fix quality [%s]", s.FixQuality)
 	}
 	s.NumSatellites = s.Fields[6]
