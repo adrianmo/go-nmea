@@ -27,30 +27,22 @@ type Sentence struct {
 	Raw      string   // The raw NMEA sentence received
 }
 
-func ParseSentence(input string) (Sentence, error) {
+// ParseSentence parses a raw message into it's fields
+func ParseSentence(raw string) (Sentence, error) {
 	var s Sentence
-	return s, s.parse(input)
-}
-
-// GetSentence getter
-func (s Sentence) GetSentence() Sentence {
-	return s
-}
-
-func (s *Sentence) parse(input string) error {
-	s.Raw = input
+	s.Raw = raw
 
 	// Start the sentence from the $ character
-	startPosition := strings.Index(s.Raw, sentenceStart)
+	startPosition := strings.Index(raw, sentenceStart)
 	if startPosition != 0 {
-		return fmt.Errorf("Sentence does not start with a '$'")
+		return s, fmt.Errorf("Sentence does not start with a '$'")
 	}
 
-	sentence := s.Raw[startPosition+1:]
+	sentence := raw[startPosition+1:]
 
 	fieldSum := strings.Split(sentence, checksumSep)
 	if len(fieldSum) != 2 {
-		return fmt.Errorf("Sentence does not contain single checksum separator")
+		return s, fmt.Errorf("Sentence does not contain single checksum separator")
 	}
 
 	fields := strings.Split(fieldSum[0], fieldSep)
@@ -59,10 +51,14 @@ func (s *Sentence) parse(input string) error {
 	s.Checksum = strings.ToUpper(fieldSum[1])
 
 	if err := s.sumOk(); err != nil {
-		return fmt.Errorf("Sentence checksum mismatch %s", err)
+		return s, fmt.Errorf("Sentence checksum mismatch %s", err)
 	}
+	return s, nil
+}
 
-	return nil
+// GetSentence getter
+func (s Sentence) GetSentence() Sentence {
+	return s
 }
 
 // SumOk returns whether the calculated checksum matches the message checksum.
