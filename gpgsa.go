@@ -19,18 +19,12 @@ const (
 // http://aprs.gids.nl/nmea/#gsa
 type GPGSA struct {
 	Sentence
-	// The selection mode.
-	Mode string
-	// The fix type.
-	FixType string
-	// List of satellite PRNs used for this fix.
-	SV []string
-	// Dilution of precision.
-	PDOP string
-	// Horizontal dilution of precision.
-	HDOP string
-	// Vertical dilution of precision.
-	VDOP string
+	Mode    string   // The selection mode.
+	FixType string   // The fix type.
+	SV      []string // List of satellite PRNs used for this fix.
+	PDOP    string   // Dilution of precision.
+	HDOP    string   // Horizontal dilution of precision.
+	VDOP    string   // Vertical dilution of precision.
 }
 
 // NewGPGSA parses the GPGSA sentence into this struct.

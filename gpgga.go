@@ -15,26 +15,16 @@ const (
 // http://aprs.gids.nl/nmea/#gga
 type GPGGA struct {
 	Sentence
-	// Time of fix.
-	Time Time
-	// Latitude.
-	Latitude LatLong
-	// Longitude.
-	Longitude LatLong
-	// Quality of fix.
-	FixQuality string
-	// Number of satellites in use.
-	NumSatellites string
-	// Horizontal dilution of precision.
-	HDOP string
-	// Altitude.
-	Altitude string
-	// Geoidal separation
-	Separation string
-	// Age of differential GPD data.
-	DGPSAge string
-	// DGPS reference station ID.
-	DGPSId string
+	Time          Time    // Time of fix.
+	Latitude      LatLong // Latitude.
+	Longitude     LatLong // Longitude.
+	FixQuality    string  // Quality of fix.
+	NumSatellites string  // Number of satellites in use.
+	HDOP          string  // Horizontal dilution of precision.
+	Altitude      string  // Altitude.
+	Separation    string  // Geoidal separation
+	DGPSAge       string  // Age of differential GPD data.
+	DGPSId        string  // DGPS reference station ID.
 }
 
 // NewGPGGA parses the GPGGA sentence into this struct.

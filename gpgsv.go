@@ -9,11 +9,10 @@ const (
 // http://aprs.gids.nl/nmea/#gpgsv
 type GPGSV struct {
 	Sentence
-	TotalMessages   int64 // Total number of messages of this type in this cycle
-	MessageNumber   int64 // Message number
-	NumberSVsInView int64 // Total number of SVs in view
-
-	Info []GPGSVInfo // visible satellite info (0-4 of these)
+	TotalMessages   int64       // Total number of messages of this type in this cycle
+	MessageNumber   int64       // Message number
+	NumberSVsInView int64       // Total number of SVs in view
+	Info            []GPGSVInfo // visible satellite info (0-4 of these)
 }
 
 // GPGSVInfo represents information about a visible satellite
