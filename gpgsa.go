@@ -38,14 +38,8 @@ func NewGPGSA(sentence Sentence) (GPGSA, error) {
 	s := GPGSA{Sentence: sentence}
 	p := newParser(s.Sentence, PrefixGPGSA)
 
-	s.Mode = p.String(0, "selection mode")
-	if s.Mode != Auto && s.Mode != Manual {
-		p.SetErr("selection mode", s.Mode)
-	}
-	s.FixType = p.String(1, "fix type")
-	if s.FixType != FixNone && s.FixType != Fix2D && s.FixType != Fix3D {
-		p.SetErr("fix type", s.FixType)
-	}
+	s.Mode = p.EnumString(0, "selection mode", Auto, Manual)
+	s.FixType = p.EnumString(1, "fix type", FixNone, Fix2D, Fix3D)
 	// Satellites in view.
 	for i := 2; i < 14; i++ {
 		if v := p.String(i, "satelite in view"); v != "" {

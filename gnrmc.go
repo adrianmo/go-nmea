@@ -1,10 +1,5 @@
 package nmea
 
-import (
-	"fmt"
-	"strconv"
-)
-
 const (
 	// PrefixGNRMC prefix of GNRMC sentence type
 	PrefixGNRMC = "GNRMC"
@@ -26,38 +21,23 @@ type GNRMC struct {
 
 // NewGNRMC constructor
 func NewGNRMC(sentence Sentence) (GNRMC, error) {
-	s := GNRMC{Sentence: sentence}
 	p := newParser(sentence, PrefixGNRMC)
-
-	s.Time = p.Time(0, "time")
-	s.Validity = p.String(1, "validity")
-	if s.Validity != ValidRMC && s.Validity != InvalidRMC {
-		return s, fmt.Errorf("GNRMC invalid validity: %s", s.Validity)
+	s := GNRMC{
+		Sentence:  sentence,
+		Time:      p.Time(0, "time"),
+		Validity:  p.EnumString(1, "validity", ValidRMC, InvalidRMC),
+		Latitude:  p.LatLong(2, 3, "latitude"),
+		Longitude: p.LatLong(4, 5, "longitude"),
+		Speed:     p.Float64(6, "speed"),
+		Course:    p.Float64(7, "course"),
+		Date:      p.String(8, "date"),
 	}
-
-	s.Latitude = p.LatLong(2, 3, "latitude")
-	s.Longitude = p.LatLong(4, 5, "longitude")
-	s.Speed = p.Float64(6, "speed")
-	s.Course = p.Float64(7, "course")
-	s.Date = p.String(8, "date")
-
-	if err := p.Err(); err != nil {
-		return s, err
-	}
-
-	var err error
-	if s.Fields[9] != "" {
-		s.Variation, err = strconv.ParseFloat(s.Fields[9], 64)
-		if err != nil {
-			return s, fmt.Errorf("GNRMC invalid variation: %s", s.Fields[9])
-		}
-		if s.Fields[10] == "W" {
+	if !p.Empty(9, "variation") {
+		s.Variation = p.Float64(9, "variation")
+		if p.EnumString(10, "direction", "W", "E") == "W" {
 			s.Variation = 0 - s.Variation
-		} else if s.Fields[10] != "E" {
-			return s, fmt.Errorf("GNRMC invalid variation: %s", s.Fields[10])
 		}
 	}
-
 	return s, p.Err()
 }
 

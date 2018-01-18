@@ -21,31 +21,17 @@ type GPGLL struct {
 
 // NewGPGLL constructor
 func NewGPGLL(sentence Sentence) (GPGLL, error) {
-	s := GPGLL{Sentence: sentence}
 	p := newParser(sentence, PrefixGPGLL)
-	s.Latitude = p.LatLong(0, 1, "latitude")
-	s.Longitude = p.LatLong(2, 3, "longitude")
-	s.Time = p.Time(4, "time")
-	s.Validity = p.String(5, "validity")
-	if s.Validity != ValidGLL && s.Validity != InvalidGLL {
-		p.SetErr("validity", s.Validity)
-	}
-	return s, p.Err()
+	return GPGLL{
+		Sentence:  sentence,
+		Latitude:  p.LatLong(0, 1, "latitude"),
+		Longitude: p.LatLong(2, 3, "longitude"),
+		Time:      p.Time(4, "time"),
+		Validity:  p.EnumString(5, "validity", ValidGLL, InvalidGLL),
+	}, p.Err()
 }
 
 // GetSentence getter
 func (s GPGLL) GetSentence() Sentence {
 	return s.Sentence
-}
-
-func (s *GPGLL) parse() error {
-	p := newParser(s.Sentence, PrefixGPGLL)
-	s.Latitude = p.LatLong(0, 1, "latitude")
-	s.Longitude = p.LatLong(2, 3, "longitude")
-	s.Time = p.Time(4, "time")
-	s.Validity = p.String(5, "validity")
-	if s.Validity != ValidGLL && s.Validity != InvalidGLL {
-		p.SetErr("validity", s.Validity)
-	}
-	return p.Err()
 }

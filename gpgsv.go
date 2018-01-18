@@ -26,12 +26,13 @@ type GPGSVInfo struct {
 
 // NewGPGSV constructor
 func NewGPGSV(sentence Sentence) (GPGSV, error) {
-	s := GPGSV{Sentence: sentence}
-	p := newParser(s.Sentence, PrefixGPGSV)
-	s.TotalMessages = p.Int64(0, "total number of messages")
-	s.MessageNumber = p.Int64(1, "message number")
-	s.NumberSVsInView = p.Int64(2, "number of SVs in view")
-	s.Info = nil
+	p := newParser(sentence, PrefixGPGSV)
+	s := GPGSV{
+		Sentence:        sentence,
+		TotalMessages:   p.Int64(0, "total number of messages"),
+		MessageNumber:   p.Int64(1, "message number"),
+		NumberSVsInView: p.Int64(2, "number of SVs in view"),
+	}
 	for i := 0; i < 4; i++ {
 		if 5*i+4 > len(s.Fields) {
 			break

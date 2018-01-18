@@ -18,13 +18,14 @@ type GPVTG struct {
 // NewGPVTG parses the GPVTG sentence into this struct.
 // e.g: $GPVTG,360.0,T,348.7,M,000.0,N,000.0,K*43
 func NewGPVTG(sentence Sentence) (GPVTG, error) {
-	s := GPVTG{Sentence: sentence}
 	p := newParser(sentence, PrefixGPVTG)
-	s.TrueTrack = p.Float64(0, "true track")
-	s.MagneticTrack = p.Float64(2, "magnetic track")
-	s.GroundSpeedKnots = p.Float64(4, "ground speed (knots)")
-	s.GroundSpeedKPH = p.Float64(6, "ground speed (km/h)")
-	return s, p.Err()
+	return GPVTG{
+		Sentence:         sentence,
+		TrueTrack:        p.Float64(0, "true track"),
+		MagneticTrack:    p.Float64(2, "magnetic track"),
+		GroundSpeedKnots: p.Float64(4, "ground speed (knots)"),
+		GroundSpeedKPH:   p.Float64(6, "ground speed (km/h)"),
+	}, p.Err()
 }
 
 // GetSentence getter
