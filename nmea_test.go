@@ -26,7 +26,7 @@ func TestBadStartCharacter(t *testing.T) {
 	// Check that a bad start character is flagged.
 	rawBadStart := "%GPFOO,1,2,3,x,y,z*1A"
 	_, err := Parse(rawBadStart)
-	assert.Error(t, err, "Expected 'Sentence does not contain a '$''")
+	assert.Error(t, err, "Expected 'Sentence does not start with a '$''")
 }
 
 func TestBadChecksumDelimiter(t *testing.T) {
@@ -84,7 +84,7 @@ func TestNoContainDelimiterSentence(t *testing.T) {
 	result, err := Parse(raw)
 	assert.Nil(t, result, "Result should be nil")
 	assert.NotNil(t, err, "Err should be an error")
-	assert.Equal(t, "Sentence does not contain a '$'", err.Error(), "Error sentence mismatch")
+	assert.Equal(t, "Sentence does not start with a '$'", err.Error(), "Error sentence mismatch")
 }
 
 func TestReturnValues(t *testing.T) {

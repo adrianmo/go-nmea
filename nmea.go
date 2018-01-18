@@ -37,10 +37,7 @@ func (s *Sentence) parse(input string) error {
 
 	// Start the sentence from the $ character
 	startPosition := strings.Index(s.Raw, sentenceStart)
-	if startPosition < 0 {
-		return fmt.Errorf("Sentence does not contain a '$'")
-	}
-	if startPosition > 0 {
+	if startPosition != 0 {
 		return fmt.Errorf("Sentence does not start with a '$'")
 	}
 
