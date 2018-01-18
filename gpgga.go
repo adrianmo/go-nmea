@@ -37,22 +37,11 @@ type GPGGA struct {
 	DGPSId string
 }
 
-// NewGPGGA constructor
-func NewGPGGA(sentence Sentence) (GPGGA, error) {
-	s := new(GPGGA)
-	s.Sentence = sentence
-	return *s, s.parse()
-}
-
-// GetSentence getter
-func (s GPGGA) GetSentence() Sentence {
-	return s.Sentence
-}
-
-// Parse parses the GPGGA sentence into this struct.
+// NewGPGGA parses the GPGGA sentence into this struct.
 // e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
-func (s *GPGGA) parse() error {
-	p := newParser(s.Sentence, PrefixGPGGA)
+func NewGPGGA(sentence Sentence) (GPGGA, error) {
+	s := GPGGA{Sentence: sentence}
+	p := newParser(sentence, PrefixGPGGA)
 
 	s.Time = p.Time(0, "time")
 	s.Latitude = p.LatLong(1, 2, "latitude")
@@ -68,5 +57,10 @@ func (s *GPGGA) parse() error {
 	s.DGPSAge = p.String(12, "dgps age")
 	s.DGPSId = p.String(13, "dgps id")
 
-	return p.Err()
+	return s, p.Err()
+}
+
+// GetSentence getter
+func (s GPGGA) GetSentence() Sentence {
+	return s.Sentence
 }

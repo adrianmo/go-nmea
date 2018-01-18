@@ -30,20 +30,8 @@ type GNGGA struct {
 }
 
 func NewGNGGA(sentence Sentence) (GNGGA, error) {
-	s := new(GNGGA)
-	s.Sentence = sentence
-	return *s, s.parse()
-}
-
-func (s GNGGA) GetSentence() Sentence {
-	return s.Sentence
-}
-
-func (s *GNGGA) parse() error {
-	p := newParser(s.Sentence, PrefixGNGGA)
-	if err := p.Err(); err != nil {
-		return err
-	}
+	s := GNGGA{Sentence: sentence}
+	p := newParser(sentence, PrefixGNGGA)
 
 	s.Time = p.Time(0, "time")
 	s.Latitude = p.LatLong(1, 2, "latitude")
@@ -59,5 +47,9 @@ func (s *GNGGA) parse() error {
 	s.Separation = p.String(10, "separation")
 	s.DGPSAge = p.String(12, "dgps age")
 	s.DGPSId = p.String(13, "dgps id")
-	return p.Err()
+	return s, p.Err()
+}
+
+func (s GNGGA) GetSentence() Sentence {
+	return s.Sentence
 }

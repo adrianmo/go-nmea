@@ -27,15 +27,6 @@ type GPGSVInfo struct {
 // NewGPGSV constructor
 func NewGPGSV(sentence Sentence) (GPGSV, error) {
 	s := GPGSV{Sentence: sentence}
-	return s, s.parse()
-}
-
-// GetSentence getter
-func (s GPGSV) GetSentence() Sentence {
-	return s.Sentence
-}
-
-func (s *GPGSV) parse() error {
 	p := newParser(s.Sentence, PrefixGPGSV)
 	s.TotalMessages = p.Int64(0, "total number of messages")
 	s.MessageNumber = p.Int64(1, "message number")
@@ -52,5 +43,10 @@ func (s *GPGSV) parse() error {
 			SNR:         p.Int64(6+i*4, "SNR"),
 		})
 	}
-	return p.Err()
+	return s, p.Err()
+}
+
+// GetSentence getter
+func (s GPGSV) GetSentence() Sentence {
+	return s.Sentence
 }

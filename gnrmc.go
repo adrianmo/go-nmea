@@ -26,23 +26,13 @@ type GNRMC struct {
 
 // NewGNRMC constructor
 func NewGNRMC(sentence Sentence) (GNRMC, error) {
-	s := new(GNRMC)
-	s.Sentence = sentence
-	return *s, s.parse()
-}
-
-// GetSentence getter
-func (s GNRMC) GetSentence() Sentence {
-	return s.Sentence
-}
-
-func (s *GNRMC) parse() error {
-	p := newParser(s.Sentence, PrefixGNRMC)
+	s := GNRMC{Sentence: sentence}
+	p := newParser(sentence, PrefixGNRMC)
 
 	s.Time = p.Time(0, "time")
 	s.Validity = p.String(1, "validity")
 	if s.Validity != ValidRMC && s.Validity != InvalidRMC {
-		return fmt.Errorf("GNRMC invalid validity: %s", s.Validity)
+		return s, fmt.Errorf("GNRMC invalid validity: %s", s.Validity)
 	}
 
 	s.Latitude = p.LatLong(2, 3, "latitude")
@@ -52,21 +42,26 @@ func (s *GNRMC) parse() error {
 	s.Date = p.String(8, "date")
 
 	if err := p.Err(); err != nil {
-		return err
+		return s, err
 	}
 
 	var err error
 	if s.Fields[9] != "" {
 		s.Variation, err = strconv.ParseFloat(s.Fields[9], 64)
 		if err != nil {
-			return fmt.Errorf("GNRMC invalid variation: %s", s.Fields[9])
+			return s, fmt.Errorf("GNRMC invalid variation: %s", s.Fields[9])
 		}
 		if s.Fields[10] == "W" {
 			s.Variation = 0 - s.Variation
 		} else if s.Fields[10] != "E" {
-			return fmt.Errorf("GNRMC invalid variation: %s", s.Fields[10])
+			return s, fmt.Errorf("GNRMC invalid variation: %s", s.Fields[10])
 		}
 	}
 
-	return p.Err()
+	return s, p.Err()
+}
+
+// GetSentence getter
+func (s GNRMC) GetSentence() Sentence {
+	return s.Sentence
 }

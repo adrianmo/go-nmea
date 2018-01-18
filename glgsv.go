@@ -26,18 +26,9 @@ type GLGSVInfo struct {
 
 // NewGLGSV constructor
 func NewGLGSV(sentence Sentence) (GLGSV, error) {
+	p := newParser(sentence, PrefixGLGSV)
+
 	s := GLGSV{Sentence: sentence}
-	return s, s.parse()
-}
-
-// GetSentence getter
-func (s GLGSV) GetSentence() Sentence {
-	return s.Sentence
-}
-
-func (s *GLGSV) parse() error {
-	p := newParser(s.Sentence, PrefixGLGSV)
-
 	s.TotalMessages = p.Int64(0, "total number of messages")
 	s.MessageNumber = p.Int64(1, "message number")
 	s.NumberSVsInView = p.Int64(2, "number of SVs in view")
@@ -55,5 +46,10 @@ func (s *GLGSV) parse() error {
 		})
 	}
 
-	return p.Err()
+	return s, p.Err()
+}
+
+// GetSentence getter
+func (s GLGSV) GetSentence() Sentence {
+	return s.Sentence
 }

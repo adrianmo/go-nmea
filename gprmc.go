@@ -30,18 +30,8 @@ type GPRMC struct {
 
 // NewGPRMC constructor
 func NewGPRMC(sentence Sentence) (GPRMC, error) {
-	s := new(GPRMC)
-	s.Sentence = sentence
-	return *s, s.parse()
-}
-
-// GetSentence getter
-func (s GPRMC) GetSentence() Sentence {
-	return s.Sentence
-}
-
-func (s *GPRMC) parse() error {
-	p := newParser(s.Sentence, PrefixGPRMC)
+	s := GPRMC{Sentence: sentence}
+	p := newParser(sentence, PrefixGPRMC)
 	s.Time = p.Time(0, "time")
 	s.Validity = p.String(1, "validity")
 	if s.Validity != ValidRMC && s.Validity != InvalidRMC {
@@ -55,21 +45,26 @@ func (s *GPRMC) parse() error {
 	s.Date = p.String(8, "date")
 
 	if err := p.Err(); err != nil {
-		return err
+		return s, err
 	}
 
 	var err error
 	if s.Fields[9] != "" {
 		s.Variation, err = strconv.ParseFloat(s.Fields[9], 64)
 		if err != nil {
-			return fmt.Errorf("GPRMC invalid variation: %s", s.Fields[9])
+			return s, fmt.Errorf("GPRMC invalid variation: %s", s.Fields[9])
 		}
 		if s.Fields[10] == "W" {
 			s.Variation = 0 - s.Variation
 		} else if s.Fields[10] != "E" {
-			return fmt.Errorf("GPRMC invalid variation: %s", s.Fields[10])
+			return s, fmt.Errorf("GPRMC invalid variation: %s", s.Fields[10])
 		}
 	}
 
-	return nil
+	return s, nil
+}
+
+// GetSentence getter
+func (s GPRMC) GetSentence() Sentence {
+	return s.Sentence
 }

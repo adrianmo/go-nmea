@@ -33,21 +33,9 @@ type GPGSA struct {
 	VDOP string
 }
 
-// NewGPGSA constructor
+// NewGPGSA parses the GPGSA sentence into this struct.
 func NewGPGSA(sentence Sentence) (GPGSA, error) {
-	s := new(GPGSA)
-	s.Sentence = sentence
-	return *s, s.parse()
-}
-
-// GetSentence getter
-func (s GPGSA) GetSentence() Sentence {
-	return s.Sentence
-}
-
-// Parse parses the GPGSA sentence into this struct.
-func (s *GPGSA) parse() error {
-
+	s := GPGSA{Sentence: sentence}
 	p := newParser(s.Sentence, PrefixGPGSA)
 
 	s.Mode = p.String(0, "selection mode")
@@ -69,5 +57,10 @@ func (s *GPGSA) parse() error {
 	s.HDOP = p.String(15, "hdop")
 	s.VDOP = p.String(16, "vdop")
 
-	return p.Err()
+	return s, p.Err()
+}
+
+// GetSentence getter
+func (s GPGSA) GetSentence() Sentence {
+	return s.Sentence
 }
