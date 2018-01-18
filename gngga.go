@@ -57,7 +57,7 @@ func (s *GNGGA) parse() error {
 		return fmt.Errorf("GNGGA decode error: %s", err)
 	}
 	s.FixQuality = s.Fields[5]
-	if s.FixQuality != Invalid && s.FixQuality != GPS && s.FixQuality != DGPS {
+	if s.FixQuality != Invalid && s.FixQuality != GPS && s.FixQuality != DGPS && s.FixQuality != PPS && s.FixQuality != RTK  && s.FixQuality != FRTK {
 		return fmt.Errorf("Invalid fix quality [%s]", s.FixQuality)
 	}
 	s.NumSatellites = s.Fields[6]
