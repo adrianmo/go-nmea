@@ -86,71 +86,27 @@ func Parse(s string) (SentenceI, error) {
 
 	switch sentence.Type {
 	case PrefixGPRMC:
-		gprmc := NewGPRMC(sentence)
-		if err := gprmc.parse(); err != nil {
-			return nil, err
-		}
-		return gprmc, nil
+		return NewGPRMC(sentence)
 	case PrefixGNRMC:
-		gnrmc := NewGNRMC(sentence)
-		if err := gnrmc.parse(); err != nil {
-			return nil, err
-		}
-		return gnrmc, nil
+		return NewGNRMC(sentence)
 	case PrefixGPGGA:
-		gpgga := NewGPGGA(sentence)
-		if err := gpgga.parse(); err != nil {
-			return nil, err
-		}
-		return gpgga, nil
+		return NewGPGGA(sentence)
 	case PrefixGNGGA:
-		gngga := NewGNGGA(sentence)
-		if err := gngga.parse(); err != nil {
-			return nil, err
-		}
-		return gngga, nil
+		return NewGNGGA(sentence)
 	case PrefixGPGSA:
-		gpgsa := NewGPGSA(sentence)
-		if err := gpgsa.parse(); err != nil {
-			return nil, err
-		}
-		return gpgsa, nil
+		return NewGPGSA(sentence)
 	case PrefixGPGLL:
-		gpgll := NewGPGLL(sentence)
-		if err := gpgll.parse(); err != nil {
-			return nil, err
-		}
-		return gpgll, nil
+		return NewGPGLL(sentence)
 	case PrefixGPVTG:
-		gpvtg := NewGPVTG(sentence)
-		if err := gpvtg.parse(); err != nil {
-			return nil, err
-		}
-		return gpvtg, nil
+		return NewGPVTG(sentence)
 	case PrefixGPZDA:
-		gpzda := NewGPZDA(sentence)
-		if err := gpzda.parse(); err != nil {
-			return nil, err
-		}
-		return gpzda, nil
+		return NewGPZDA(sentence)
 	case PrefixPGRME:
-		pgrme := NewPGRME(sentence)
-		if err := pgrme.parse(); err != nil {
-			return nil, err
-		}
-		return pgrme, nil
+		return NewPGRME(sentence)
 	case PrefixGPGSV:
-		gpgsv := NewGPGSV(sentence)
-		if err := gpgsv.parse(); err != nil {
-			return nil, err
-		}
-		return gpgsv, nil
+		return NewGPGSV(sentence)
 	case PrefixGLGSV:
-		glgsv := NewGLGSV(sentence)
-		if err := glgsv.parse(); err != nil {
-			return nil, err
-		}
-		return glgsv, nil
+		return NewGLGSV(sentence)
 	default:
 		return nil, fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
 	}

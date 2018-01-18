@@ -20,10 +20,10 @@ type GPGLL struct {
 }
 
 // NewGPGLL constructor
-func NewGPGLL(sentence Sentence) GPGLL {
+func NewGPGLL(sentence Sentence) (GPGLL, error) {
 	s := new(GPGLL)
 	s.Sentence = sentence
-	return *s
+	return *s, s.parse()
 }
 
 // GetSentence getter

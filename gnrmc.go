@@ -25,10 +25,10 @@ type GNRMC struct {
 }
 
 // NewGNRMC constructor
-func NewGNRMC(sentence Sentence) GNRMC {
+func NewGNRMC(sentence Sentence) (GNRMC, error) {
 	s := new(GNRMC)
 	s.Sentence = sentence
-	return *s
+	return *s, s.parse()
 }
 
 // GetSentence getter

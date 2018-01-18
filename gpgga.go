@@ -38,10 +38,10 @@ type GPGGA struct {
 }
 
 // NewGPGGA constructor
-func NewGPGGA(sentence Sentence) GPGGA {
+func NewGPGGA(sentence Sentence) (GPGGA, error) {
 	s := new(GPGGA)
 	s.Sentence = sentence
-	return *s
+	return *s, s.parse()
 }
 
 // GetSentence getter

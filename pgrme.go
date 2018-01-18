@@ -22,10 +22,10 @@ type PGRME struct {
 }
 
 // NewPGRME constructor
-func NewPGRME(sentence Sentence) PGRME {
+func NewPGRME(sentence Sentence) (PGRME, error) {
 	s := new(PGRME)
 	s.Sentence = sentence
-	return *s
+	return *s, s.parse()
 }
 
 // GetSentence getter

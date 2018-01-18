@@ -29,10 +29,10 @@ type GPRMC struct {
 }
 
 // NewGPRMC constructor
-func NewGPRMC(sentence Sentence) GPRMC {
+func NewGPRMC(sentence Sentence) (GPRMC, error) {
 	s := new(GPRMC)
 	s.Sentence = sentence
-	return *s
+	return *s, s.parse()
 }
 
 // GetSentence getter

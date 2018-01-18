@@ -16,10 +16,10 @@ type GPVTG struct {
 }
 
 // NewGPVTG constructor
-func NewGPVTG(sentence Sentence) GPVTG {
+func NewGPVTG(sentence Sentence) (GPVTG, error) {
 	s := new(GPVTG)
 	s.Sentence = sentence
-	return *s
+	return *s, s.parse()
 }
 
 // GetSentence getter

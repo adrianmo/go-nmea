@@ -25,8 +25,9 @@ type GLGSVInfo struct {
 }
 
 // NewGLGSV constructor
-func NewGLGSV(sentence Sentence) GLGSV {
-	return GLGSV{Sentence: sentence}
+func NewGLGSV(sentence Sentence) (GLGSV, error) {
+	s := GLGSV{Sentence: sentence}
+	return s, s.parse()
 }
 
 // GetSentence getter

@@ -20,10 +20,10 @@ type GPZDA struct {
 }
 
 // NewGPZDA constructor
-func NewGPZDA(sentence Sentence) GPZDA {
+func NewGPZDA(sentence Sentence) (GPZDA, error) {
 	s := new(GPZDA)
 	s.Sentence = sentence
-	return *s
+	return *s, s.parse()
 }
 
 // GetSentence getter

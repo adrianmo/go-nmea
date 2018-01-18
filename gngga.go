@@ -29,10 +29,10 @@ type GNGGA struct {
 	DGPSId string
 }
 
-func NewGNGGA(sentence Sentence) GNGGA {
+func NewGNGGA(sentence Sentence) (GNGGA, error) {
 	s := new(GNGGA)
 	s.Sentence = sentence
-	return *s
+	return *s, s.parse()
 }
 
 func (s GNGGA) GetSentence() Sentence {

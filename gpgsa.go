@@ -34,10 +34,10 @@ type GPGSA struct {
 }
 
 // NewGPGSA constructor
-func NewGPGSA(sentence Sentence) GPGSA {
+func NewGPGSA(sentence Sentence) (GPGSA, error) {
 	s := new(GPGSA)
 	s.Sentence = sentence
-	return *s
+	return *s, s.parse()
 }
 
 // GetSentence getter

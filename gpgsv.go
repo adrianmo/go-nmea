@@ -25,8 +25,9 @@ type GPGSVInfo struct {
 }
 
 // NewGPGSV constructor
-func NewGPGSV(sentence Sentence) GPGSV {
-	return GPGSV{Sentence: sentence}
+func NewGPGSV(sentence Sentence) (GPGSV, error) {
+	s := GPGSV{Sentence: sentence}
+	return s, s.parse()
 }
 
 // GetSentence getter
