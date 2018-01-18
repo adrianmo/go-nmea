@@ -20,25 +20,20 @@ type GPZDA struct {
 }
 
 // NewGPZDA constructor
-func NewGPZDA(sentence Sentence) GPZDA {
-	s := new(GPZDA)
-	s.Sentence = sentence
-	return *s
+func NewGPZDA(sentence Sentence) (GPZDA, error) {
+	p := newParser(sentence, PrefixGPZDA)
+	return GPZDA{
+		Sentence:      sentence,
+		Time:          p.Time(0, "time"),
+		Day:           p.Int64(1, "day"),
+		Month:         p.Int64(2, "month"),
+		Year:          p.Int64(3, "year"),
+		OffsetHours:   p.Int64(4, "offset (hours)"),
+		OffsetMinutes: p.Int64(5, "offset (minutes)"),
+	}, p.Err()
 }
 
 // GetSentence getter
 func (s GPZDA) GetSentence() Sentence {
 	return s.Sentence
-}
-
-// Parse parses the GPZDA sentence into this struct.
-func (s *GPZDA) parse() error {
-	p := newParser(s.Sentence, PrefixGPZDA)
-	s.Time = p.Time(0, "time")
-	s.Day = p.Int64(1, "day")
-	s.Month = p.Int64(2, "month")
-	s.Year = p.Int64(3, "year")
-	s.OffsetHours = p.Int64(4, "offset (hours)")
-	s.OffsetMinutes = p.Int64(5, "offset (minutes)")
-	return p.Err()
 }

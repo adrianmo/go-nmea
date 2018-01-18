@@ -29,35 +29,23 @@ type GNGGA struct {
 	DGPSId string
 }
 
-func NewGNGGA(sentence Sentence) GNGGA {
-	s := new(GNGGA)
-	s.Sentence = sentence
-	return *s
+func NewGNGGA(sentence Sentence) (GNGGA, error) {
+	p := newParser(sentence, PrefixGNGGA)
+	return GNGGA{
+		Sentence:      sentence,
+		Time:          p.Time(0, "time"),
+		Latitude:      p.LatLong(1, 2, "latitude"),
+		Longitude:     p.LatLong(3, 4, "longitude"),
+		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS),
+		NumSatellites: p.String(6, "number of satelites"),
+		HDOP:          p.String(7, "hdop"),
+		Altitude:      p.String(8, "altitude"),
+		Separation:    p.String(10, "separation"),
+		DGPSAge:       p.String(12, "dgps age"),
+		DGPSId:        p.String(13, "dgps id"),
+	}, p.Err()
 }
 
 func (s GNGGA) GetSentence() Sentence {
 	return s.Sentence
-}
-
-func (s *GNGGA) parse() error {
-	p := newParser(s.Sentence, PrefixGNGGA)
-	if err := p.Err(); err != nil {
-		return err
-	}
-
-	s.Time = p.Time(0, "time")
-	s.Latitude = p.LatLong(1, 2, "latitude")
-	s.Longitude = p.LatLong(3, 4, "longitude")
-
-	s.FixQuality = p.String(5, "fix quality")
-	if s.FixQuality != Invalid && s.FixQuality != GPS && s.FixQuality != DGPS {
-		p.SetErr("fix quality", s.FixQuality)
-	}
-	s.NumSatellites = p.String(6, "number of satelites")
-	s.HDOP = p.String(7, "hdop")
-	s.Altitude = p.String(8, "altitude")
-	s.Separation = p.String(10, "separation")
-	s.DGPSAge = p.String(12, "dgps age")
-	s.DGPSId = p.String(13, "dgps id")
-	return p.Err()
 }

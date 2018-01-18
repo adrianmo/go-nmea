@@ -37,36 +37,26 @@ type GPGGA struct {
 	DGPSId string
 }
 
-// NewGPGGA constructor
-func NewGPGGA(sentence Sentence) GPGGA {
-	s := new(GPGGA)
-	s.Sentence = sentence
-	return *s
+// NewGPGGA parses the GPGGA sentence into this struct.
+// e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
+func NewGPGGA(sentence Sentence) (GPGGA, error) {
+	p := newParser(sentence, PrefixGPGGA)
+	return GPGGA{
+		Sentence:      sentence,
+		Time:          p.Time(0, "time"),
+		Latitude:      p.LatLong(1, 2, "latitude"),
+		Longitude:     p.LatLong(3, 4, "longitude"),
+		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS),
+		NumSatellites: p.String(6, "number of satelites"),
+		HDOP:          p.String(7, "hdap"),
+		Altitude:      p.String(8, "altitude"),
+		Separation:    p.String(10, "separation"),
+		DGPSAge:       p.String(12, "dgps age"),
+		DGPSId:        p.String(13, "dgps id"),
+	}, p.Err()
 }
 
 // GetSentence getter
 func (s GPGGA) GetSentence() Sentence {
 	return s.Sentence
-}
-
-// Parse parses the GPGGA sentence into this struct.
-// e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
-func (s *GPGGA) parse() error {
-	p := newParser(s.Sentence, PrefixGPGGA)
-
-	s.Time = p.Time(0, "time")
-	s.Latitude = p.LatLong(1, 2, "latitude")
-	s.Longitude = p.LatLong(3, 4, "longitude")
-	s.FixQuality = p.String(5, "fix quality")
-	if s.FixQuality != Invalid && s.FixQuality != GPS && s.FixQuality != DGPS {
-		p.SetErr("fix quality", s.FixQuality)
-	}
-	s.NumSatellites = p.String(6, "number of satelites")
-	s.HDOP = p.String(7, "hdap")
-	s.Altitude = p.String(8, "altitude")
-	s.Separation = p.String(10, "separation")
-	s.DGPSAge = p.String(12, "dgps age")
-	s.DGPSId = p.String(13, "dgps id")
-
-	return p.Err()
 }

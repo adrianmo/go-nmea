@@ -29,6 +29,10 @@ func (p *parser) SetErr(context, value string) {
 	}
 }
 
+func (p *parser) Empty(i int, context string) bool {
+	return p.String(i, context) == ""
+}
+
 func (p *parser) String(i int, context string) string {
 	if p.err != nil {
 		return ""
@@ -37,6 +41,20 @@ func (p *parser) String(i int, context string) string {
 		p.SetErr(context, strconv.Itoa(i))
 	}
 	return p.Fields[i]
+}
+
+func (p *parser) EnumString(i int, context string, options ...string) string {
+	s := p.String(i, context)
+	if p.err != nil {
+		return ""
+	}
+	for _, o := range options {
+		if o == s {
+			return s
+		}
+	}
+	p.SetErr(context, s)
+	return ""
 }
 
 func (p *parser) Int64(i int, context string) int64 {
