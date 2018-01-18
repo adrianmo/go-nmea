@@ -221,3 +221,39 @@ func ParseTime(s string) (Time, error) {
 	}
 	return Time{true, hour, minute, second, millisecond}, nil
 }
+
+// Date type
+type Date struct {
+	Valid bool
+	DD    int
+	MM    int
+	YY    int
+}
+
+// String representation of date
+func (d Date) String() string {
+	return fmt.Sprintf("%02d/%02d/%02d", d.DD, d.MM, d.YY)
+}
+
+// ParseDate field ddmmyy format
+func ParseDate(ddmmyy string) (Date, error) {
+	if ddmmyy == "" {
+		return Date{}, nil
+	}
+	if len(ddmmyy) != 6 {
+		return Date{}, fmt.Errorf("parse date: exptected ddmmyy format, got '%s'", ddmmyy)
+	}
+	dd, err := strconv.Atoi(ddmmyy[0:2])
+	if err != nil {
+		return Date{}, errors.New(ddmmyy)
+	}
+	mm, err := strconv.Atoi(ddmmyy[2:4])
+	if err != nil {
+		return Date{}, errors.New(ddmmyy)
+	}
+	yy, err := strconv.Atoi(ddmmyy[4:6])
+	if err != nil {
+		return Date{}, errors.New(ddmmyy)
+	}
+	return Date{true, dd, mm, yy}, nil
+}

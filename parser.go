@@ -35,12 +35,6 @@ func (p *parser) SetErr(context, value string) {
 	}
 }
 
-// Empty returns true if the field a the specified index
-// is the empty string, out of range.
-func (p *parser) Empty(i int, context string) bool {
-	return p.String(i, context) == ""
-}
-
 // String returns the field value at the specified index.
 func (p *parser) String(i int, context string) string {
 	if p.err != nil {
@@ -110,6 +104,20 @@ func (p *parser) Time(i int, context string) Time {
 		return Time{}
 	}
 	v, err := ParseTime(s)
+	if err != nil {
+		p.SetErr(context, s)
+	}
+	return v
+}
+
+// Date returns the Date value at the specified index.
+// If the value is empty, the Date is marked as invalid.
+func (p *parser) Date(i int, context string) Date {
+	s := p.String(i, context)
+	if p.err != nil {
+		return Date{}
+	}
+	v, err := ParseDate(s)
 	if err != nil {
 		p.SetErr(context, s)
 	}
