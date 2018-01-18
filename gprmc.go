@@ -37,7 +37,7 @@ func NewGPRMC(s Sentence) (GPRMC, error) {
 		Date:      p.String(8, "date"),
 		Variation: p.Float64(9, "variation"),
 	}
-	if p.EnumString(10, "variation", "W", "E") == "W" {
+	if p.EnumString(10, "variation", West, East) == West {
 		m.Variation = 0 - m.Variation
 	}
 	return m, p.Err()
