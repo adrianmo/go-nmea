@@ -27,28 +27,22 @@ type Sentence struct {
 	Raw      string   // The raw NMEA sentence received
 }
 
-// GetSentence getter
-func (s Sentence) GetSentence() Sentence {
-	return s
-}
-
-func (s *Sentence) parse(input string) error {
-	s.Raw = input
+// ParseSentence parses a raw message into it's fields
+func ParseSentence(raw string) (Sentence, error) {
+	var s Sentence
+	s.Raw = raw
 
 	// Start the sentence from the $ character
-	startPosition := strings.Index(s.Raw, sentenceStart)
-	if startPosition < 0 {
-		return fmt.Errorf("Sentence does not contain a '$'")
-	}
-	if startPosition > 0 {
-		return fmt.Errorf("Sentence does not start with a '$'")
+	startPosition := strings.Index(raw, sentenceStart)
+	if startPosition != 0 {
+		return s, fmt.Errorf("Sentence does not start with a '$'")
 	}
 
-	sentence := s.Raw[startPosition+1:]
+	sentence := raw[startPosition+1:]
 
 	fieldSum := strings.Split(sentence, checksumSep)
 	if len(fieldSum) != 2 {
-		return fmt.Errorf("Sentence does not contain single checksum separator")
+		return s, fmt.Errorf("Sentence does not contain single checksum separator")
 	}
 
 	fields := strings.Split(fieldSum[0], fieldSep)
@@ -57,10 +51,14 @@ func (s *Sentence) parse(input string) error {
 	s.Checksum = strings.ToUpper(fieldSum[1])
 
 	if err := s.sumOk(); err != nil {
-		return fmt.Errorf("Sentence checksum mismatch %s", err)
+		return s, fmt.Errorf("Sentence checksum mismatch %s", err)
 	}
+	return s, nil
+}
 
-	return nil
+// GetSentence getter
+func (s Sentence) GetSentence() Sentence {
+	return s
 }
 
 // SumOk returns whether the calculated checksum matches the message checksum.
@@ -82,79 +80,35 @@ func (s *Sentence) sumOk() error {
 
 // Parse parses the given string into the correct sentence type.
 func Parse(s string) (SentenceI, error) {
-	sentence := Sentence{}
-	if err := sentence.parse(s); err != nil {
+	sentence, err := ParseSentence(s)
+	if err != nil {
 		return nil, err
 	}
 
-	if sentence.Type == PrefixGPRMC {
-		gprmc := NewGPRMC(sentence)
-		if err := gprmc.parse(); err != nil {
-			return nil, err
-		}
-		return gprmc, nil
-	} else if sentence.Type == PrefixGNRMC {
-		gnrmc := NewGNRMC(sentence)
-		if err := gnrmc.parse(); err != nil {
-			return nil, err
-		}
-		return gnrmc, nil
-	} else if sentence.Type == PrefixGPGGA {
-		gpgga := NewGPGGA(sentence)
-		if err := gpgga.parse(); err != nil {
-			return nil, err
-		}
-		return gpgga, nil
-	} else if sentence.Type == PrefixGNGGA {
-		gngga := NewGNGGA(sentence)
-		if err := gngga.parse(); err != nil {
-			return nil, err
-		}
-		return gngga, nil
-	} else if sentence.Type == PrefixGPGSA {
-		gpgsa := NewGPGSA(sentence)
-		if err := gpgsa.parse(); err != nil {
-			return nil, err
-		}
-		return gpgsa, nil
-	} else if sentence.Type == PrefixGPGLL {
-		gpgll := NewGPGLL(sentence)
-		if err := gpgll.parse(); err != nil {
-			return nil, err
-		}
-		return gpgll, nil
-	} else if sentence.Type == PrefixGPVTG {
-		gpvtg := NewGPVTG(sentence)
-		if err := gpvtg.parse(); err != nil {
-			return nil, err
-		}
-		return gpvtg, nil
-	} else if sentence.Type == PrefixGPZDA {
-		gpzda := NewGPZDA(sentence)
-		if err := gpzda.parse(); err != nil {
-			return nil, err
-		}
-		return gpzda, nil
-	} else if sentence.Type == PrefixPGRME {
-		pgrme := NewPGRME(sentence)
-		if err := pgrme.parse(); err != nil {
-			return nil, err
-		}
-		return pgrme, nil
-	} else if sentence.Type == PrefixGPGSV {
-		gpgsv := NewGPGSV(sentence)
-		if err := gpgsv.parse(); err != nil {
-			return nil, err
-		}
-		return gpgsv, nil
-	} else if sentence.Type == PrefixGLGSV {
-		glgsv := NewGLGSV(sentence)
-		if err := glgsv.parse(); err != nil {
-			return nil, err
-		}
-		return glgsv, nil
+	switch sentence.Type {
+	case PrefixGPRMC:
+		return NewGPRMC(sentence)
+	case PrefixGNRMC:
+		return NewGNRMC(sentence)
+	case PrefixGPGGA:
+		return NewGPGGA(sentence)
+	case PrefixGNGGA:
+		return NewGNGGA(sentence)
+	case PrefixGPGSA:
+		return NewGPGSA(sentence)
+	case PrefixGPGLL:
+		return NewGPGLL(sentence)
+	case PrefixGPVTG:
+		return NewGPVTG(sentence)
+	case PrefixGPZDA:
+		return NewGPZDA(sentence)
+	case PrefixPGRME:
+		return NewPGRME(sentence)
+	case PrefixGPGSV:
+		return NewGPGSV(sentence)
+	case PrefixGLGSV:
+		return NewGLGSV(sentence)
+	default:
+		return nil, fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
 	}
-
-	err := fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
-	return nil, err
 }

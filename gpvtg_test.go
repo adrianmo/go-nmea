@@ -26,7 +26,7 @@ func TestGPVTGBadSentence(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPVTG decode true track error: T", err.Error(), "Incorrect error message")
+	assert.Equal(t, "GPVTG invalid true track: T", err.Error(), "Incorrect error message")
 }
 
 func TestGPVTGWrongSentence(t *testing.T) {

@@ -1,7 +1,5 @@
 package nmea
 
-import "fmt"
-
 const (
 	// PrefixGPGGA prefix
 	PrefixGPGGA = "GPGGA"
@@ -17,66 +15,38 @@ const (
 // http://aprs.gids.nl/nmea/#gga
 type GPGGA struct {
 	Sentence
-	// Time of fix.
-	Time string
-	// Latitude.
-	Latitude LatLong
-	// Longitude.
-	Longitude LatLong
-	// Quality of fix.
-	FixQuality string
-	// Number of satellites in use.
-	NumSatellites string
-	// Horizontal dilution of precision.
-	HDOP string
-	// Altitude.
-	Altitude string
-	// Geoidal separation
-	Separation string
-	// Age of differential GPD data.
-	DGPSAge string
-	// DGPS reference station ID.
-	DGPSId string
+	Time          Time    // Time of fix.
+	Latitude      LatLong // Latitude.
+	Longitude     LatLong // Longitude.
+	FixQuality    string  // Quality of fix.
+	NumSatellites string  // Number of satellites in use.
+	HDOP          string  // Horizontal dilution of precision.
+	Altitude      string  // Altitude.
+	Separation    string  // Geoidal separation
+	DGPSAge       string  // Age of differential GPD data.
+	DGPSId        string  // DGPS reference station ID.
 }
 
-// NewGPGGA constructor
-func NewGPGGA(sentence Sentence) GPGGA {
-	s := new(GPGGA)
-	s.Sentence = sentence
-	return *s
+// NewGPGGA parses the GPGGA sentence into this struct.
+// e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
+func NewGPGGA(s Sentence) (GPGGA, error) {
+	p := newParser(s, PrefixGPGGA)
+	return GPGGA{
+		Sentence:      s,
+		Time:          p.Time(0, "time"),
+		Latitude:      p.LatLong(1, 2, "latitude"),
+		Longitude:     p.LatLong(3, 4, "longitude"),
+		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS),
+		NumSatellites: p.String(6, "number of satelites"),
+		HDOP:          p.String(7, "hdap"),
+		Altitude:      p.String(8, "altitude"),
+		Separation:    p.String(10, "separation"),
+		DGPSAge:       p.String(12, "dgps age"),
+		DGPSId:        p.String(13, "dgps id"),
+	}, p.Err()
 }
 
 // GetSentence getter
 func (s GPGGA) GetSentence() Sentence {
 	return s.Sentence
-}
-
-// Parse parses the GPGGA sentence into this struct.
-// e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
-func (s *GPGGA) parse() error {
-	var err error
-
-	if s.Type != PrefixGPGGA {
-		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPGGA)
-	}
-	s.Time = s.Fields[0]
-	s.Latitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[1], s.Fields[2]))
-	if err != nil {
-		return fmt.Errorf("GPGGA decode error: %s", err)
-	}
-	s.Longitude, err = NewLatLong(fmt.Sprintf("%s %s", s.Fields[3], s.Fields[4]))
-	if err != nil {
-		return fmt.Errorf("GPGGA decode error: %s", err)
-	}
-	s.FixQuality = s.Fields[5]
-	if s.FixQuality != Invalid && s.FixQuality != GPS && s.FixQuality != DGPS {
-		return fmt.Errorf("Invalid fix quality [%s]", s.FixQuality)
-	}
-	s.NumSatellites = s.Fields[6]
-	s.HDOP = s.Fields[7]
-	s.Altitude = s.Fields[8]
-	s.Separation = s.Fields[10]
-	s.DGPSAge = s.Fields[12]
-	s.DGPSId = s.Fields[13]
-	return nil
 }

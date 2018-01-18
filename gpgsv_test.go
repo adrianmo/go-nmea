@@ -71,13 +71,13 @@ func TestGPGSVBadSentence(t *testing.T) {
 		Input string
 		Error string
 	}{
-		{"$GPGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*6b", "GPGSV decode number of SVs in view error: 11.2"},
-		{"$GPGSV,A3,1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV decode total number of messages error: A3"},
-		{"$GPGSV,3,A1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV decode message number error: A1"},
-		{"$GPGSV,3,1,11,A03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV decode SV prn number error: A03"},
-		{"$GPGSV,3,1,11,03,A03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV decode elevation error: A03"},
-		{"$GPGSV,3,1,11,03,03,A111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV decode azimuth error: A111"},
-		{"$GPGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV decode SNR error: A00"},
+		{"$GPGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*6b", "GPGSV invalid number of SVs in view: 11.2"},
+		{"$GPGSV,A3,1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid total number of messages: A3"},
+		{"$GPGSV,3,A1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid message number: A1"},
+		{"$GPGSV,3,1,11,A03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid SV prn number: A03"},
+		{"$GPGSV,3,1,11,03,A03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid elevation: A03"},
+		{"$GPGSV,3,1,11,03,03,A111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid azimuth: A111"},
+		{"$GPGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid SNR: A00"},
 	}
 	for _, tc := range tests {
 		_, err := Parse(tc.Input)
@@ -89,10 +89,8 @@ func TestGPGSVBadSentence(t *testing.T) {
 
 func TestGPGSVWrongSentence(t *testing.T) {
 	wrongMsg := "$GPXTE,A,A,4.07,L,N*6D"
-	sent := Sentence{}
-	sent.parse(wrongMsg)
-	msg := GPGSV{Sentence: sent}
-	err := msg.parse()
+	sent, _ := ParseSentence(wrongMsg)
+	_, err := NewGPGSV(sent)
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPXTE is not a GPGSV", err.Error(), "Incorrect error message")
+	assert.Equal(t, "GPGSV invalid prefix: GPXTE", err.Error(), "Incorrect error message")
 }

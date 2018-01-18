@@ -173,3 +173,83 @@ func ParseDMS(s string) (LatLong, error) {
 	val := LatLong(float64(degrees) + (float64(minutes) / 60.0) + (float64(seconds) / 60.0 / 60.0))
 	return val, nil
 }
+
+// Time type
+type Time struct {
+	Valid       bool
+	Hour        int
+	Minute      int
+	Second      int
+	Millisecond int
+}
+
+// String representation of Time
+func (t Time) String() string {
+	return fmt.Sprintf("%02d:%02d:%02d.%04d", t.Hour, t.Minute, t.Second, t.Millisecond)
+}
+
+// Parse wall clock time.
+// e.g. hhmmss.ssss
+// An empty time string will result in an invalid time.
+func ParseTime(s string) (Time, error) {
+	if s == "" {
+		return Time{}, nil
+	}
+	ms := "0000"
+	hhmmss := s
+	if parts := strings.SplitN(s, ".", 2); len(parts) > 1 {
+		hhmmss, ms = parts[0], parts[1]
+	}
+	if len(hhmmss) != 6 {
+		return Time{}, fmt.Errorf("parse time: exptected hhmmss.ss format, got '%s'", s)
+	}
+	hour, err := strconv.Atoi(hhmmss[0:2])
+	if err != nil {
+		return Time{}, errors.New(hhmmss)
+	}
+	minute, err := strconv.Atoi(hhmmss[2:4])
+	if err != nil {
+		return Time{}, errors.New(hhmmss)
+	}
+	second, err := strconv.Atoi(hhmmss[4:6])
+	if err != nil {
+		return Time{}, errors.New(hhmmss)
+	}
+	millisecond, err := strconv.Atoi(ms)
+	if err != nil {
+		return Time{}, errors.New(hhmmss)
+	}
+	return Time{true, hour, minute, second, millisecond}, nil
+}
+
+type Int64 struct {
+	Int64 int64
+	Valid bool
+}
+
+func ParseInt64(s string) (Int64, error) {
+	if s == "" {
+		return Int64{}, nil
+	}
+	v, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		return Int64{}, err
+	}
+	return Int64{v, true}, nil
+}
+
+type Float64 struct {
+	Float64 float64
+	Valid   bool
+}
+
+func ParseFloat64(s string) (Float64, error) {
+	if s == "" {
+		return Float64{}, nil
+	}
+	v, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return Float64{}, err
+	}
+	return Float64{v, true}, nil
+}
