@@ -221,35 +221,3 @@ func ParseTime(s string) (Time, error) {
 	}
 	return Time{true, hour, minute, second, millisecond}, nil
 }
-
-type Int64 struct {
-	Int64 int64
-	Valid bool
-}
-
-func ParseInt64(s string) (Int64, error) {
-	if s == "" {
-		return Int64{}, nil
-	}
-	v, err := strconv.ParseInt(s, 10, 64)
-	if err != nil {
-		return Int64{}, err
-	}
-	return Int64{v, true}, nil
-}
-
-type Float64 struct {
-	Float64 float64
-	Valid   bool
-}
-
-func ParseFloat64(s string) (Float64, error) {
-	if s == "" {
-		return Float64{}, nil
-	}
-	v, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		return Float64{}, err
-	}
-	return Float64{v, true}, nil
-}
