@@ -37,10 +37,7 @@ func (s *Sentence) parse(input string) error {
 
 	// Start the sentence from the $ character
 	startPosition := strings.Index(s.Raw, sentenceStart)
-	if startPosition < 0 {
-		return fmt.Errorf("Sentence does not contain a '$'")
-	}
-	if startPosition > 0 {
+	if startPosition != 0 {
 		return fmt.Errorf("Sentence does not start with a '$'")
 	}
 
@@ -82,79 +79,79 @@ func (s *Sentence) sumOk() error {
 
 // Parse parses the given string into the correct sentence type.
 func Parse(s string) (SentenceI, error) {
-	sentence := Sentence{}
+	var sentence Sentence
 	if err := sentence.parse(s); err != nil {
 		return nil, err
 	}
 
-	if sentence.Type == PrefixGPRMC {
+	switch sentence.Type {
+	case PrefixGPRMC:
 		gprmc := NewGPRMC(sentence)
 		if err := gprmc.parse(); err != nil {
 			return nil, err
 		}
 		return gprmc, nil
-	} else if sentence.Type == PrefixGNRMC {
+	case PrefixGNRMC:
 		gnrmc := NewGNRMC(sentence)
 		if err := gnrmc.parse(); err != nil {
 			return nil, err
 		}
 		return gnrmc, nil
-	} else if sentence.Type == PrefixGPGGA {
+	case PrefixGPGGA:
 		gpgga := NewGPGGA(sentence)
 		if err := gpgga.parse(); err != nil {
 			return nil, err
 		}
 		return gpgga, nil
-	} else if sentence.Type == PrefixGNGGA {
+	case PrefixGNGGA:
 		gngga := NewGNGGA(sentence)
 		if err := gngga.parse(); err != nil {
 			return nil, err
 		}
 		return gngga, nil
-	} else if sentence.Type == PrefixGPGSA {
+	case PrefixGPGSA:
 		gpgsa := NewGPGSA(sentence)
 		if err := gpgsa.parse(); err != nil {
 			return nil, err
 		}
 		return gpgsa, nil
-	} else if sentence.Type == PrefixGPGLL {
+	case PrefixGPGLL:
 		gpgll := NewGPGLL(sentence)
 		if err := gpgll.parse(); err != nil {
 			return nil, err
 		}
 		return gpgll, nil
-	} else if sentence.Type == PrefixGPVTG {
+	case PrefixGPVTG:
 		gpvtg := NewGPVTG(sentence)
 		if err := gpvtg.parse(); err != nil {
 			return nil, err
 		}
 		return gpvtg, nil
-	} else if sentence.Type == PrefixGPZDA {
+	case PrefixGPZDA:
 		gpzda := NewGPZDA(sentence)
 		if err := gpzda.parse(); err != nil {
 			return nil, err
 		}
 		return gpzda, nil
-	} else if sentence.Type == PrefixPGRME {
+	case PrefixPGRME:
 		pgrme := NewPGRME(sentence)
 		if err := pgrme.parse(); err != nil {
 			return nil, err
 		}
 		return pgrme, nil
-	} else if sentence.Type == PrefixGPGSV {
+	case PrefixGPGSV:
 		gpgsv := NewGPGSV(sentence)
 		if err := gpgsv.parse(); err != nil {
 			return nil, err
 		}
 		return gpgsv, nil
-	} else if sentence.Type == PrefixGLGSV {
+	case PrefixGLGSV:
 		glgsv := NewGLGSV(sentence)
 		if err := glgsv.parse(); err != nil {
 			return nil, err
 		}
 		return glgsv, nil
+	default:
+		return nil, fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
 	}
-
-	err := fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
-	return nil, err
 }
