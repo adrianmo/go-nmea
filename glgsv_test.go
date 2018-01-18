@@ -89,8 +89,7 @@ func TestGLGSVBadSentence(t *testing.T) {
 
 func TestGLGSVWrongSentence(t *testing.T) {
 	wrongMsg := "$GPXTE,A,A,4.07,L,N*6D"
-	sent := Sentence{}
-	sent.parse(wrongMsg)
+	sent, _ := ParseSentence(wrongMsg)
 	_, err := NewGLGSV(sent)
 	assert.Error(t, err, "Parse error not returned")
 	assert.Equal(t, "GLGSV invalid prefix: GPXTE", err.Error(), "Incorrect error message")

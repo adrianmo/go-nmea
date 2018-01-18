@@ -27,9 +27,33 @@ type Sentence struct {
 	Raw      string   // The raw NMEA sentence received
 }
 
-func ParseSentence(input string) (Sentence, error) {
+// ParseSentence parses a raw message into it's fields
+func ParseSentence(raw string) (Sentence, error) {
 	var s Sentence
-	return s, s.parse(input)
+
+	// Start the sentence from the $ character
+	startPosition := strings.Index(raw, sentenceStart)
+	if startPosition != 0 {
+		return s, fmt.Errorf("Sentence does not start with a '$'")
+	}
+
+	sentence := raw[startPosition+1:]
+
+	fieldSum := strings.Split(sentence, checksumSep)
+	if len(fieldSum) != 2 {
+		return s, fmt.Errorf("Sentence does not contain single checksum separator")
+	}
+
+	fields := strings.Split(fieldSum[0], fieldSep)
+	s.Type = fields[0]
+	s.Fields = fields[1:]
+	s.Checksum = strings.ToUpper(fieldSum[1])
+	s.Raw = raw
+
+	if err := s.sumOk(); err != nil {
+		return s, fmt.Errorf("Sentence checksum mismatch %s", err)
+	}
+	return s, nil
 }
 
 // GetSentence getter
@@ -37,35 +61,7 @@ func (s Sentence) GetSentence() Sentence {
 	return s
 }
 
-func (s *Sentence) parse(input string) error {
-	s.Raw = input
-
-	// Start the sentence from the $ character
-	startPosition := strings.Index(s.Raw, sentenceStart)
-	if startPosition != 0 {
-		return fmt.Errorf("Sentence does not start with a '$'")
-	}
-
-	sentence := s.Raw[startPosition+1:]
-
-	fieldSum := strings.Split(sentence, checksumSep)
-	if len(fieldSum) != 2 {
-		return fmt.Errorf("Sentence does not contain single checksum separator")
-	}
-
-	fields := strings.Split(fieldSum[0], fieldSep)
-	s.Type = fields[0]
-	s.Fields = fields[1:]
-	s.Checksum = strings.ToUpper(fieldSum[1])
-
-	if err := s.sumOk(); err != nil {
-		return fmt.Errorf("Sentence checksum mismatch %s", err)
-	}
-
-	return nil
-}
-
-// SumOk returns whether the calculated checksum matches the message checksum.
+// sumOk returns whether the calculated checksum matches the message checksum.
 func (s *Sentence) sumOk() error {
 	var checksum uint8
 	for i := 1; i < len(s.Raw) && string(s.Raw[i]) != checksumSep; i++ {
@@ -83,36 +79,35 @@ func (s *Sentence) sumOk() error {
 }
 
 // Parse parses the given string into the correct sentence type.
-func Parse(s string) (SentenceI, error) {
-	sentence, err := ParseSentence(s)
+func Parse(raw string) (SentenceI, error) {
+	s, err := ParseSentence(raw)
 	if err != nil {
 		return nil, err
 	}
-
-	switch sentence.Type {
+	switch s.Type {
 	case PrefixGPRMC:
-		return NewGPRMC(sentence)
+		return NewGPRMC(s)
 	case PrefixGNRMC:
-		return NewGNRMC(sentence)
+		return NewGNRMC(s)
 	case PrefixGPGGA:
-		return NewGPGGA(sentence)
+		return NewGPGGA(s)
 	case PrefixGNGGA:
-		return NewGNGGA(sentence)
+		return NewGNGGA(s)
 	case PrefixGPGSA:
-		return NewGPGSA(sentence)
+		return NewGPGSA(s)
 	case PrefixGPGLL:
-		return NewGPGLL(sentence)
+		return NewGPGLL(s)
 	case PrefixGPVTG:
-		return NewGPVTG(sentence)
+		return NewGPVTG(s)
 	case PrefixGPZDA:
-		return NewGPZDA(sentence)
+		return NewGPZDA(s)
 	case PrefixPGRME:
-		return NewPGRME(sentence)
+		return NewPGRME(s)
 	case PrefixGPGSV:
-		return NewGPGSV(sentence)
+		return NewGPGSV(s)
 	case PrefixGLGSV:
-		return NewGLGSV(sentence)
+		return NewGLGSV(s)
 	default:
-		return nil, fmt.Errorf("Sentence type '%s' not implemented", sentence.Type)
+		return nil, fmt.Errorf("Sentence type '%s' not implemented", s.Type)
 	}
 }

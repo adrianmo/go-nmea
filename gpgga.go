@@ -15,34 +15,24 @@ const (
 // http://aprs.gids.nl/nmea/#gga
 type GPGGA struct {
 	Sentence
-	// Time of fix.
-	Time Time
-	// Latitude.
-	Latitude LatLong
-	// Longitude.
-	Longitude LatLong
-	// Quality of fix.
-	FixQuality string
-	// Number of satellites in use.
-	NumSatellites string
-	// Horizontal dilution of precision.
-	HDOP string
-	// Altitude.
-	Altitude string
-	// Geoidal separation
-	Separation string
-	// Age of differential GPD data.
-	DGPSAge string
-	// DGPS reference station ID.
-	DGPSId string
+	Time          Time    // Time of fix.
+	Latitude      LatLong // Latitude.
+	Longitude     LatLong // Longitude.
+	FixQuality    string  // Quality of fix.
+	NumSatellites string  // Number of satellites in use.
+	HDOP          string  // Horizontal dilution of precision.
+	Altitude      string  // Altitude.
+	Separation    string  // Geoidal separation
+	DGPSAge       string  // Age of differential GPD data.
+	DGPSId        string  // DGPS reference station ID.
 }
 
 // NewGPGGA parses the GPGGA sentence into this struct.
 // e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
-func NewGPGGA(sentence Sentence) (GPGGA, error) {
-	p := newParser(sentence, PrefixGPGGA)
+func NewGPGGA(s Sentence) (GPGGA, error) {
+	p := newParser(s, PrefixGPGGA)
 	return GPGGA{
-		Sentence:      sentence,
+		Sentence:      s,
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),

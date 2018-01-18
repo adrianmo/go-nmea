@@ -17,10 +17,10 @@ type GPVTG struct {
 
 // NewGPVTG parses the GPVTG sentence into this struct.
 // e.g: $GPVTG,360.0,T,348.7,M,000.0,N,000.0,K*43
-func NewGPVTG(sentence Sentence) (GPVTG, error) {
-	p := newParser(sentence, PrefixGPVTG)
+func NewGPVTG(s Sentence) (GPVTG, error) {
+	p := newParser(s, PrefixGPVTG)
 	return GPVTG{
-		Sentence:         sentence,
+		Sentence:         s,
 		TrueTrack:        p.Float64(0, "true track"),
 		MagneticTrack:    p.Float64(2, "magnetic track"),
 		GroundSpeedKnots: p.Float64(4, "ground speed (knots)"),

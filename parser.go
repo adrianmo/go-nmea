@@ -5,12 +5,15 @@ import (
 	"strconv"
 )
 
+// parser provides a simple way of accessing and parsing
+// sentence fields
 type parser struct {
 	Sentence
 	prefix string
 	err    error
 }
 
+// newParser constructor
 func newParser(s Sentence, prefix string) *parser {
 	p := &parser{Sentence: s, prefix: prefix}
 	if p.Type != prefix {
@@ -19,20 +22,26 @@ func newParser(s Sentence, prefix string) *parser {
 	return p
 }
 
+// Err returns the first error encounterd during the parser's usage.
 func (p *parser) Err() error {
 	return p.err
 }
 
+// SetErr assigns the an error. Calling this method has no
+// effect if there is already an error.
 func (p *parser) SetErr(context, value string) {
 	if p.err == nil {
 		p.err = fmt.Errorf("%s invalid %s: %s", p.prefix, context, value)
 	}
 }
 
+// Empty returns true if the field a the specified index
+// is the empty string, out of range.
 func (p *parser) Empty(i int, context string) bool {
 	return p.String(i, context) == ""
 }
 
+// String returns the field value at the specified index.
 func (p *parser) String(i int, context string) string {
 	if p.err != nil {
 		return ""
@@ -43,6 +52,8 @@ func (p *parser) String(i int, context string) string {
 	return p.Fields[i]
 }
 
+// EnumString returns the field value at the specified index.
+// An error occurs if the value is not one of the options.
 func (p *parser) EnumString(i int, context string, options ...string) string {
 	s := p.String(i, context)
 	if p.err != nil {
@@ -57,6 +68,8 @@ func (p *parser) EnumString(i int, context string, options ...string) string {
 	return ""
 }
 
+// Int64 returns the int64 value at the specified index.
+// If the value is an emtpy string, 0 is returned.
 func (p *parser) Int64(i int, context string) int64 {
 	s := p.String(i, context)
 	if p.err != nil {
@@ -72,6 +85,8 @@ func (p *parser) Int64(i int, context string) int64 {
 	return v
 }
 
+// Float64 returns the float64 value at the specified index.
+// If the value is an empty string, 0 is returned.
 func (p *parser) Float64(i int, context string) float64 {
 	s := p.String(i, context)
 	if p.err != nil {
@@ -87,6 +102,8 @@ func (p *parser) Float64(i int, context string) float64 {
 	return v
 }
 
+// Time returns the Time value at the specified index.
+// If the value is empty, the Time is marked as invalid.
 func (p *parser) Time(i int, context string) Time {
 	s := p.String(i, context)
 	if p.err != nil {
@@ -99,6 +116,7 @@ func (p *parser) Time(i int, context string) Time {
 	return v
 }
 
+// LatLong returns the coordinate value of the specified fields.
 func (p *parser) LatLong(i, j int, context string) LatLong {
 	a := p.String(i, context)
 	b := p.String(j, context)

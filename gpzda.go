@@ -9,21 +9,19 @@ const (
 // http://aprs.gids.nl/nmea/#zda
 type GPZDA struct {
 	Sentence
-	Time  Time
-	Day   int64
-	Month int64
-	Year  int64
-	// Local time zone offset from GMT, hours
-	OffsetHours int64
-	// Local time zone offset from GMT, minutes
-	OffsetMinutes int64
+	Time          Time
+	Day           int64
+	Month         int64
+	Year          int64
+	OffsetHours   int64 // Local time zone offset from GMT, hours
+	OffsetMinutes int64 // Local time zone offset from GMT, minutes
 }
 
 // NewGPZDA constructor
-func NewGPZDA(sentence Sentence) (GPZDA, error) {
-	p := newParser(sentence, PrefixGPZDA)
+func NewGPZDA(s Sentence) (GPZDA, error) {
+	p := newParser(s, PrefixGPZDA)
 	return GPZDA{
-		Sentence:      sentence,
+		Sentence:      s,
 		Time:          p.Time(0, "time"),
 		Day:           p.Int64(1, "day"),
 		Month:         p.Int64(2, "month"),
