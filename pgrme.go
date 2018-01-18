@@ -1,10 +1,5 @@
 package nmea
 
-import (
-	"fmt"
-	"strconv"
-)
-
 const (
 	// PrefixPGRME prefix for PGRME sentence type
 	PrefixPGRME = "PGRME"
@@ -23,49 +18,26 @@ type PGRME struct {
 
 // NewPGRME constructor
 func NewPGRME(sentence Sentence) (PGRME, error) {
-	s := new(PGRME)
-	s.Sentence = sentence
-	return *s, s.parse()
+	p := newParser(sentence, PrefixPGRME)
+
+	horizontal := p.Float64(0, "horizontal error")
+	_ = p.EnumString(1, "horizontal error unit", ErrorUnit)
+
+	vertial := p.Float64(2, "vertical error")
+	_ = p.EnumString(3, "vertical error unit", ErrorUnit)
+
+	spherical := p.Float64(4, "spherical error")
+	_ = p.EnumString(5, "spherical error unit", ErrorUnit)
+
+	return PGRME{
+		Sentence:   sentence,
+		Horizontal: horizontal,
+		Vertical:   vertial,
+		Spherical:  spherical,
+	}, p.Err()
 }
 
 // GetSentence getter
 func (s PGRME) GetSentence() Sentence {
 	return s.Sentence
-}
-
-func (s *PGRME) parse() error {
-	var err error
-
-	if s.Type != PrefixPGRME {
-		return fmt.Errorf("%s is not a %s", s.Type, PrefixPGRME)
-	}
-
-	s.Horizontal, err = strconv.ParseFloat(s.Fields[0], 64)
-	if err != nil {
-		return fmt.Errorf("PGRME decode invalid horizontal error: '%s'", s.Fields[0])
-	}
-
-	if s.Fields[1] != ErrorUnit {
-		return fmt.Errorf("PGRME decode invalid horizontal error unit: '%s'", s.Fields[1])
-	}
-
-	s.Vertical, err = strconv.ParseFloat(s.Fields[2], 64)
-	if err != nil {
-		return fmt.Errorf("PGRME decode invalid vertical error: '%s'", s.Fields[2])
-	}
-
-	if s.Fields[3] != ErrorUnit {
-		return fmt.Errorf("PGRME decode invalid vertical error unit: '%s'", s.Fields[3])
-	}
-
-	s.Spherical, err = strconv.ParseFloat(s.Fields[4], 64)
-	if err != nil {
-		return fmt.Errorf("PGRME decode invalid spherical error: '%s'", s.Fields[4])
-	}
-
-	if s.Fields[5] != ErrorUnit {
-		return fmt.Errorf("PGRME decode invalid spherical error unit: '%s'", s.Fields[5])
-	}
-
-	return nil
 }
