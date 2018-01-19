@@ -50,7 +50,8 @@ func ParseSentence(raw string) (Sentence, error) {
 	)
 	// Validate the checksum
 	if checksum != checksumRaw {
-		return Sentence{}, fmt.Errorf("nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
+		return Sentence{}, fmt.Errorf(
+			"nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
 	return Sentence{
 		Type:     fields[0],
