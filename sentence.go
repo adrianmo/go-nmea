@@ -6,12 +6,9 @@ import (
 )
 
 const (
-	// The token to indicate the start of a sentence.
-	SentenceStart = "$"
-	// The token to delimit fields of a sentence.
-	FieldSep = ","
-	// The token to delimit the checksum of a sentence.
-	ChecksumSep = "*"
+	SentenceStart = "$" // The token to indicate the start of a sentence.
+	FieldSep      = "," // The token to delimit fields of a sentence.
+	ChecksumSep   = "*" // The token to delimit the checksum of a sentence.
 )
 
 //Message interface for all NMEA sentence
