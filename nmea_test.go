@@ -7,13 +7,13 @@ import (
 )
 
 func TestChecksumOK(t *testing.T) {
-	s := Sentence{Raw: "$GPFOO,1,2,3.3,x,y,zz,*51", Checksum: "51"}
-	assert.NoError(t, s.sumOk(), "Checksum check failed")
+	_, err := ParseSentence("$GPFOO,1,2,3.3,x,y,zz,*51")
+	assert.NoError(t, err, "Checksum check failed")
 }
 
 func TestChecksumBad(t *testing.T) {
-	s := Sentence{Raw: "$GPFOO,1,2,3.3,x,y,zz,*51", Checksum: "2C"}
-	assert.Error(t, s.sumOk(), "Expected '[51 != 2C]'")
+	_, err := ParseSentence("$GPFOO,1,2,3.4,x,y,zz,*51")
+	assert.Error(t, err, "Checksum check failed")
 }
 
 func TestChecksumBadRaw(t *testing.T) {
@@ -68,7 +68,7 @@ func TestMultipleStartDelimiterSentence(t *testing.T) {
 	result, err := Parse(raw)
 	assert.Nil(t, result, "Result should be nil")
 	assert.NotNil(t, err, "Err should be an error")
-	assert.Equal(t, "Sentence checksum mismatch [28 != 0C]", err.Error(), "Error sentence mismatch")
+	assert.Equal(t, "nmea: sentence checksum mismatch [28 != 0C]", err.Error(), "Error sentence mismatch")
 }
 
 func TestNoStartDelimiterSentence(t *testing.T) {
@@ -76,7 +76,7 @@ func TestNoStartDelimiterSentence(t *testing.T) {
 	result, err := Parse(raw)
 	assert.Nil(t, result, "Result should be nil")
 	assert.NotNil(t, err, "Err should be an error")
-	assert.Equal(t, "Sentence does not start with a '$'", err.Error(), "Error sentence mismatch")
+	assert.Equal(t, "nmea: sentence does not start with a '$'", err.Error(), "Error sentence mismatch")
 }
 
 func TestNoContainDelimiterSentence(t *testing.T) {
@@ -84,7 +84,7 @@ func TestNoContainDelimiterSentence(t *testing.T) {
 	result, err := Parse(raw)
 	assert.Nil(t, result, "Result should be nil")
 	assert.NotNil(t, err, "Err should be an error")
-	assert.Equal(t, "Sentence does not start with a '$'", err.Error(), "Error sentence mismatch")
+	assert.Equal(t, "nmea: sentence does not start with a '$'", err.Error(), "Error sentence mismatch")
 }
 
 func TestReturnValues(t *testing.T) {
@@ -92,5 +92,5 @@ func TestReturnValues(t *testing.T) {
 	result, err := Parse("$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0A")
 	assert.Nil(t, result, "Result should be nil")
 	assert.NotNil(t, err, "Err should be an error")
-	assert.Equal(t, "Sentence checksum mismatch [0C != 0A]", err.Error(), "Error sentence mismatch")
+	assert.Equal(t, "nmea: sentence checksum mismatch [0C != 0A]", err.Error(), "Error sentence mismatch")
 }
