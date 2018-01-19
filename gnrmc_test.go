@@ -45,7 +45,7 @@ func TestGNRMCGoodSentence(t *testing.T) {
 		s, err := Parse(tt.Input)
 
 		assert.NoError(t, err, "Unexpected error parsing good sentence")
-		assert.Equal(t, PrefixGNRMC, s.GetSentence().Type, "Prefix does not match")
+		assert.Equal(t, PrefixGNRMC, s.GetType(), "Prefix does not match")
 
 		sentence := s.(GNRMC)
 

@@ -13,7 +13,9 @@ const (
 
 //Message interface for all NMEA sentence
 type Message interface {
+	fmt.Stringer
 	GetSentence() Sentence
+	GetType() string
 }
 
 // Sentence contains the information about the NMEA sentence
@@ -52,10 +54,9 @@ func ParseSentence(raw string) (Sentence, error) {
 	}, nil
 }
 
-// GetSentence getter
-func (s Sentence) GetSentence() Sentence {
-	return s
-}
+func (s Sentence) GetSentence() Sentence { return s }
+func (s Sentence) GetType() string       { return s.Type }
+func (s Sentence) String() string        { return s.Raw }
 
 // xor all the bytes in a string an return it
 // as an uppercase hex string

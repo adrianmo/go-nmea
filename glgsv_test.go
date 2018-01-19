@@ -11,7 +11,7 @@ func TestGLGSVGoodSentence(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGLGSV, s.GetSentence().Type, "Prefix does not match")
+	assert.Equal(t, PrefixGLGSV, s.GetType(), "Prefix does not match")
 
 	sentence := s.(GLGSV)
 	assert.Equal(t, int64(3), sentence.TotalMessages, "Total messages does not match")
@@ -44,7 +44,7 @@ func TestGLGSVShort(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGLGSV, s.GetSentence().Type, "Prefix does not match")
+	assert.Equal(t, PrefixGLGSV, s.GetType(), "Prefix does not match")
 
 	sentence := s.(GLGSV)
 	assert.Equal(t, int64(3), sentence.TotalMessages, "Total messages does not match")

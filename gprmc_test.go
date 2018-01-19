@@ -53,7 +53,7 @@ func TestGPRMCGoodSentence(t *testing.T) {
 		s, err := Parse(tt.Input)
 
 		assert.NoError(t, err, "Unexpected error parsing good sentence")
-		assert.Equal(t, PrefixGPRMC, s.GetSentence().Type, "Prefix does not match")
+		assert.Equal(t, PrefixGPRMC, s.GetType(), "Prefix does not match")
 
 		sentence := s.(GPRMC)
 

@@ -54,7 +54,7 @@ func TestGoodSentenceType(t *testing.T) {
 	raw := "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C"
 	expected := "GPRMC"
 	m, _ := Parse(raw)
-	assert.Equal(t, expected, m.GetSentence().Type, "Got '%s', expected '%s'", m.GetSentence().Type, expected)
+	assert.Equal(t, expected, m.GetType(), "Got '%s', expected '%s'", m.GetType(), expected)
 }
 
 func TestGoodRawSentence(t *testing.T) {
