@@ -11,7 +11,7 @@ const (
 	ChecksumSep   = "*" // The token to delimit the checksum of a sentence.
 )
 
-//Message interface for all NMEA sentence
+// Message interface for all NMEA sentence
 type Message interface {
 	fmt.Stringer
 	Sentence() Sent
@@ -19,7 +19,7 @@ type Message interface {
 	Validate() error
 }
 
-// Sentence contains the information about the NMEA sentence
+// Sent contains the information about the NMEA sentence
 type Sent struct {
 	Type     string   // The sentence type (e.g $GPGSA)
 	Fields   []string // Array of fields
