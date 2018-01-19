@@ -47,20 +47,20 @@ func TestGoodFields(t *testing.T) {
 	raw := "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C"
 	expectedFields := []string{"235236", "A", "3925.9479", "N", "11945.9211", "W", "44.7", "153.6", "250905", "15.2", "E", "A"}
 	m, _ := Parse(raw)
-	assert.EqualValues(t, expectedFields, m.GetSentence().Fields, "Got '%q', expected '%q'", m.GetSentence().Fields, expectedFields)
+	assert.EqualValues(t, expectedFields, m.Sentence().Fields, "Got '%q', expected '%q'", m.Sentence().Fields, expectedFields)
 }
 
 func TestGoodSentenceType(t *testing.T) {
 	raw := "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C"
 	expected := "GPRMC"
 	m, _ := Parse(raw)
-	assert.Equal(t, expected, m.GetType(), "Got '%s', expected '%s'", m.GetType(), expected)
+	assert.Equal(t, expected, m.Prefix(), "Got '%s', expected '%s'", m.Prefix(), expected)
 }
 
 func TestGoodRawSentence(t *testing.T) {
 	raw := "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C"
 	m, _ := Parse(raw)
-	assert.Equal(t, raw, m.GetSentence().Raw, "Bad raw sentence")
+	assert.Equal(t, raw, m.String(), "Bad raw sentence")
 }
 
 func TestMultipleStartDelimiterSentence(t *testing.T) {

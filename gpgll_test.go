@@ -11,7 +11,7 @@ func TestGPGLLGoodSentence(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGPGLL, s.GetType(), "Prefix does not match")
+	assert.Equal(t, PrefixGPGLL, s.Prefix(), "Prefix does not match")
 
 	sentence := s.(GPGLL)
 

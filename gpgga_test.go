@@ -42,7 +42,7 @@ func TestGPGGABadType(t *testing.T) {
 	s, err := Parse(badType)
 
 	assert.NoError(t, err, "Unexpected error parsing sentence")
-	assert.NotEqual(t, "GPGGA", s.GetType(), "Unexpected sentence type")
+	assert.NotEqual(t, "GPGGA", s.Prefix(), "Unexpected sentence type")
 }
 
 func TestGPGGABadLatitude(t *testing.T) {

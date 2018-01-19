@@ -11,7 +11,7 @@ func TestPGRMEGoodSentence(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixPGRME, s.GetType(), "Prefix does not match")
+	assert.Equal(t, PrefixPGRME, s.Prefix(), "Prefix does not match")
 
 	sentence := s.(PGRME)
 

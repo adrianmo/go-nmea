@@ -11,7 +11,7 @@ func TestGPZDAGoodSentence(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGPZDA, s.GetType(), "Prefix does not match")
+	assert.Equal(t, PrefixGPZDA, s.Prefix(), "Prefix does not match")
 
 	sentence := s.(GPZDA)
 

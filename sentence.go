@@ -14,8 +14,8 @@ const (
 //Message interface for all NMEA sentence
 type Message interface {
 	fmt.Stringer
-	GetSentence() Sent
-	GetType() string
+	Sentence() Sent
+	Prefix() string
 	Validate() error
 }
 
@@ -27,10 +27,10 @@ type Sent struct {
 	Raw      string   // The raw NMEA sentence received
 }
 
-func (s Sent) GetSentence() Sent { return s }
-func (s Sent) GetType() string   { return s.Type }
-func (s Sent) String() string    { return s.Raw }
-func (s Sent) Validate() error   { return nil }
+func (s Sent) Sentence() Sent  { return s }
+func (s Sent) Prefix() string  { return s.Type }
+func (s Sent) String() string  { return s.Raw }
+func (s Sent) Validate() error { return nil }
 
 // ParseSentence parses a raw message into it's fields
 func ParseSentence(raw string) (Sent, error) {
