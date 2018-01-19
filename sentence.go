@@ -60,6 +60,8 @@ func (s Sentence) GetSentence() Sentence {
 	return s
 }
 
+// xor all the bytes in a string an return it
+// as an uppercase hex string
 func xorChecksum(s string) string {
 	var checksum uint8
 	for i := 0; i < len(s); i++ {
