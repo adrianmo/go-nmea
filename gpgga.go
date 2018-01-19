@@ -45,8 +45,3 @@ func NewGPGGA(s Sentence) (GPGGA, error) {
 		DGPSId:        p.String(13, "dgps id"),
 	}, p.Err()
 }
-
-// GetSentence getter
-func (s GPGGA) GetSentence() Sentence {
-	return s.Sentence
-}

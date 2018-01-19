@@ -42,8 +42,3 @@ func NewGPRMC(s Sentence) (GPRMC, error) {
 	}
 	return m, p.Err()
 }
-
-// GetSentence getter
-func (s GPRMC) GetSentence() Sentence {
-	return s.Sentence
-}

@@ -45,8 +45,3 @@ func NewGLGSV(s Sentence) (GLGSV, error) {
 	}
 	return m, p.Err()
 }
-
-// GetSentence getter
-func (s GLGSV) GetSentence() Sentence {
-	return s.Sentence
-}

@@ -36,8 +36,3 @@ func NewPGRME(s Sentence) (PGRME, error) {
 		Spherical:  spherical,
 	}, p.Err()
 }
-
-// GetSentence getter
-func (s PGRME) GetSentence() Sentence {
-	return s.Sentence
-}

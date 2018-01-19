@@ -30,8 +30,3 @@ func NewGPZDA(s Sentence) (GPZDA, error) {
 		OffsetMinutes: p.Int64(5, "offset (minutes)"),
 	}, p.Err()
 }
-
-// GetSentence getter
-func (s GPZDA) GetSentence() Sentence {
-	return s.Sentence
-}

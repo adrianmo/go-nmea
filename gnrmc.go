@@ -38,8 +38,3 @@ func NewGNRMC(s Sentence) (GNRMC, error) {
 	}
 	return m, p.Err()
 }
-
-// GetSentence getter
-func (s GNRMC) GetSentence() Sentence {
-	return s.Sentence
-}

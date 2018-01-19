@@ -45,8 +45,3 @@ func NewGPGSV(s Sentence) (GPGSV, error) {
 	}
 	return m, p.Err()
 }
-
-// GetSentence getter
-func (s GPGSV) GetSentence() Sentence {
-	return s.Sentence
-}

@@ -27,8 +27,3 @@ func NewGPVTG(s Sentence) (GPVTG, error) {
 		GroundSpeedKPH:   p.Float64(6, "ground speed (km/h)"),
 	}, p.Err()
 }
-
-// GetSentence getter
-func (s GPVTG) GetSentence() Sentence {
-	return s.Sentence
-}

@@ -35,7 +35,3 @@ func NewGNGGA(s Sentence) (GNGGA, error) {
 		DGPSId:        p.String(13, "dgps id"),
 	}, p.Err()
 }
-
-func (s GNGGA) GetSentence() Sentence {
-	return s.Sentence
-}

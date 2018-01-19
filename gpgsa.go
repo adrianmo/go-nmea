@@ -47,8 +47,3 @@ func NewGPGSA(s Sentence) (GPGSA, error) {
 	m.VDOP = p.Float64(16, "vdop")
 	return m, p.Err()
 }
-
-// GetSentence getter
-func (s GPGSA) GetSentence() Sentence {
-	return s.Sentence
-}

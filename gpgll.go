@@ -30,8 +30,3 @@ func NewGPGLL(s Sentence) (GPGLL, error) {
 		Validity:  p.EnumString(5, "validity", ValidGLL, InvalidGLL),
 	}, p.Err()
 }
-
-// GetSentence getter
-func (s GPGLL) GetSentence() Sentence {
-	return s.Sentence
-}
