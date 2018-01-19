@@ -37,19 +37,16 @@ func ParseSentence(raw string) (Sentence, error) {
 	if sumSepIndex == -1 {
 		return Sentence{}, fmt.Errorf("nmea: sentence does not contain single checksum separator")
 	}
-
 	var (
 		fieldsRaw   = raw[startIndex+1 : sumSepIndex]
 		fields      = strings.Split(fieldsRaw, FieldSep)
 		checksumRaw = strings.ToUpper(raw[sumSepIndex+1:])
 		checksum    = xorChecksum(fieldsRaw)
 	)
-
 	// Validate the checksum
 	if checksum != checksumRaw {
 		return Sentence{}, fmt.Errorf("nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
-
 	return Sentence{
 		Type:     fields[0],
 		Fields:   fields[1:],
