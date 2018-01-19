@@ -16,6 +16,7 @@ type Message interface {
 	fmt.Stringer
 	GetSentence() Sentence
 	GetType() string
+	Validate() error
 }
 
 // Sentence contains the information about the NMEA sentence
@@ -29,6 +30,7 @@ type Sentence struct {
 func (s Sentence) GetSentence() Sentence { return s }
 func (s Sentence) GetType() string       { return s.Type }
 func (s Sentence) String() string        { return s.Raw }
+func (s Sentence) Validate() error       { return nil }
 
 // ParseSentence parses a raw message into it's fields
 func ParseSentence(raw string) (Sentence, error) {
