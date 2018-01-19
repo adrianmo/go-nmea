@@ -16,7 +16,7 @@ func TestGPGGAGoodSentence(t *testing.T) {
 	lon, _ := NewLatLong("15124.5567 E")
 	// Attributes of the parsed sentence, and their expected values.
 	expected := GPGGA{
-		Sentence: Sentence{
+		Sent: Sent{
 			Type:     "GPGGA",
 			Fields:   []string{"034225.077", "3356.4650", "S", "15124.5567", "E", "1", "03", "9.7", "-25.0", "M", "21.0", "M", "", "0000"},
 			Checksum: "51",

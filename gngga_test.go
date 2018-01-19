@@ -16,7 +16,7 @@ func TestGNGGAGoodSentence(t *testing.T) {
 	lon, _ := NewLatLong("01021.4290 E")
 	// Attributes of the parsed sentence, and their expected values.
 	expected := GNGGA{
-		Sentence: Sentence{
+		Sent: Sent{
 			Type:     "GNGGA",
 			Fields:   []string{"203415.000", "6325.6138", "N", "01021.4290", "E", "1", "8", "2.42", "72.5", "M", "41.5", "M", "", ""},
 			Checksum: "7C",

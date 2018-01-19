@@ -18,7 +18,7 @@ const (
 // GPGSA represents overview satellite data.
 // http://aprs.gids.nl/nmea/#gsa
 type GPGSA struct {
-	Sentence
+	Sent
 	Mode    string   // The selection mode.
 	FixType string   // The fix type.
 	SV      []string // List of satellite PRNs used for this fix.
@@ -28,12 +28,12 @@ type GPGSA struct {
 }
 
 // NewGPGSA parses the GPGSA sentence into this struct.
-func NewGPGSA(s Sentence) (GPGSA, error) {
+func NewGPGSA(s Sent) (GPGSA, error) {
 	p := newParser(s, PrefixGPGSA)
 	m := GPGSA{
-		Sentence: s,
-		Mode:     p.EnumString(0, "selection mode", Auto, Manual),
-		FixType:  p.EnumString(1, "fix type", FixNone, Fix2D, Fix3D),
+		Sent:    s,
+		Mode:    p.EnumString(0, "selection mode", Auto, Manual),
+		FixType: p.EnumString(1, "fix type", FixNone, Fix2D, Fix3D),
 	}
 	// Satellites in view.
 	for i := 2; i < 14; i++ {

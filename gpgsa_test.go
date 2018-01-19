@@ -14,7 +14,7 @@ func TestGPGSAGoodSentence(t *testing.T) {
 
 	// Attributes of the parsed sentence, and their expected values.
 	expected := GPGSA{
-		Sentence: Sentence{
+		Sent: Sent{
 			Type:     "GPGSA",
 			Fields:   []string{"A", "3", "22", "19", "18", "27", "14", "03", "", "", "", "", "", "", "3.1", "2.0", "2.4"},
 			Checksum: "36",

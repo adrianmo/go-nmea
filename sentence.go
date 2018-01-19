@@ -14,33 +14,33 @@ const (
 //Message interface for all NMEA sentence
 type Message interface {
 	fmt.Stringer
-	GetSentence() Sentence
+	GetSentence() Sent
 	GetType() string
 	Validate() error
 }
 
 // Sentence contains the information about the NMEA sentence
-type Sentence struct {
+type Sent struct {
 	Type     string   // The sentence type (e.g $GPGSA)
 	Fields   []string // Array of fields
 	Checksum string   // The Checksum
 	Raw      string   // The raw NMEA sentence received
 }
 
-func (s Sentence) GetSentence() Sentence { return s }
-func (s Sentence) GetType() string       { return s.Type }
-func (s Sentence) String() string        { return s.Raw }
-func (s Sentence) Validate() error       { return nil }
+func (s Sent) GetSentence() Sent { return s }
+func (s Sent) GetType() string   { return s.Type }
+func (s Sent) String() string    { return s.Raw }
+func (s Sent) Validate() error   { return nil }
 
 // ParseSentence parses a raw message into it's fields
-func ParseSentence(raw string) (Sentence, error) {
+func ParseSentence(raw string) (Sent, error) {
 	startIndex := strings.Index(raw, SentenceStart)
 	if startIndex != 0 {
-		return Sentence{}, fmt.Errorf("nmea: sentence does not start with a '$'")
+		return Sent{}, fmt.Errorf("nmea: sentence does not start with a '$'")
 	}
 	sumSepIndex := strings.Index(raw, ChecksumSep)
 	if sumSepIndex == -1 {
-		return Sentence{}, fmt.Errorf("nmea: sentence does not contain checksum separator")
+		return Sent{}, fmt.Errorf("nmea: sentence does not contain checksum separator")
 	}
 	var (
 		fieldsRaw   = raw[startIndex+1 : sumSepIndex]
@@ -50,10 +50,10 @@ func ParseSentence(raw string) (Sentence, error) {
 	)
 	// Validate the checksum
 	if checksum != checksumRaw {
-		return Sentence{}, fmt.Errorf(
+		return Sent{}, fmt.Errorf(
 			"nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
-	return Sentence{
+	return Sent{
 		Type:     fields[0],
 		Fields:   fields[1:],
 		Checksum: checksumRaw,

@@ -12,7 +12,7 @@ const (
 // GPRMC is the Recommended Minimum Specific GNSS data.
 // http://aprs.gids.nl/nmea/#rmc
 type GPRMC struct {
-	Sentence
+	Sent
 	Time      Time    // Time Stamp
 	Validity  string  // validity - A-ok, V-invalid
 	Latitude  LatLong // Latitude
@@ -24,10 +24,10 @@ type GPRMC struct {
 }
 
 // NewGPRMC constructor
-func NewGPRMC(s Sentence) (GPRMC, error) {
+func NewGPRMC(s Sent) (GPRMC, error) {
 	p := newParser(s, PrefixGPRMC)
 	m := GPRMC{
-		Sentence:  s,
+		Sent:      s,
 		Time:      p.Time(0, "time"),
 		Validity:  p.EnumString(1, "validity", ValidRMC, InvalidRMC),
 		Latitude:  p.LatLong(2, 3, "latitude"),

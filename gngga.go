@@ -6,7 +6,7 @@ const (
 )
 
 type GNGGA struct {
-	Sentence
+	Sent
 	Time          Time    // Time of fix.
 	Latitude      LatLong // Latitude.
 	Longitude     LatLong // Longitude.
@@ -19,10 +19,10 @@ type GNGGA struct {
 	DGPSId        string  // DGPS reference station ID.
 }
 
-func NewGNGGA(s Sentence) (GNGGA, error) {
+func NewGNGGA(s Sent) (GNGGA, error) {
 	p := newParser(s, PrefixGNGGA)
 	return GNGGA{
-		Sentence:      s,
+		Sent:          s,
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),

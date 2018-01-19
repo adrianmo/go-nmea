@@ -8,7 +8,7 @@ const (
 // GPZDA represents date & time data.
 // http://aprs.gids.nl/nmea/#zda
 type GPZDA struct {
-	Sentence
+	Sent
 	Time          Time
 	Day           int64
 	Month         int64
@@ -18,10 +18,10 @@ type GPZDA struct {
 }
 
 // NewGPZDA constructor
-func NewGPZDA(s Sentence) (GPZDA, error) {
+func NewGPZDA(s Sent) (GPZDA, error) {
 	p := newParser(s, PrefixGPZDA)
 	return GPZDA{
-		Sentence:      s,
+		Sent:          s,
 		Time:          p.Time(0, "time"),
 		Day:           p.Int64(1, "day"),
 		Month:         p.Int64(2, "month"),
