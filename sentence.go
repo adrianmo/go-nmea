@@ -14,8 +14,8 @@ const (
 	ChecksumSep = "*"
 )
 
-//SentenceI interface for all NMEA sentence
-type SentenceI interface {
+//Message interface for all NMEA sentence
+type Message interface {
 	GetSentence() Sentence
 }
 
@@ -69,7 +69,7 @@ func xorChecksum(s string) string {
 }
 
 // Parse parses the given string into the correct sentence type.
-func Parse(raw string) (SentenceI, error) {
+func Parse(raw string) (Message, error) {
 	s, err := ParseSentence(raw)
 	if err != nil {
 		return nil, err
