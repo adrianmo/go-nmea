@@ -39,21 +39,21 @@ func ParseSentence(raw string) (Sentence, error) {
 	}
 
 	var (
-		fieldData    = raw[startIndex+1 : sumSepIndex]
-		fields       = strings.Split(fieldData, FieldSep)
-		checksumData = strings.ToUpper(raw[sumSepIndex+1:])
-		checksum     = xorChecksum(fieldData)
+		fieldsRaw   = raw[startIndex+1 : sumSepIndex]
+		fields      = strings.Split(fieldsRaw, FieldSep)
+		checksumRaw = strings.ToUpper(raw[sumSepIndex+1:])
+		checksum    = xorChecksum(fieldsRaw)
 	)
 
 	// Validate the checksum
-	if checksum != checksumData {
-		return Sentence{}, fmt.Errorf("nmea: sentence checksum mismatch [%s != %s]", checksum, checksumData)
+	if checksum != checksumRaw {
+		return Sentence{}, fmt.Errorf("nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
 
 	return Sentence{
 		Type:     fields[0],
 		Fields:   fields[1:],
-		Checksum: checksumData,
+		Checksum: checksumRaw,
 		Raw:      raw,
 	}, nil
 }
