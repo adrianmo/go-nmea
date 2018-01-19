@@ -71,13 +71,13 @@ func TestGPGSVBadSentence(t *testing.T) {
 		Input string
 		Error string
 	}{
-		{"$GPGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*6b", "GPGSV invalid number of SVs in view: 11.2"},
-		{"$GPGSV,A3,1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid total number of messages: A3"},
-		{"$GPGSV,3,A1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid message number: A1"},
-		{"$GPGSV,3,1,11,A03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid SV prn number: A03"},
-		{"$GPGSV,3,1,11,03,A03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid elevation: A03"},
-		{"$GPGSV,3,1,11,03,03,A111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid azimuth: A111"},
-		{"$GPGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*36", "GPGSV invalid SNR: A00"},
+		{"$GPGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*6b", "nmea: GPGSV invalid number of SVs in view: 11.2"},
+		{"$GPGSV,A3,1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "nmea: GPGSV invalid total number of messages: A3"},
+		{"$GPGSV,3,A1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "nmea: GPGSV invalid message number: A1"},
+		{"$GPGSV,3,1,11,A03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "nmea: GPGSV invalid SV prn number: A03"},
+		{"$GPGSV,3,1,11,03,A03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "nmea: GPGSV invalid elevation: A03"},
+		{"$GPGSV,3,1,11,03,03,A111,00,04,15,270,00,06,01,010,12,13,06,292,00*36", "nmea: GPGSV invalid azimuth: A111"},
+		{"$GPGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*36", "nmea: GPGSV invalid SNR: A00"},
 	}
 	for _, tc := range tests {
 		_, err := Parse(tc.Input)
@@ -92,5 +92,5 @@ func TestGPGSVWrongSentence(t *testing.T) {
 	sent, _ := ParseSentence(wrongMsg)
 	_, err := NewGPGSV(sent)
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPGSV invalid prefix: GPXTE", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: GPGSV invalid prefix: GPXTE", err.Error(), "Incorrect error message")
 }

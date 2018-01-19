@@ -31,7 +31,7 @@ func (p *parser) Err() error {
 // effect if there is already an error.
 func (p *parser) SetErr(context, value string) {
 	if p.err == nil {
-		p.err = fmt.Errorf("%s invalid %s: %s", p.prefix, context, value)
+		p.err = fmt.Errorf("nmea: %s invalid %s: %s", p.prefix, context, value)
 	}
 }
 

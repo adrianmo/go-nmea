@@ -35,7 +35,7 @@ func ParseSentence(raw string) (Sentence, error) {
 	}
 	sumSepIndex := strings.Index(raw, ChecksumSep)
 	if sumSepIndex == -1 {
-		return Sentence{}, fmt.Errorf("nmea: sentence does not contain single checksum separator")
+		return Sentence{}, fmt.Errorf("nmea: sentence does not contain checksum separator")
 	}
 	var (
 		fieldsRaw   = raw[startIndex+1 : sumSepIndex]
@@ -98,6 +98,6 @@ func Parse(raw string) (SentenceI, error) {
 	case PrefixGLGSV:
 		return NewGLGSV(s)
 	default:
-		return nil, fmt.Errorf("Sentence type '%s' not implemented", s.Type)
+		return nil, fmt.Errorf("nmea: sentence type '%s' not implemented", s.Type)
 	}
 }

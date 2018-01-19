@@ -37,7 +37,7 @@ func TestGPGSABadMode(t *testing.T) {
 	_, err := Parse(badMode)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPGSA invalid selection mode: F", err.Error(), "Error message does not match")
+	assert.Equal(t, "nmea: GPGSA invalid selection mode: F", err.Error(), "Error message does not match")
 }
 
 func TestGPGSABadFix(t *testing.T) {
@@ -46,5 +46,5 @@ func TestGPGSABadFix(t *testing.T) {
 	_, err := Parse(badFixType)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPGSA invalid fix type: 6", err.Error(), "Error message does not match")
+	assert.Equal(t, "nmea: GPGSA invalid fix type: 6", err.Error(), "Error message does not match")
 }

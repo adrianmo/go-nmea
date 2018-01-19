@@ -66,7 +66,7 @@ func TestGNRMCBadSentence(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GNRMC invalid validity: D", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: GNRMC invalid validity: D", err.Error(), "Incorrect error message")
 }
 
 func TestGNRMCWrongSentence(t *testing.T) {
@@ -74,5 +74,5 @@ func TestGNRMCWrongSentence(t *testing.T) {
 	_, err := Parse(wrongMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "Sentence type 'GPXTE' not implemented", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: sentence type 'GPXTE' not implemented", err.Error(), "Incorrect error message")
 }
