@@ -26,6 +26,10 @@ type Sentence struct {
 	Raw      string   // The raw NMEA sentence received
 }
 
+func (s Sentence) GetSentence() Sentence { return s }
+func (s Sentence) GetType() string       { return s.Type }
+func (s Sentence) String() string        { return s.Raw }
+
 // ParseSentence parses a raw message into it's fields
 func ParseSentence(raw string) (Sentence, error) {
 	startIndex := strings.Index(raw, SentenceStart)
@@ -53,10 +57,6 @@ func ParseSentence(raw string) (Sentence, error) {
 		Raw:      raw,
 	}, nil
 }
-
-func (s Sentence) GetSentence() Sentence { return s }
-func (s Sentence) GetType() string       { return s.Type }
-func (s Sentence) String() string        { return s.Raw }
 
 // xor all the bytes in a string an return it
 // as an uppercase hex string
