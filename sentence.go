@@ -6,9 +6,14 @@ import (
 )
 
 const (
-	SentenceStart = "$" // The token to indicate the start of a sentence.
-	FieldSep      = "," // The token to delimit fields of a sentence.
-	ChecksumSep   = "*" // The token to delimit the checksum of a sentence.
+	// SentenceStart is the token to indicate the start of a sentence.
+	SentenceStart = "$"
+
+	// FieldSep is the token to delimit fields of a sentence.
+	FieldSep = ","
+
+	// ChecksumSep is the token to delimit the checksum of a sentence.
+	ChecksumSep = "*"
 )
 
 // Message interface for all NMEA sentence
@@ -27,9 +32,16 @@ type Sent struct {
 	Raw      string   // The raw NMEA sentence received
 }
 
-func (s Sent) Sentence() Sent  { return s }
-func (s Sent) Prefix() string  { return s.Type }
-func (s Sent) String() string  { return s.Raw }
+// Sentence returns the Messages Sent
+func (s Sent) Sentence() Sent { return s }
+
+// Prefix returns the type of the message
+func (s Sent) Prefix() string { return s.Type }
+
+// String formats the sentence into a string
+func (s Sent) String() string { return s.Raw }
+
+// Validate returns an error if the sentence is not valid
 func (s Sent) Validate() error { return nil }
 
 // ParseSentence parses a raw message into it's fields

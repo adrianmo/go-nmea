@@ -5,6 +5,7 @@ const (
 	PrefixGNGGA = "GNGGA"
 )
 
+// GNGGA is the Time, position, and fix related data of the receiver.
 type GNGGA struct {
 	Sent
 	Time          Time    // Time of fix.
@@ -19,6 +20,7 @@ type GNGGA struct {
 	DGPSId        string  // DGPS reference station ID.
 }
 
+// NewGNGGA constructor
 func NewGNGGA(s Sent) (GNGGA, error) {
 	p := newParser(s, PrefixGNGGA)
 	return GNGGA{

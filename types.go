@@ -188,7 +188,7 @@ func (t Time) String() string {
 	return fmt.Sprintf("%02d:%02d:%02d.%04d", t.Hour, t.Minute, t.Second, t.Millisecond)
 }
 
-// Parse wall clock time.
+// ParseTime parses wall clock time.
 // e.g. hhmmss.ssss
 // An empty time string will result in an invalid time.
 func ParseTime(s string) (Time, error) {
