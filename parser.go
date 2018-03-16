@@ -41,7 +41,8 @@ func (p *parser) String(i int, context string) string {
 		return ""
 	}
 	if i < 0 || i >= len(p.Fields) {
-		p.SetErr(context, strconv.Itoa(i))
+		p.SetErr(context, "index out of range")
+		return ""
 	}
 	return p.Fields[i]
 }
