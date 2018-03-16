@@ -133,7 +133,7 @@ func (p *parser) LatLong(i, j int, context string) LatLong {
 		return 0
 	}
 	s := fmt.Sprintf("%s %s", a, b)
-	v, err := NewLatLong(s)
+	v, err := ParseLatLong(s)
 	if err != nil {
 		p.SetErr(context, err.Error())
 	}

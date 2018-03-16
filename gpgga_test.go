@@ -12,8 +12,8 @@ func TestGPGGAGoodSentence(t *testing.T) {
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
 
-	lat, _ := NewLatLong("3356.4650 S")
-	lon, _ := NewLatLong("15124.5567 E")
+	lat, _ := ParseLatLong("3356.4650 S")
+	lon, _ := ParseLatLong("15124.5567 E")
 	// Attributes of the parsed sentence, and their expected values.
 	expected := GPGGA{
 		Sent: Sent{

@@ -12,8 +12,8 @@ func TestGNGGAGoodSentence(t *testing.T) {
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
 
-	lat, _ := NewLatLong("6325.6138 N")
-	lon, _ := NewLatLong("01021.4290 E")
+	lat, _ := ParseLatLong("6325.6138 N")
+	lon, _ := ParseLatLong("01021.4290 E")
 	// Attributes of the parsed sentence, and their expected values.
 	expected := GNGGA{
 		Sent: Sent{

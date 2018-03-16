@@ -67,14 +67,14 @@ func (l LatLong) IsNear(o LatLong, max float64) bool {
 	return math.Abs(float64(l-o)) <= max
 }
 
-// NewLatLong parses the supplied string into the LatLong.
+// ParseLatLong parses the supplied string into the LatLong.
 //
 // Supported formats are:
 // - DMS (e.g. 33° 23' 22")
 // - Decimal (e.g. 33.23454)
 // - GPS (e.g 15113.4322S)
 //
-func NewLatLong(s string) (LatLong, error) {
+func ParseLatLong(s string) (LatLong, error) {
 	var l LatLong
 	var err error
 	invalid := LatLong(0.0) // The invalid value to return.
