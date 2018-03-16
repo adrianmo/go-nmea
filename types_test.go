@@ -74,6 +74,10 @@ func TestTimeParse(t *testing.T) {
 		{"010203.04", Time{true, 1, 2, 3, 4}, true},
 		{"10203.04", Time{}, false},
 		{"x0u2xd", Time{}, false},
+		{"xx2233.123", Time{}, false},
+		{"11xx33.123", Time{}, false},
+		{"1122xx.123", Time{}, false},
+		{"112233.xxx", Time{}, false},
 	}
 	for _, tt := range timetests {
 		actual, err := ParseTime(tt.value)
@@ -92,6 +96,19 @@ func TestTimeParse(t *testing.T) {
 	}
 }
 
+func TestTimeString(t *testing.T) {
+	d := Time{
+		Hour:        1,
+		Minute:      2,
+		Second:      3,
+		Millisecond: 4,
+	}
+	expected := "01:02:03.0004"
+	if s := d.String(); s != expected {
+		t.Fatalf("got %s, expected %s", s, expected)
+	}
+}
+
 func TestDateParse(t *testing.T) {
 	datetests := []struct {
 		value    string
@@ -101,6 +118,9 @@ func TestDateParse(t *testing.T) {
 		{"010203", Date{true, 1, 2, 3}, true},
 		{"01003", Date{}, false},
 		{"", Date{}, true},
+		{"xx0203", Date{}, false},
+		{"01xx03", Date{}, false},
+		{"0102xx", Date{}, false},
 	}
 	for _, tt := range datetests {
 		actual, err := ParseDate(tt.value)
@@ -116,5 +136,17 @@ func TestDateParse(t *testing.T) {
 				t.Errorf("ParseDate(%s) got %s expected %s", tt.value, actual, tt.expected)
 			}
 		}
+	}
+}
+
+func TestDateString(t *testing.T) {
+	d := Date{
+		DD: 1,
+		MM: 2,
+		YY: 3,
+	}
+	expected := "01/02/03"
+	if s := d.String(); s != expected {
+		t.Fatalf("got %s expected %s", s, expected)
 	}
 }
