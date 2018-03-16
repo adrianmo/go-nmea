@@ -27,7 +27,7 @@ func (p *parser) Err() error {
 	return p.err
 }
 
-// SetErr assigns the an error. Calling this method has no
+// SetErr assigns an error. Calling this method has no
 // effect if there is already an error.
 func (p *parser) SetErr(context, value string) {
 	if p.err == nil {
