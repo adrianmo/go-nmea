@@ -14,7 +14,7 @@ func TestGPGSAGoodSentence(t *testing.T) {
 
 	// Attributes of the parsed sentence, and their expected values.
 	expected := GPGSA{
-		Sentence: Sentence{
+		Sent: Sent{
 			Type:     "GPGSA",
 			Fields:   []string{"A", "3", "22", "19", "18", "27", "14", "03", "", "", "", "", "", "", "3.1", "2.0", "2.4"},
 			Checksum: "36",
@@ -22,9 +22,9 @@ func TestGPGSAGoodSentence(t *testing.T) {
 		},
 		Mode:    Auto,
 		FixType: Fix3D,
-		PDOP:    "3.1",
-		HDOP:    "2.0",
-		VDOP:    "2.4",
+		PDOP:    3.1,
+		HDOP:    2.0,
+		VDOP:    2.4,
 		SV:      []string{"22", "19", "18", "27", "14", "03"},
 	}
 
@@ -37,7 +37,7 @@ func TestGPGSABadMode(t *testing.T) {
 	_, err := Parse(badMode)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "Invalid selection mode [F]", err.Error(), "Error message does not match")
+	assert.Equal(t, "nmea: GPGSA invalid selection mode: F", err.Error(), "Error message does not match")
 }
 
 func TestGPGSABadFix(t *testing.T) {
@@ -46,5 +46,5 @@ func TestGPGSABadFix(t *testing.T) {
 	_, err := Parse(badFixType)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "Invalid fix type [6]", err.Error(), "Error message does not match")
+	assert.Equal(t, "nmea: GPGSA invalid fix type: 6", err.Error(), "Error message does not match")
 }

@@ -1,10 +1,5 @@
 package nmea
 
-import (
-	"fmt"
-	"strconv"
-)
-
 const (
 	// PrefixGPGSV prefix
 	PrefixGPGSV = "GPGSV"
@@ -13,12 +8,11 @@ const (
 // GPGSV represents the GPS Satellites in view
 // http://aprs.gids.nl/nmea/#gpgsv
 type GPGSV struct {
-	Sentence
-	TotalMessages   int64 // Total number of messages of this type in this cycle
-	MessageNumber   int64 // Message number
-	NumberSVsInView int64 // Total number of SVs in view
-
-	Info []GPGSVInfo // visible satellite info (0-4 of these)
+	Sent
+	TotalMessages   int64       // Total number of messages of this type in this cycle
+	MessageNumber   int64       // Message number
+	NumberSVsInView int64       // Total number of SVs in view
+	Info            []GPGSVInfo // visible satellite info (0-4 of these)
 }
 
 // GPGSVInfo represents information about a visible satellite
@@ -30,80 +24,24 @@ type GPGSVInfo struct {
 }
 
 // NewGPGSV constructor
-func NewGPGSV(sentence Sentence) GPGSV {
-	return GPGSV{Sentence: sentence}
-}
-
-// GetSentence getter
-func (s GPGSV) GetSentence() Sentence {
-	return s.Sentence
-}
-
-func (s *GPGSV) parse() error {
-	if s.Type != PrefixGPGSV {
-		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPGSV)
+func NewGPGSV(s Sent) (GPGSV, error) {
+	p := newParser(s, PrefixGPGSV)
+	m := GPGSV{
+		Sent:            s,
+		TotalMessages:   p.Int64(0, "total number of messages"),
+		MessageNumber:   p.Int64(1, "message number"),
+		NumberSVsInView: p.Int64(2, "number of SVs in view"),
 	}
-	var err error
-	if s.Fields[0] != "" {
-		s.TotalMessages, err = strconv.ParseInt(s.Fields[0], 10, 64)
-		if err != nil {
-			return fmt.Errorf("GPGSV decode total number of messages error: %s", s.Fields[0])
-		}
-	}
-
-	if s.Fields[1] != "" {
-		s.MessageNumber, err = strconv.ParseInt(s.Fields[1], 10, 64)
-		if err != nil {
-			return fmt.Errorf("GPGSV decode message number error: %s", s.Fields[1])
-		}
-	}
-
-	if s.Fields[2] != "" {
-		s.NumberSVsInView, err = strconv.ParseInt(s.Fields[2], 10, 64)
-		if err != nil {
-			return fmt.Errorf("GPGSV decode number of SVs in view error: %s", s.Fields[2])
-		}
-	}
-
-	s.Info = nil
 	for i := 0; i < 4; i++ {
-		if 5*i+4 > len(s.Fields) {
+		if 5*i+4 > len(m.Fields) {
 			break
 		}
-		info := GPGSVInfo{}
-		field := s.Fields[3+i*4]
-		if s.Fields[3+i*4] != "" {
-			info.SVPRNNumber, err = strconv.ParseInt(field, 10, 64)
-			if err != nil {
-				return fmt.Errorf("GPGSV decode SV prn number error: %s", field)
-			}
-		}
-
-		field = s.Fields[4+i*4]
-		if field != "" {
-			info.Elevation, err = strconv.ParseInt(field, 10, 64)
-			if err != nil {
-				return fmt.Errorf("GPGSV decode elevation error: %s", field)
-			}
-		}
-
-		field = s.Fields[5+i*4]
-		if field != "" {
-			info.Azimuth, err = strconv.ParseInt(field, 10, 64)
-			if err != nil {
-				return fmt.Errorf("GPGSV decode azimuth error: %s", field)
-			}
-		}
-
-		field = s.Fields[6+i*4]
-		if field != "" {
-			info.SNR, err = strconv.ParseInt(field, 10, 64)
-			if err != nil {
-				return fmt.Errorf("GPGSV decode SNR error: %s", field)
-			}
-		}
-		s.Info = append(s.Info, info)
+		m.Info = append(m.Info, GPGSVInfo{
+			SVPRNNumber: p.Int64(3+i*4, "SV prn number"),
+			Elevation:   p.Int64(4+i*4, "elevation"),
+			Azimuth:     p.Int64(5+i*4, "azimuth"),
+			SNR:         p.Int64(6+i*4, "SNR"),
+		})
 	}
-
-	return nil
+	return m, p.Err()
 }

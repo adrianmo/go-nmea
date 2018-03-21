@@ -11,7 +11,7 @@ func TestGPVTGGoodSentence(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGPVTG, s.GetSentence().Type, "Prefix does not match")
+	assert.Equal(t, PrefixGPVTG, s.Prefix(), "Prefix does not match")
 
 	sentence := s.(GPVTG)
 
@@ -26,7 +26,7 @@ func TestGPVTGBadSentence(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPVTG decode true track error: T", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: GPVTG invalid true track: T", err.Error(), "Incorrect error message")
 }
 
 func TestGPVTGWrongSentence(t *testing.T) {
@@ -34,5 +34,5 @@ func TestGPVTGWrongSentence(t *testing.T) {
 	_, err := Parse(wrongMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "Sentence type 'GPXTE' not implemented", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: sentence type 'GPXTE' not implemented", err.Error(), "Incorrect error message")
 }

@@ -5,7 +5,6 @@
 language: go
 
 go:
-    - 1.6
     - 1.7
     - tip
 
@@ -23,7 +22,7 @@ install:
 
 script:
     - go vet -x ./...
-    - $HOME/gopath/bin/golint ./...
+    - $HOME/gopath/bin/golint -set_exit_status ./...
     - go test -v ./...
     - go test -covermode=count -coverprofile=profile.cov .
 

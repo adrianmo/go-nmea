@@ -11,11 +11,11 @@ func TestGPZDAGoodSentence(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGPZDA, s.GetSentence().Type, "Prefix does not match")
+	assert.Equal(t, PrefixGPZDA, s.Prefix(), "Prefix does not match")
 
 	sentence := s.(GPZDA)
 
-	assert.Equal(t, "172809.456", sentence.Time, "Time does not match")
+	assert.Equal(t, Time{true, 17, 28, 9, 456}, sentence.Time, "Time does not match")
 	assert.Equal(t, int64(12), sentence.Day, "Day does not match")
 	assert.Equal(t, int64(7), sentence.Month, "Month does not match")
 	assert.Equal(t, int64(1996), sentence.Year, "Yeah does not match")
@@ -28,7 +28,7 @@ func TestGPZDABadSentence(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPZDA decode day error: D", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: GPZDA invalid day: D", err.Error(), "Incorrect error message")
 }
 
 func TestGPZDAWrongSentence(t *testing.T) {
@@ -36,5 +36,5 @@ func TestGPZDAWrongSentence(t *testing.T) {
 	_, err := Parse(wrongMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "Sentence type 'GPXTE' not implemented", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: sentence type 'GPXTE' not implemented", err.Error(), "Incorrect error message")
 }

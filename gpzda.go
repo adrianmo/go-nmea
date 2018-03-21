@@ -1,10 +1,5 @@
 package nmea
 
-import (
-	"fmt"
-	"strconv"
-)
-
 const (
 	// PrefixGPZDA prefix
 	PrefixGPZDA = "GPZDA"
@@ -13,63 +8,25 @@ const (
 // GPZDA represents date & time data.
 // http://aprs.gids.nl/nmea/#zda
 type GPZDA struct {
-	Sentence
-	Time string
-	Day int64
-	Month int64
-	Year int64
-	// Local time zone offset from GMT, hours
-	OffsetHours int64
-	// Local time zone offset from GMT, minutes
-	OffsetMinutes int64
+	Sent
+	Time          Time
+	Day           int64
+	Month         int64
+	Year          int64
+	OffsetHours   int64 // Local time zone offset from GMT, hours
+	OffsetMinutes int64 // Local time zone offset from GMT, minutes
 }
 
 // NewGPZDA constructor
-func NewGPZDA(sentence Sentence) GPZDA {
-	s := new(GPZDA)
-	s.Sentence = sentence
-	return *s
-}
-
-// GetSentence getter
-func (s GPZDA) GetSentence() Sentence {
-	return s.Sentence
-}
-
-// Parse parses the GPZDA sentence into this struct.
-func (s *GPZDA) parse() error {
-	var err error
-
-	if s.Type != PrefixGPZDA {
-		return fmt.Errorf("%s is not a %s", s.Type, PrefixGPZDA)
-	}
-
-	s.Time = s.Fields[0]
-
-	s.Day, err = strconv.ParseInt(s.Fields[1], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode day error: %s", s.Fields[1])
-	}
-
-	s.Month, err = strconv.ParseInt(s.Fields[2], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode month error: %s", s.Fields[2])
-	}
-
-	s.Year, err = strconv.ParseInt(s.Fields[3], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode year error: %s", s.Fields[3])
-	}
-
-	s.OffsetHours, err = strconv.ParseInt(s.Fields[4], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode offset (hours) error: %s", s.Fields[4])
-	}
-
-	s.OffsetMinutes, err = strconv.ParseInt(s.Fields[5], 10, 64)
-	if err != nil {
-		return fmt.Errorf("GPZDA decode offset (minutes) error: %s", s.Fields[5])
-	}
-
-	return nil
+func NewGPZDA(s Sent) (GPZDA, error) {
+	p := newParser(s, PrefixGPZDA)
+	return GPZDA{
+		Sent:          s,
+		Time:          p.Time(0, "time"),
+		Day:           p.Int64(1, "day"),
+		Month:         p.Int64(2, "month"),
+		Year:          p.Int64(3, "year"),
+		OffsetHours:   p.Int64(4, "offset (hours)"),
+		OffsetMinutes: p.Int64(5, "offset (minutes)"),
+	}, p.Err()
 }

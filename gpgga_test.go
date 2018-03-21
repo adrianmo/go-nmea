@@ -12,24 +12,24 @@ func TestGPGGAGoodSentence(t *testing.T) {
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
 
-	lat, _ := NewLatLong("3356.4650 S")
-	lon, _ := NewLatLong("15124.5567 E")
+	lat, _ := ParseLatLong("3356.4650 S")
+	lon, _ := ParseLatLong("15124.5567 E")
 	// Attributes of the parsed sentence, and their expected values.
 	expected := GPGGA{
-		Sentence: Sentence{
+		Sent: Sent{
 			Type:     "GPGGA",
 			Fields:   []string{"034225.077", "3356.4650", "S", "15124.5567", "E", "1", "03", "9.7", "-25.0", "M", "21.0", "M", "", "0000"},
 			Checksum: "51",
 			Raw:      "$GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*51",
 		},
-		Time:          "034225.077",
+		Time:          Time{true, 3, 42, 25, 77},
 		Latitude:      lat,
 		Longitude:     lon,
 		FixQuality:    GPS,
-		NumSatellites: "03",
-		HDOP:          "9.7",
-		Altitude:      "-25.0",
-		Separation:    "21.0",
+		NumSatellites: 03,
+		HDOP:          9.7,
+		Altitude:      -25.0,
+		Separation:    21.0,
 		DGPSAge:       "",
 		DGPSId:        "0000",
 	}
@@ -42,7 +42,7 @@ func TestGPGGABadType(t *testing.T) {
 	s, err := Parse(badType)
 
 	assert.NoError(t, err, "Unexpected error parsing sentence")
-	assert.NotEqual(t, "GPGGA", s.GetSentence().Type, "Unexpected sentence type")
+	assert.NotEqual(t, "GPGGA", s.Prefix(), "Unexpected sentence type")
 }
 
 func TestGPGGABadLatitude(t *testing.T) {
@@ -50,7 +50,7 @@ func TestGPGGABadLatitude(t *testing.T) {
 	_, err := Parse(badLat)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPGGA decode error: cannot parse [A S], unknown format", err.Error(), "Error message does not match")
+	assert.Equal(t, "nmea: GPGGA invalid latitude: cannot parse [A S], unknown format", err.Error(), "Error message does not match")
 }
 
 func TestGPGGABadLongitude(t *testing.T) {
@@ -58,7 +58,7 @@ func TestGPGGABadLongitude(t *testing.T) {
 	_, err := Parse(badLon)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPGGA decode error: cannot parse [A E], unknown format", err.Error(), "Error message does not match")
+	assert.Equal(t, "nmea: GPGGA invalid longitude: cannot parse [A E], unknown format", err.Error(), "Error message does not match")
 }
 
 func TestGPGGABadFixQuality(t *testing.T) {
@@ -67,5 +67,5 @@ func TestGPGGABadFixQuality(t *testing.T) {
 	_, err := Parse(badMode)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, err.Error(), "Invalid fix quality [5]", "Error message not as expected")
+	assert.Equal(t, err.Error(), "nmea: GPGGA invalid fix quality: 5", "Error message not as expected")
 }

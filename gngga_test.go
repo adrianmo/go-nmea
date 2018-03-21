@@ -12,24 +12,24 @@ func TestGNGGAGoodSentence(t *testing.T) {
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
 
-	lat, _ := NewLatLong("6325.6138 N")
-	lon, _ := NewLatLong("01021.4290 E")
+	lat, _ := ParseLatLong("6325.6138 N")
+	lon, _ := ParseLatLong("01021.4290 E")
 	// Attributes of the parsed sentence, and their expected values.
 	expected := GNGGA{
-		Sentence: Sentence{
+		Sent: Sent{
 			Type:     "GNGGA",
 			Fields:   []string{"203415.000", "6325.6138", "N", "01021.4290", "E", "1", "8", "2.42", "72.5", "M", "41.5", "M", "", ""},
 			Checksum: "7C",
 			Raw:      "$GNGGA,203415.000,6325.6138,N,01021.4290,E,1,8,2.42,72.5,M,41.5,M,,*7C",
 		},
-		Time:          "203415.000",
+		Time:          Time{true, 20, 34, 15, 0},
 		Latitude:      lat,
 		Longitude:     lon,
 		FixQuality:    GPS,
-		NumSatellites: "8",
-		HDOP:          "2.42",
-		Altitude:      "72.5",
-		Separation:    "41.5",
+		NumSatellites: 8,
+		HDOP:          2.42,
+		Altitude:      72.5,
+		Separation:    41.5,
 		DGPSAge:       "",
 		DGPSId:        "",
 	}
@@ -42,7 +42,7 @@ func TestGNGGABadType(t *testing.T) {
 	s, err := Parse(badType)
 
 	assert.NoError(t, err, "Unexpected error parsing sentence")
-	assert.NotEqual(t, "GNGGA", s.GetSentence().Type, "Unexpected sentence type")
+	assert.NotEqual(t, "GNGGA", s.Prefix(), "Unexpected sentence type")
 }
 
 func TestGNGGABadLatitude(t *testing.T) {
@@ -50,7 +50,7 @@ func TestGNGGABadLatitude(t *testing.T) {
 	_, err := Parse(badLat)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GNGGA decode error: cannot parse [A S], unknown format", err.Error(), "Error message does not match")
+	assert.Equal(t, "nmea: GNGGA invalid latitude: cannot parse [A S], unknown format", err.Error(), "Error message does not match")
 }
 
 func TestGNGGABadLongitude(t *testing.T) {
@@ -58,7 +58,7 @@ func TestGNGGABadLongitude(t *testing.T) {
 	_, err := Parse(badLon)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GNGGA decode error: cannot parse [A E], unknown format", err.Error(), "Error message does not match")
+	assert.Equal(t, "nmea: GNGGA invalid longitude: cannot parse [A E], unknown format", err.Error(), "Error message does not match")
 }
 
 func TestGNGGABadFixQuality(t *testing.T) {
@@ -67,5 +67,5 @@ func TestGNGGABadFixQuality(t *testing.T) {
 	_, err := Parse(badMode)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, err.Error(), "Invalid fix quality [5]", "Error message not as expected")
+	assert.Equal(t, err.Error(), "nmea: GNGGA invalid fix quality: 5", "Error message not as expected")
 }

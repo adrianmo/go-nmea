@@ -11,7 +11,7 @@ func TestPGRMEGoodSentence(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixPGRME, s.GetSentence().Type, "Prefix does not match")
+	assert.Equal(t, PrefixPGRME, s.Prefix(), "Prefix does not match")
 
 	sentence := s.(PGRME)
 
@@ -26,7 +26,7 @@ func TestPGRMEInvalidHorizontalError(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "PGRME decode invalid horizontal error: 'A'", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: PGRME invalid horizontal error: A", err.Error(), "Incorrect error message")
 }
 
 func TestPGRMEInvalidHorizontalErrorUnit(t *testing.T) {
@@ -34,7 +34,7 @@ func TestPGRMEInvalidHorizontalErrorUnit(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "PGRME decode invalid horizontal error unit: 'A'", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: PGRME invalid horizontal error unit: A", err.Error(), "Incorrect error message")
 }
 
 func TestPGRMEInvalidVerticalError(t *testing.T) {
@@ -42,7 +42,7 @@ func TestPGRMEInvalidVerticalError(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "PGRME decode invalid vertical error: 'A'", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: PGRME invalid vertical error: A", err.Error(), "Incorrect error message")
 }
 
 func TestPGRMEInvalidVerticalErrorUnit(t *testing.T) {
@@ -50,7 +50,7 @@ func TestPGRMEInvalidVerticalErrorUnit(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "PGRME decode invalid vertical error unit: 'A'", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: PGRME invalid vertical error unit: A", err.Error(), "Incorrect error message")
 }
 
 func TestPGRMEInvalidSphericalError(t *testing.T) {
@@ -58,7 +58,7 @@ func TestPGRMEInvalidSphericalError(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "PGRME decode invalid spherical error: 'A'", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: PGRME invalid spherical error: A", err.Error(), "Incorrect error message")
 }
 
 func TestPGRMEInvalidSphericalErrorUnit(t *testing.T) {
@@ -66,5 +66,5 @@ func TestPGRMEInvalidSphericalErrorUnit(t *testing.T) {
 	_, err := Parse(badMsg)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "PGRME decode invalid spherical error unit: 'A'", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: PGRME invalid spherical error unit: A", err.Error(), "Incorrect error message")
 }

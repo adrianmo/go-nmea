@@ -11,7 +11,7 @@ func TestGLGSVGoodSentence(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGLGSV, s.GetSentence().Type, "Prefix does not match")
+	assert.Equal(t, PrefixGLGSV, s.Prefix(), "Prefix does not match")
 
 	sentence := s.(GLGSV)
 	assert.Equal(t, int64(3), sentence.TotalMessages, "Total messages does not match")
@@ -44,7 +44,7 @@ func TestGLGSVShort(t *testing.T) {
 	s, err := Parse(goodMsg)
 
 	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGLGSV, s.GetSentence().Type, "Prefix does not match")
+	assert.Equal(t, PrefixGLGSV, s.Prefix(), "Prefix does not match")
 
 	sentence := s.(GLGSV)
 	assert.Equal(t, int64(3), sentence.TotalMessages, "Total messages does not match")
@@ -71,13 +71,13 @@ func TestGLGSVBadSentence(t *testing.T) {
 		Input string
 		Error string
 	}{
-		{"$GLGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*77", "GLGSV decode number of SVs in view error: 11.2"},
-		{"$GLGSV,A3,1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "GLGSV decode total number of messages error: A3"},
-		{"$GLGSV,3,A1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "GLGSV decode message number error: A1"},
-		{"$GLGSV,3,1,11,A03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "GLGSV decode SV prn number error: A03"},
-		{"$GLGSV,3,1,11,03,A03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "GLGSV decode elevation error: A03"},
-		{"$GLGSV,3,1,11,03,03,A111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "GLGSV decode azimuth error: A111"},
-		{"$GLGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "GLGSV decode SNR error: A00"},
+		{"$GLGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*77", "nmea: GLGSV invalid number of SVs in view: 11.2"},
+		{"$GLGSV,A3,1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "nmea: GLGSV invalid total number of messages: A3"},
+		{"$GLGSV,3,A1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "nmea: GLGSV invalid message number: A1"},
+		{"$GLGSV,3,1,11,A03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "nmea: GLGSV invalid SV prn number: A03"},
+		{"$GLGSV,3,1,11,03,A03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "nmea: GLGSV invalid elevation: A03"},
+		{"$GLGSV,3,1,11,03,03,A111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "nmea: GLGSV invalid azimuth: A111"},
+		{"$GLGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*2A", "nmea: GLGSV invalid SNR: A00"},
 	}
 	for _, tc := range tests {
 		_, err := Parse(tc.Input)
@@ -89,10 +89,8 @@ func TestGLGSVBadSentence(t *testing.T) {
 
 func TestGLGSVWrongSentence(t *testing.T) {
 	wrongMsg := "$GPXTE,A,A,4.07,L,N*6D"
-	sent := Sentence{}
-	sent.parse(wrongMsg)
-	msg := GLGSV{Sentence: sent}
-	err := msg.parse()
+	sent, _ := ParseSentence(wrongMsg)
+	_, err := NewGLGSV(sent)
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "GPXTE is not a GLGSV", err.Error(), "Incorrect error message")
+	assert.Equal(t, "nmea: GLGSV invalid prefix: GPXTE", err.Error(), "Incorrect error message")
 }
