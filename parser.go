@@ -48,10 +48,10 @@ func (p *parser) String(i int, context string) string {
 }
 
 // EnumString returns the field value at the specified index.
-// An error occurs if the value is not one of the options.
+// An error occurs if the value is not one of the options and not empty.
 func (p *parser) EnumString(i int, context string, options ...string) string {
 	s := p.String(i, context)
-	if p.err != nil {
+	if p.err != nil || s == "" {
 		return ""
 	}
 	for _, o := range options {
