@@ -36,6 +36,19 @@ var gnrmctests = []struct {
 			Longitude: MustParseGPS("07920.379823 W"),
 		},
 	},
+	{
+		"$GNRMC,100538.00,A,5546.27711,N,03736.91144,E,0.061,,260318,,,A*60",
+		GNRMC{
+			Time:      Time{true, 10, 5, 38, 0},
+			Validity:  "A",
+			Speed:     0.061,
+			Course:    0,
+			Date:      Date{true, 26, 3, 18},
+			Variation: 0,
+			Latitude:  MustParseGPS("5546.27711 N"),
+			Longitude: MustParseGPS("03736.91144 E"),
+		},
+	},
 }
 
 func TestGNRMCGoodSentence(t *testing.T) {
