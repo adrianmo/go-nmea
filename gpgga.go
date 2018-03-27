@@ -9,6 +9,12 @@ const (
 	GPS = "1"
 	// DGPS fix quality
 	DGPS = "2"
+	// PPS fix
+	PPS = "3"
+	// RTK real time kinematic fix
+	RTK = "4"
+	// FRTK float RTK fix
+	FRTK = "5"
 )
 
 // GPGGA represents fix data.
@@ -36,7 +42,7 @@ func NewGPGGA(s Sent) (GPGGA, error) {
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),
-		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS),
+		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS, PPS, RTK, FRTK),
 		NumSatellites: p.Int64(6, "number of satelites"),
 		HDOP:          p.Float64(7, "hdap"),
 		Altitude:      p.Float64(8, "altitude"),

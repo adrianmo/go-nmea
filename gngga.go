@@ -28,7 +28,7 @@ func NewGNGGA(s Sent) (GNGGA, error) {
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),
-		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS),
+		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS, PPS, RTK, FRTK),
 		NumSatellites: p.Int64(6, "number of satelites"),
 		HDOP:          p.Float64(7, "hdop"),
 		Altitude:      p.Float64(8, "altitude"),
