@@ -63,9 +63,9 @@ func TestGPGGABadLongitude(t *testing.T) {
 
 func TestGPGGABadFixQuality(t *testing.T) {
 	// Make sure bad fix mode is detected.
-	badMode := "$GPGGA,034225.077,3356.4650,S,15124.5567,E,5,03,9.7,-25.0,M,21.0,M,,0000*55"
+	badMode := "$GPGGA,034225.077,3356.4650,S,15124.5567,E,12,03,9.7,-25.0,M,21.0,M,,0000*63"
 	_, err := Parse(badMode)
 
 	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, err.Error(), "nmea: GPGGA invalid fix quality: 5", "Error message not as expected")
+	assert.Equal(t, err.Error(), "nmea: GPGGA invalid fix quality: 12", "Error message not as expected")
 }
