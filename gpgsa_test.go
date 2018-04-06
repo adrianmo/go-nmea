@@ -6,45 +6,50 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGPGSAGoodSentence(t *testing.T) {
-	goodMsg := "$GPGSA,A,3,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*36"
-	sentence, err := Parse(goodMsg)
-
-	assert.NoError(t, err, "Unexpected error parsing good sentence")
-
-	// Attributes of the parsed sentence, and their expected values.
-	expected := GPGSA{
-		Sent: Sent{
-			Type:     "GPGSA",
-			Fields:   []string{"A", "3", "22", "19", "18", "27", "14", "03", "", "", "", "", "", "", "3.1", "2.0", "2.4"},
-			Checksum: "36",
-			Raw:      "$GPGSA,A,3,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*36",
+var gpgsatests = []struct {
+	name string
+	raw  string
+	err  string
+	msg  GPGSA
+}{
+	{
+		name: "good sentence",
+		raw:  "$GPGSA,A,3,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*36",
+		msg: GPGSA{
+			Mode:    "A",
+			FixType: "3",
+			SV:      []string{"22", "19", "18", "27", "14", "03"},
+			PDOP:    3.1,
+			HDOP:    2,
+			VDOP:    2.4,
 		},
-		Mode:    Auto,
-		FixType: Fix3D,
-		PDOP:    3.1,
-		HDOP:    2.0,
-		VDOP:    2.4,
-		SV:      []string{"22", "19", "18", "27", "14", "03"},
+	},
+	{
+		name: "bad mode",
+		raw:  "$GPGSA,F,3,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*31",
+		err:  "nmea: GPGSA invalid selection mode: F",
+	},
+	{
+		name: "bad fix",
+		raw:  "$GPGSA,A,6,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*33",
+		err:  "nmea: GPGSA invalid fix type: 6",
+	},
+}
+
+func TestGPGSA(t *testing.T) {
+	for _, tt := range gpgsatests {
+		t.Run(tt.name, func(t *testing.T) {
+			sent, err := ParseSentence(tt.raw)
+			assert.NoError(t, err)
+			gpgsa, err := NewGPGSA(sent)
+			if tt.err != "" {
+				assert.Error(t, err)
+				assert.EqualError(t, err, tt.err)
+			} else {
+				assert.NoError(t, err)
+				gpgsa.Sent = Sent{}
+				assert.Equal(t, tt.msg, gpgsa)
+			}
+		})
 	}
-
-	assert.EqualValues(t, expected, sentence, "Sentence values do not match")
-}
-
-func TestGPGSABadMode(t *testing.T) {
-	// Make sure bad fix mode is detected.
-	badMode := "$GPGSA,F,3,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*31"
-	_, err := Parse(badMode)
-
-	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "nmea: GPGSA invalid selection mode: F", err.Error(), "Error message does not match")
-}
-
-func TestGPGSABadFix(t *testing.T) {
-	// Make sure bad fix type is detected.
-	badFixType := "$GPGSA,A,6,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*33"
-	_, err := Parse(badFixType)
-
-	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "nmea: GPGSA invalid fix type: 6", err.Error(), "Error message does not match")
 }
