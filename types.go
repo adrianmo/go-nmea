@@ -91,7 +91,7 @@ func ParseLatLong(s string) (LatLong, error) {
 	return invalid, fmt.Errorf("cannot parse [%s], unknown format", s)
 }
 
-// ParseLatLong parses the supplied string into the LatLong.
+// MustParseLatLong parses the supplied string into the LatLong.
 // It panics if an error is encountered
 func MustParseLatLong(s string) LatLong {
 	l, err := ParseLatLong(s)
