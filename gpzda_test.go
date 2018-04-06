@@ -52,6 +52,7 @@ func TestGPZDA(t *testing.T) {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
+				assert.NoError(t, err)
 				gpzda.Sent = Sent{}
 				assert.Equal(t, tt.msg, gpzda)
 			}

@@ -93,6 +93,7 @@ func TestGLGSV(t *testing.T) {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
+				assert.NoError(t, err)
 				glgsv.Sent = Sent{}
 				assert.Equal(t, tt.msg, glgsv)
 			}

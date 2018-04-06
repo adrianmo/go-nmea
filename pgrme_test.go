@@ -58,6 +58,7 @@ func TestPGRME(t *testing.T) {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
+				assert.NoError(t, err)
 				pgrme.Sent = Sent{}
 				assert.Equal(t, tt.msg, pgrme)
 			}
