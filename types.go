@@ -124,6 +124,15 @@ func ParseGPS(s string) (LatLong, error) {
 	}
 }
 
+// MustParseGPS parses a GPS/NMEA coordinate or panics if it fails.
+func MustParseGPS(s string) LatLong {
+	ll, err := ParseGPS(s)
+	if err != nil {
+		panic(err)
+	}
+	return ll
+}
+
 // ParseDecimal parses a decimal format coordinate.
 // e.g: 151.196019
 func ParseDecimal(s string) (LatLong, error) {

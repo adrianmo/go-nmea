@@ -6,14 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func MustParseGPS(s string) LatLong {
-	ll, err := ParseGPS(s)
-	if err != nil {
-		panic(err)
-	}
-	return ll
-}
-
 var gprmctests = []struct {
 	Input  string
 	Output GPRMC
