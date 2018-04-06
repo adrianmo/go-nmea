@@ -7,12 +7,15 @@ import (
 )
 
 var gprmctests = []struct {
-	Input  string
-	Output GPRMC
+	name string
+	raw  string
+	err  string
+	msg  GPRMC
 }{
 	{
-		"$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70",
-		GPRMC{
+		name: "good sentence A",
+		raw:  "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70",
+		msg: GPRMC{
 			Time:      Time{true, 22, 05, 16, 0},
 			Validity:  "A",
 			Speed:     173.8,
@@ -24,8 +27,9 @@ var gprmctests = []struct {
 		},
 	},
 	{
-		"$GPRMC,142754.0,A,4302.539570,N,07920.379823,W,0.0,,070617,0.0,E,A*3F",
-		GPRMC{
+		name: "good sentence B",
+		raw:  "$GPRMC,142754.0,A,4302.539570,N,07920.379823,W,0.0,,070617,0.0,E,A*3F",
+		msg: GPRMC{
 			Time:      Time{true, 14, 27, 54, 0},
 			Validity:  "A",
 			Speed:     0,
@@ -36,43 +40,32 @@ var gprmctests = []struct {
 			Longitude: MustParseGPS("07920.379823 W"),
 		},
 	},
+	{
+		name: "bad validity",
+		raw:  "$GPRMC,220516,D,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*75",
+		err:  "nmea: GPRMC invalid validity: D",
+	},
+	{
+		name: "wrong type",
+		raw:  "$GPXTE,A,A,4.07,L,N*6D",
+		err:  "nmea: GPRMC invalid prefix: GPXTE",
+	},
 }
 
-func TestGPRMCGoodSentence(t *testing.T) {
-
+func TestGPRMC(t *testing.T) {
 	for _, tt := range gprmctests {
-
-		s, err := Parse(tt.Input)
-
-		assert.NoError(t, err, "Unexpected error parsing good sentence")
-		assert.Equal(t, PrefixGPRMC, s.Prefix(), "Prefix does not match")
-
-		sentence := s.(GPRMC)
-
-		assert.Equal(t, tt.Output.Time, sentence.Time, "Time does not match")
-		assert.Equal(t, tt.Output.Validity, sentence.Validity, "Status does not match")
-		assert.Equal(t, tt.Output.Speed, sentence.Speed, "Speed does not match")
-		assert.Equal(t, tt.Output.Course, sentence.Course, "Course does not match")
-		assert.Equal(t, tt.Output.Date, sentence.Date, "Date does not match")
-		assert.Equal(t, tt.Output.Variation, sentence.Variation, "Variation does not match")
-		assert.Equal(t, tt.Output.Latitude, sentence.Latitude, "Latitude does not match")
-		assert.Equal(t, tt.Output.Longitude, sentence.Longitude, "Longitude does not match")
+		t.Run(tt.name, func(t *testing.T) {
+			sent, err := ParseSentence(tt.raw)
+			assert.NoError(t, err)
+			gprmc, err := NewGPRMC(sent)
+			if tt.err != "" {
+				assert.Error(t, err)
+				assert.EqualError(t, err, tt.err)
+			} else {
+				assert.NoError(t, err)
+				gprmc.Sent = Sent{}
+				assert.Equal(t, tt.msg, gprmc)
+			}
+		})
 	}
-
-}
-
-func TestGPRMCBadSentence(t *testing.T) {
-	badMsg := "$GPRMC,220516,D,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*75"
-	_, err := Parse(badMsg)
-
-	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "nmea: GPRMC invalid validity: D", err.Error(), "Incorrect error message")
-}
-
-func TestGPRMCWrongSentence(t *testing.T) {
-	wrongMsg := "$GPXTE,A,A,4.07,L,N*6D"
-	_, err := Parse(wrongMsg)
-
-	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "nmea: sentence type 'GPXTE' not implemented", err.Error(), "Incorrect error message")
 }
