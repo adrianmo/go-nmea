@@ -6,33 +6,48 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGPVTGGoodSentence(t *testing.T) {
-	goodMsg := "$GPVTG,45.5,T,67.5,M,30.45,N,56.40,K*4B"
-	s, err := Parse(goodMsg)
-
-	assert.NoError(t, err, "Unexpected error parsing good sentence")
-	assert.Equal(t, PrefixGPVTG, s.Prefix(), "Prefix does not match")
-
-	sentence := s.(GPVTG)
-
-	assert.Equal(t, 45.5, sentence.TrueTrack, "True track does not match")
-	assert.Equal(t, 67.5, sentence.MagneticTrack, "Magnetic track does not match")
-	assert.Equal(t, 30.45, sentence.GroundSpeedKnots, "Ground speed (knots) does not match")
-	assert.Equal(t, 56.40, sentence.GroundSpeedKPH, "Ground speed (km/h) does not match")
+var gpvtgtests = []struct {
+	name string
+	raw  string
+	err  string
+	msg  GPVTG
+}{
+	{
+		name: "good sentence",
+		raw:  "$GPVTG,45.5,T,67.5,M,30.45,N,56.40,K*4B",
+		msg: GPVTG{
+			TrueTrack:        45.5,
+			MagneticTrack:    67.5,
+			GroundSpeedKnots: 30.45,
+			GroundSpeedKPH:   56.4,
+		},
+	},
+	{
+		name: "bad true track",
+		raw:  "$GPVTG,T,45.5,67.5,M,30.45,N,56.40,K*4B",
+		err:  "nmea: GPVTG invalid true track: T",
+	},
+	{
+		name: "wrong type",
+		raw:  "$GPXTE,A,A,4.07,L,N*6D",
+		err:  "nmea: GPVTG invalid prefix: GPXTE",
+	},
 }
 
-func TestGPVTGBadSentence(t *testing.T) {
-	badMsg := "$GPVTG,T,45.5,67.5,M,30.45,N,56.40,K*4B"
-	_, err := Parse(badMsg)
-
-	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "nmea: GPVTG invalid true track: T", err.Error(), "Incorrect error message")
-}
-
-func TestGPVTGWrongSentence(t *testing.T) {
-	wrongMsg := "$GPXTE,A,A,4.07,L,N*6D"
-	_, err := Parse(wrongMsg)
-
-	assert.Error(t, err, "Parse error not returned")
-	assert.Equal(t, "nmea: sentence type 'GPXTE' not implemented", err.Error(), "Incorrect error message")
+func TestGPVTG(t *testing.T) {
+	for _, tt := range gpvtgtests {
+		t.Run(tt.name, func(t *testing.T) {
+			sent, err := ParseSentence(tt.raw)
+			assert.NoError(t, err)
+			gpvtg, err := NewGPVTG(sent)
+			if tt.err != "" {
+				assert.Error(t, err)
+				assert.EqualError(t, err, tt.err)
+			} else {
+				assert.NoError(t, err)
+				gpvtg.Sent = Sent{}
+				assert.Equal(t, tt.msg, gpvtg)
+			}
+		})
+	}
 }
