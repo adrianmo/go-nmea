@@ -76,24 +76,18 @@ var gpgsvtests = []struct {
 		raw:  "$GPGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*36",
 		err:  "nmea: GPGSV invalid SNR: A00",
 	},
-	{
-		name: "wrong type",
-		raw:  "$GPXTE,A,A,4.07,L,N*6D",
-		err:  "nmea: GPGSV invalid prefix: GPXTE",
-	},
 }
 
 func TestGPGSV(t *testing.T) {
 	for _, tt := range gpgsvtests {
 		t.Run(tt.name, func(t *testing.T) {
-			sent, err := ParseSentence(tt.raw)
-			assert.NoError(t, err)
-			gpgsv, err := NewGPGSV(sent)
+			m, err := Parse(tt.raw)
 			if tt.err != "" {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
+				gpgsv := m.(GPGSV)
 				gpgsv.Sent = Sent{}
 				assert.Equal(t, tt.msg, gpgsv)
 			}

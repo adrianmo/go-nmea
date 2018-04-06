@@ -35,11 +35,6 @@ var gnggatests = []struct {
 		},
 	},
 	{
-		name: "bad type",
-		raw:  "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70",
-		err:  "nmea: GNGGA invalid prefix: GPRMC",
-	},
-	{
 		name: "bad latitude",
 		raw:  "$GNGGA,034225.077,A,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*24",
 		err:  "nmea: GNGGA invalid latitude: cannot parse [A S], unknown format",
@@ -59,14 +54,13 @@ var gnggatests = []struct {
 func TestGNGGA(t *testing.T) {
 	for _, tt := range gnggatests {
 		t.Run(tt.name, func(t *testing.T) {
-			sent, err := ParseSentence(tt.raw)
-			assert.NoError(t, err)
-			gngga, err := NewGNGGA(sent)
+			m, err := Parse(tt.raw)
 			if tt.err != "" {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
+				gngga := m.(GNGGA)
 				gngga.Sent = Sent{}
 				assert.Equal(t, tt.msg, gngga)
 			}

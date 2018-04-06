@@ -45,24 +45,18 @@ var gprmctests = []struct {
 		raw:  "$GPRMC,220516,D,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*75",
 		err:  "nmea: GPRMC invalid validity: D",
 	},
-	{
-		name: "wrong type",
-		raw:  "$GPXTE,A,A,4.07,L,N*6D",
-		err:  "nmea: GPRMC invalid prefix: GPXTE",
-	},
 }
 
 func TestGPRMC(t *testing.T) {
 	for _, tt := range gprmctests {
 		t.Run(tt.name, func(t *testing.T) {
-			sent, err := ParseSentence(tt.raw)
-			assert.NoError(t, err)
-			gprmc, err := NewGPRMC(sent)
+			m, err := Parse(tt.raw)
 			if tt.err != "" {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
+				gprmc := m.(GPRMC)
 				gprmc.Sent = Sent{}
 				assert.Equal(t, tt.msg, gprmc)
 			}

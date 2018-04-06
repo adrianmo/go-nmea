@@ -51,14 +51,13 @@ var pgrmetests = []struct {
 func TestPGRME(t *testing.T) {
 	for _, tt := range pgrmetests {
 		t.Run(tt.name, func(t *testing.T) {
-			sent, err := ParseSentence(tt.raw)
-			assert.NoError(t, err)
-			pgrme, err := NewPGRME(sent)
+			m, err := Parse(tt.raw)
 			if tt.err != "" {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
+				pgrme := m.(PGRME)
 				pgrme.Sent = Sent{}
 				assert.Equal(t, tt.msg, pgrme)
 			}

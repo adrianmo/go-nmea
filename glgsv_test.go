@@ -76,24 +76,18 @@ var glgsvtests = []struct {
 		raw:  "$GLGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*2A",
 		err:  "nmea: GLGSV invalid SNR: A00",
 	},
-	{
-		name: "wrong sentence",
-		raw:  "$GPXTE,A,A,4.07,L,N*6D",
-		err:  "nmea: GLGSV invalid prefix: GPXTE",
-	},
 }
 
 func TestGLGSV(t *testing.T) {
 	for _, tt := range glgsvtests {
 		t.Run(tt.name, func(t *testing.T) {
-			sent, err := ParseSentence(tt.raw)
-			assert.NoError(t, err)
-			glgsv, err := NewGLGSV(sent)
+			m, err := Parse(tt.raw)
 			if tt.err != "" {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
+				glgsv := m.(GLGSV)
 				glgsv.Sent = Sent{}
 				assert.Equal(t, tt.msg, glgsv)
 			}

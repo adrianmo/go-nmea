@@ -29,11 +29,6 @@ var gpggatests = []struct {
 		},
 	},
 	{
-		name: "wrong type",
-		raw:  "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70",
-		err:  "nmea: GPGGA invalid prefix: GPRMC",
-	},
-	{
 		name: "bad latitude",
 		raw:  "$GPGGA,034225.077,A,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*3A",
 		err:  "nmea: GPGGA invalid latitude: cannot parse [A S], unknown format",
@@ -53,14 +48,13 @@ var gpggatests = []struct {
 func TestGPGGA(t *testing.T) {
 	for _, tt := range gpggatests {
 		t.Run(tt.name, func(t *testing.T) {
-			sent, err := ParseSentence(tt.raw)
-			assert.NoError(t, err)
-			gpgga, err := NewGPGGA(sent)
+			m, err := Parse(tt.raw)
 			if tt.err != "" {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
+				gpgga := m.(GPGGA)
 				gpgga.Sent = Sent{}
 				assert.Equal(t, tt.msg, gpgga)
 			}
