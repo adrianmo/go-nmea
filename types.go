@@ -170,7 +170,9 @@ func ParseDMS(s string) (LatLong, error) {
 			return 0, fmt.Errorf("parse error (unknown symbol [%d])", s[i])
 		}
 	}
-
+	if len(tmpBytes) > 0 {
+		return 0, fmt.Errorf("parse error (trailing data [%s])", string(tmpBytes))
+	}
 	val := LatLong(float64(degrees) + (float64(minutes) / 60.0) + (float64(seconds) / 60.0 / 60.0))
 	return val, nil
 }

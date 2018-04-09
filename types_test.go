@@ -45,6 +45,7 @@ func TestParseDMS(t *testing.T) {
 		{"3.3\u00B0 1' 34.3423\"", 0, true},
 		{"33\u00B0 1' 34.34.23\"", 0, true},
 		{"33 1 3434.23", 0, true},
+		{"123", 0, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.value, func(t *testing.T) {
