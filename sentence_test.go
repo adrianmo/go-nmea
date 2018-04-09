@@ -78,6 +78,17 @@ func TestSentences(t *testing.T) {
 	}
 }
 
+func TestSentenceMethods(t *testing.T) {
+	sent := Sent{
+		Type: "type",
+		Raw:  "raw",
+	}
+	assert.Equal(t, "type", sent.Prefix())
+	assert.Equal(t, "raw", sent.String())
+	assert.Equal(t, sent, sent.Sentence())
+	assert.NoError(t, sent.Validate())
+}
+
 var parsetests = []struct {
 	name string
 	raw  string
