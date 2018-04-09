@@ -1,45 +1,78 @@
 package nmea
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 var nearDistance = 0.001
 
-func TestLatLongParse(t *testing.T) {
-	var l LatLong
-	var err error
-	value, expected := "3345.1232 N", LatLong(33.752054)
-	if l, err = ParseGPS(value); err != nil {
-		t.Errorf("ParseGPS error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseGPS got %f, expected %f", l, expected)
+func TestParseGPS(t *testing.T) {
+	var tests = []struct {
+		value    string
+		expected LatLong
+		err      bool
+	}{
+		{"3345.1232 N", 33.752054, false},
+		{"15145.9877 S", -151.76646, false},
 	}
-
-	value, expected = "15145.9877 S", LatLong(-151.76646)
-	if l, err = ParseGPS(value); err != nil {
-		t.Errorf("ParseGPS error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseGPS got %f, expected %f", l, expected)
+	for _, tt := range tests {
+		t.Run(tt.value, func(t *testing.T) {
+			l, err := ParseGPS(tt.value)
+			if tt.err {
+				assert.Error(t, err)
+			} else {
+				if !l.IsNear(tt.expected, nearDistance) {
+					t.Errorf("ParseGPS got %f, expected %f", l, tt.expected)
+				}
+			}
+		})
 	}
+}
 
-	value, expected = "33\u00B0 12' 34.3423\"", LatLong(33.209540)
-	if l, err = ParseDMS(value); err != nil {
-		t.Errorf("ParseDMS error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseDMS got %f, expected %f", l, expected)
+func TestParseDMS(t *testing.T) {
+	var tests = []struct {
+		value    string
+		expected LatLong
+		err      bool
+	}{
+		{"33\u00B0 12' 34.3423\"", 33.209540, false},
 	}
-
-	value, expected = "151.234532", LatLong(151.234532)
-	if l, err = ParseDecimal(value); err != nil {
-		t.Errorf("ParseDecimal error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseDecimal got %f, expected %f", l, expected)
+	for _, tt := range tests {
+		t.Run(tt.value, func(t *testing.T) {
+			l, err := ParseDMS(tt.value)
+			if tt.err {
+				assert.Error(t, err)
+			} else {
+				if !l.IsNear(tt.expected, nearDistance) {
+					t.Errorf("ParseDMS got %f, expected %f", l, tt.expected)
+				}
+			}
+		})
 	}
+}
 
-	value, expected = "-151.234532", LatLong(-151.234532)
-	if l, err = ParseDecimal(value); err != nil {
-		t.Errorf("ParseDecimal error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseDecimal got %f, expected %f", l, expected)
+func TestParseDecimal(t *testing.T) {
+	var tests = []struct {
+		value    string
+		expected LatLong
+		err      bool
+	}{
+		{"151.234532", 151.234532, false},
+		{"-151.234532", -151.234532, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.value, func(t *testing.T) {
+			l, err := ParseDecimal(tt.value)
+			if tt.err {
+				assert.Error(t, err)
+			} else {
+				if !l.IsNear(tt.expected, nearDistance) {
+					t.Errorf("ParseDecimal got %f, expected %f", l, tt.expected)
+				}
+			}
+		})
 	}
 }
 
