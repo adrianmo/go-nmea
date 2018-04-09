@@ -1,7 +1,6 @@
 package nmea
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -49,7 +48,6 @@ func TestParseDMS(t *testing.T) {
 		t.Run(tt.value, func(t *testing.T) {
 			l, err := ParseDMS(tt.value)
 			if tt.err {
-				fmt.Println(err)
 				assert.Error(t, err)
 			} else {
 				if !l.IsNear(tt.expected, nearDistance) {
