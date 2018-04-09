@@ -84,9 +84,6 @@ func ParseLatLong(s string) (LatLong, error) {
 	} else if l, err = ParseDecimal(s); err == nil {
 		return l, nil
 	}
-	if !l.ValidRange() {
-		return invalid, errors.New("coordinate is not in range -180, 180")
-	}
 	return invalid, fmt.Errorf("cannot parse [%s], unknown format", s)
 }
 
