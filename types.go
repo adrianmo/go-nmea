@@ -75,16 +75,19 @@ func (l LatLong) IsNear(o LatLong, max float64) bool {
 //
 func ParseLatLong(s string) (LatLong, error) {
 	var l LatLong
-	var err error
-	invalid := LatLong(0.0) // The invalid value to return.
-	if l, err = ParseDMS(s); err == nil {
-		return l, nil
-	} else if l, err = ParseGPS(s); err == nil {
-		return l, nil
-	} else if l, err = ParseDecimal(s); err == nil {
-		return l, nil
+	if v, err := ParseDMS(s); err == nil {
+		l = v
+	} else if v, err := ParseGPS(s); err == nil {
+		l = v
+	} else if v, err := ParseDecimal(s); err == nil {
+		l = v
+	} else {
+		return 0, fmt.Errorf("cannot parse [%s], unknown format", s)
 	}
-	return invalid, fmt.Errorf("cannot parse [%s], unknown format", s)
+	if !l.ValidRange() {
+		return 0, errors.New("coordinate is not in range -180, 180")
+	}
+	return l, nil
 }
 
 // ParseGPS parses a GPS/NMEA coordinate.
