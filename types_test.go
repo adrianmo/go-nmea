@@ -18,6 +18,7 @@ func TestParseGPS(t *testing.T) {
 		{"3345.1232 N", 33.752054, false},
 		{"15145.9877 S", -151.76646, false},
 		{"12345.1234 X", 0, true},
+		{"1234.1234", 0, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.value, func(t *testing.T) {
@@ -97,6 +98,11 @@ func TestLatLongPrint(t *testing.T) {
 			value: 33.94057166666666,
 			gps:   "3356.4343",
 			dms:   "33° 56' 26.058000\"",
+		},
+		{
+			value: 45.0,
+			dms:   "45° 0' 0.000000\"",
+			gps:   "4500.0000",
 		},
 	}
 

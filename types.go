@@ -94,6 +94,9 @@ func ParseLatLong(s string) (LatLong, error) {
 // e.g 15113.4322S
 func ParseGPS(s string) (LatLong, error) {
 	parts := strings.Split(s, " ")
+	if len(parts) != 2 {
+		return 0, fmt.Errorf("invalid format: %s", s)
+	}
 	dir := parts[1]
 	value, err := strconv.ParseFloat(parts[0], 64)
 	if err != nil {
