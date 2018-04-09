@@ -77,3 +77,35 @@ func TestSentences(t *testing.T) {
 		})
 	}
 }
+
+var parsetests = []struct {
+	name string
+	raw  string
+	err  string
+	msg  interface{}
+}{
+	{
+		name: "bad sentence",
+		raw:  "SDFSD,2340dfmswd",
+		err:  "nmea: sentence does not start with a '$'",
+	},
+	{
+		name: "bad sentence type",
+		raw:  "$INVALID,123,123,*7D",
+		err:  "nmea: sentence type 'INVALID' not implemented",
+	},
+}
+
+func TestParse(t *testing.T) {
+	for _, tt := range parsetests {
+		t.Run(tt.name, func(t *testing.T) {
+			m, err := Parse(tt.raw)
+			if tt.err != "" {
+				assert.EqualError(t, err, tt.err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.msg, m)
+			}
+		})
+	}
+}
