@@ -144,6 +144,15 @@ func ParseDecimal(s string) (LatLong, error) {
 	return LatLong(l), nil
 }
 
+// ParseDecimal parses a decimal format coordinate and panics on error.
+func MustParseDecimal(s string) LatLong {
+	l, err := ParseDecimal(s)
+	if err != nil {
+		panic(err)
+	}
+	return l
+}
+
 // ParseDMS parses a coordinate in degrees, minutes, seconds.
 // - e.g. 33° 23' 22"
 func ParseDMS(s string) (LatLong, error) {
@@ -195,6 +204,16 @@ func ParseDMS(s string) (LatLong, error) {
 	return val, nil
 }
 
+// MustParseDMS parses a coordinate in degrees, minutes, seconds and
+// panics on failure
+func MustParseDMS(s string) LatLong {
+	l, err := ParseDMS(s)
+	if err != nil {
+		panic(err)
+	}
+	return l
+}
+
 // Time type
 type Time struct {
 	Valid       bool
@@ -243,6 +262,15 @@ func ParseTime(s string) (Time, error) {
 	return Time{true, hour, minute, second, millisecond}, nil
 }
 
+// MustParseTime parses wall clock and panics on failure
+func MustParseTime(s string) Time {
+	t, err := ParseTime(s)
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
 // Date type
 type Date struct {
 	Valid bool
@@ -277,4 +305,13 @@ func ParseDate(ddmmyy string) (Date, error) {
 		return Date{}, errors.New(ddmmyy)
 	}
 	return Date{true, dd, mm, yy}, nil
+}
+
+// MulstParseDate parses a date and panics on failure
+func MustParseDate(ddmmyy string) Date {
+	d, err := ParseDate(ddmmyy)
+	if err != nil {
+		panic(err)
+	}
+	return d
 }
