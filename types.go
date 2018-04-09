@@ -90,16 +90,6 @@ func ParseLatLong(s string) (LatLong, error) {
 	return invalid, fmt.Errorf("cannot parse [%s], unknown format", s)
 }
 
-// MustParseLatLong parses the supplied string into the LatLong.
-// It panics if an error is encountered
-func MustParseLatLong(s string) LatLong {
-	l, err := ParseLatLong(s)
-	if err != nil {
-		panic(err)
-	}
-	return l
-}
-
 // ParseGPS parses a GPS/NMEA coordinate.
 // e.g 15113.4322S
 func ParseGPS(s string) (LatLong, error) {
@@ -123,15 +113,6 @@ func ParseGPS(s string) (LatLong, error) {
 	}
 }
 
-// MustParseGPS parses a GPS/NMEA coordinate or panics if it fails.
-func MustParseGPS(s string) LatLong {
-	ll, err := ParseGPS(s)
-	if err != nil {
-		panic(err)
-	}
-	return ll
-}
-
 // ParseDecimal parses a decimal format coordinate.
 // e.g: 151.196019
 func ParseDecimal(s string) (LatLong, error) {
@@ -141,15 +122,6 @@ func ParseDecimal(s string) (LatLong, error) {
 		return LatLong(0.0), errors.New("parse error (not decimal coordinate)")
 	}
 	return LatLong(l), nil
-}
-
-// ParseDecimal parses a decimal format coordinate and panics on error.
-func MustParseDecimal(s string) LatLong {
-	l, err := ParseDecimal(s)
-	if err != nil {
-		panic(err)
-	}
-	return l
 }
 
 // ParseDMS parses a coordinate in degrees, minutes, seconds.
@@ -203,16 +175,6 @@ func ParseDMS(s string) (LatLong, error) {
 	return val, nil
 }
 
-// MustParseDMS parses a coordinate in degrees, minutes, seconds and
-// panics on failure
-func MustParseDMS(s string) LatLong {
-	l, err := ParseDMS(s)
-	if err != nil {
-		panic(err)
-	}
-	return l
-}
-
 // Time type
 type Time struct {
 	Valid       bool
@@ -261,15 +223,6 @@ func ParseTime(s string) (Time, error) {
 	return Time{true, hour, minute, second, millisecond}, nil
 }
 
-// MustParseTime parses wall clock and panics on failure
-func MustParseTime(s string) Time {
-	t, err := ParseTime(s)
-	if err != nil {
-		panic(err)
-	}
-	return t
-}
-
 // Date type
 type Date struct {
 	Valid bool
@@ -304,13 +257,4 @@ func ParseDate(ddmmyy string) (Date, error) {
 		return Date{}, errors.New(ddmmyy)
 	}
 	return Date{true, dd, mm, yy}, nil
-}
-
-// MulstParseDate parses a date and panics on failure
-func MustParseDate(ddmmyy string) Date {
-	d, err := ParseDate(ddmmyy)
-	if err != nil {
-		panic(err)
-	}
-	return d
 }
