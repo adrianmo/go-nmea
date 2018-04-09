@@ -1,6 +1,7 @@
 package nmea
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,6 +17,7 @@ func TestParseGPS(t *testing.T) {
 	}{
 		{"3345.1232 N", 33.752054, false},
 		{"15145.9877 S", -151.76646, false},
+		{"12345.1234 X", 0, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.value, func(t *testing.T) {
@@ -38,11 +40,16 @@ func TestParseDMS(t *testing.T) {
 		err      bool
 	}{
 		{"33\u00B0 12' 34.3423\"", 33.209540, false},
+		{"33\u00B0 1.1' 34.3423\"", 0, true},
+		{"3.3\u00B0 1' 34.3423\"", 0, true},
+		{"33\u00B0 1' 34.34.23\"", 0, true},
+		{"33 1 3434.23", 0, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.value, func(t *testing.T) {
 			l, err := ParseDMS(tt.value)
 			if tt.err {
+				fmt.Println(err)
 				assert.Error(t, err)
 			} else {
 				if !l.IsNear(tt.expected, nearDistance) {

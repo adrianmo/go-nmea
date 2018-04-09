@@ -157,38 +157,40 @@ func ParseDMS(s string) (LatLong, error) {
 	var err error
 
 	for i, r := range s {
-		if unicode.IsNumber(r) || r == '.' {
+		switch {
+		case unicode.IsNumber(r) || r == '.':
 			if !endNumber {
 				tmpBytes = append(tmpBytes, s[i])
 			} else {
 				return 0, errors.New("parse error (no delimiter)")
 			}
-		} else if unicode.IsSpace(r) && len(tmpBytes) > 0 {
+		case unicode.IsSpace(r) && len(tmpBytes) > 0:
 			endNumber = true
-		} else if r == Degrees {
+		case r == Degrees:
 			if degrees, err = strconv.Atoi(string(tmpBytes)); err != nil {
 				return 0, errors.New("parse error (degrees)")
 			}
 			tmpBytes = tmpBytes[:0]
 			endNumber = false
-		} else if s[i] == Minutes {
+		case s[i] == Minutes:
 			if minutes, err = strconv.Atoi(string(tmpBytes)); err != nil {
 				return 0, errors.New("parse error (minutes)")
 			}
 			tmpBytes = tmpBytes[:0]
 			endNumber = false
-		} else if s[i] == Seconds {
+		case s[i] == Seconds:
 			if seconds, err = strconv.ParseFloat(string(tmpBytes), 64); err != nil {
 				return 0, errors.New("parse error (seconds)")
 			}
 			tmpBytes = tmpBytes[:0]
 			endNumber = false
-		} else if unicode.IsSpace(r) && len(tmpBytes) == 0 {
+		case unicode.IsSpace(r) && len(tmpBytes) == 0:
 			continue
-		} else {
+		default:
 			return 0, fmt.Errorf("parse error (unknown symbol [%d])", s[i])
 		}
 	}
+
 	val := LatLong(float64(degrees) + (float64(minutes) / 60.0) + (float64(seconds) / 60.0 / 60.0))
 	return val, nil
 }
