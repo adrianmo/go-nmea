@@ -1,6 +1,7 @@
 package nmea
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -82,21 +83,28 @@ func TestParseDecimal(t *testing.T) {
 }
 
 func TestLatLongPrint(t *testing.T) {
-	l, _ := ParseDecimal("151.434367")
-	exp := "15126.0620"
-	if s := l.PrintGPS(); s != exp {
-		t.Errorf("PrintGPS() got %s expected %s", s, exp)
+	var tests = []struct {
+		value LatLong
+		dms   string
+		gps   string
+	}{
+		{
+			value: 151.434367,
+			gps:   "15126.0620",
+			dms:   "151° 26' 3.721200\"",
+		},
+		{
+			value: 33.94057166666666,
+			gps:   "3356.4343",
+			dms:   "33° 56' 26.058000\"",
+		},
 	}
 
-	l, _ = ParseGPS("3356.4343 N")
-	exp = "3356.4343"
-	if s := l.PrintGPS(); s != exp {
-		t.Errorf("PrintGPS() got %s expected %s", s, exp)
-	}
-
-	exp = "33° 56' 26.058000\""
-	if s := l.PrintDMS(); s != exp {
-		t.Errorf("PrintDMS() got %s expected %s", s, exp)
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%f", tt.value), func(t *testing.T) {
+			assert.Equal(t, tt.dms, tt.value.PrintDMS())
+			assert.Equal(t, tt.gps, tt.value.PrintGPS())
+		})
 	}
 }
 
