@@ -1,64 +1,142 @@
 package nmea
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 var nearDistance = 0.001
 
-func TestLatLongParse(t *testing.T) {
-	var l LatLong
-	var err error
-	value, expected := "3345.1232 N", LatLong(33.752054)
-	if l, err = ParseGPS(value); err != nil {
-		t.Errorf("ParseGPS error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseGPS got %f, expected %f", l, expected)
+func TestParseLatLong(t *testing.T) {
+	var tests = []struct {
+		value    string
+		expected LatLong
+		err      bool
+	}{
+		{"33\u00B0 12' 34.3423\"", 33.209540, false}, // dms
+		{"3345.1232 N", 33.752054, false},            // gps
+		{"151.234532", 151.234532, false},            // decimal
+		{"200.000", 0, true},                         // out of range
 	}
-
-	value, expected = "15145.9877 S", LatLong(-151.76646)
-	if l, err = ParseGPS(value); err != nil {
-		t.Errorf("ParseGPS error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseGPS got %f, expected %f", l, expected)
+	for _, tt := range tests {
+		t.Run(tt.value, func(t *testing.T) {
+			l, err := ParseLatLong(tt.value)
+			if tt.err {
+				assert.Error(t, err)
+			} else {
+				if !l.IsNear(tt.expected, nearDistance) {
+					t.Errorf("ParseLatLong got %f, expected %f", l, tt.expected)
+				}
+			}
+		})
 	}
+}
 
-	value, expected = "33\u00B0 12' 34.3423\"", LatLong(33.209540)
-	if l, err = ParseDMS(value); err != nil {
-		t.Errorf("ParseDMS error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseDMS got %f, expected %f", l, expected)
+func TestParseGPS(t *testing.T) {
+	var tests = []struct {
+		value    string
+		expected LatLong
+		err      bool
+	}{
+		{"3345.1232 N", 33.752054, false},
+		{"15145.9877 S", -151.76646, false},
+		{"12345.1234 X", 0, true},
+		{"1234.1234", 0, true},
 	}
-
-	value, expected = "151.234532", LatLong(151.234532)
-	if l, err = ParseDecimal(value); err != nil {
-		t.Errorf("ParseDecimal error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseDecimal got %f, expected %f", l, expected)
+	for _, tt := range tests {
+		t.Run(tt.value, func(t *testing.T) {
+			l, err := ParseGPS(tt.value)
+			if tt.err {
+				assert.Error(t, err)
+			} else {
+				if !l.IsNear(tt.expected, nearDistance) {
+					t.Errorf("ParseGPS got %f, expected %f", l, tt.expected)
+				}
+			}
+		})
 	}
+}
 
-	value, expected = "-151.234532", LatLong(-151.234532)
-	if l, err = ParseDecimal(value); err != nil {
-		t.Errorf("ParseDecimal error: %s", err)
-	} else if !l.IsNear(expected, nearDistance) {
-		t.Errorf("ParseDecimal got %f, expected %f", l, expected)
+func TestParseDMS(t *testing.T) {
+	var tests = []struct {
+		value    string
+		expected LatLong
+		err      bool
+	}{
+		{"33\u00B0 12' 34.3423\"", 33.209540, false},
+		{"33\u00B0 1.1' 34.3423\"", 0, true},
+		{"3.3\u00B0 1' 34.3423\"", 0, true},
+		{"33\u00B0 1' 34.34.23\"", 0, true},
+		{"33 1 3434.23", 0, true},
+		{"123", 0, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.value, func(t *testing.T) {
+			l, err := ParseDMS(tt.value)
+			if tt.err {
+				assert.Error(t, err)
+			} else {
+				if !l.IsNear(tt.expected, nearDistance) {
+					t.Errorf("ParseDMS got %f, expected %f", l, tt.expected)
+				}
+			}
+		})
+	}
+}
+
+func TestParseDecimal(t *testing.T) {
+	var tests = []struct {
+		value    string
+		expected LatLong
+		err      bool
+	}{
+		{"151.234532", 151.234532, false},
+		{"-151.234532", -151.234532, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.value, func(t *testing.T) {
+			l, err := ParseDecimal(tt.value)
+			if tt.err {
+				assert.Error(t, err)
+			} else {
+				if !l.IsNear(tt.expected, nearDistance) {
+					t.Errorf("ParseDecimal got %f, expected %f", l, tt.expected)
+				}
+			}
+		})
 	}
 }
 
 func TestLatLongPrint(t *testing.T) {
-	l, _ := ParseDecimal("151.434367")
-	exp := "15126.0620"
-	if s := l.PrintGPS(); s != exp {
-		t.Errorf("PrintGPS() got %s expected %s", s, exp)
+	var tests = []struct {
+		value LatLong
+		dms   string
+		gps   string
+	}{
+		{
+			value: 151.434367,
+			gps:   "15126.0620",
+			dms:   "151° 26' 3.721200\"",
+		},
+		{
+			value: 33.94057166666666,
+			gps:   "3356.4343",
+			dms:   "33° 56' 26.058000\"",
+		},
+		{
+			value: 45.0,
+			dms:   "45° 0' 0.000000\"",
+			gps:   "4500.0000",
+		},
 	}
 
-	l, _ = ParseGPS("3356.4343 N")
-	exp = "3356.4343"
-	if s := l.PrintGPS(); s != exp {
-		t.Errorf("PrintGPS() got %s expected %s", s, exp)
-	}
-
-	exp = "33° 56' 26.058000\""
-	if s := l.PrintDMS(); s != exp {
-		t.Errorf("PrintDMS() got %s expected %s", s, exp)
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%f", tt.value), func(t *testing.T) {
+			assert.Equal(t, tt.dms, tt.value.PrintDMS())
+			assert.Equal(t, tt.gps, tt.value.PrintGPS())
+		})
 	}
 }
 

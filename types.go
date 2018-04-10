@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
-	//  "unicode/utf8"
 )
 
 const (
@@ -76,25 +75,28 @@ func (l LatLong) IsNear(o LatLong, max float64) bool {
 //
 func ParseLatLong(s string) (LatLong, error) {
 	var l LatLong
-	var err error
-	invalid := LatLong(0.0) // The invalid value to return.
-	if l, err = ParseDMS(s); err == nil {
-		return l, nil
-	} else if l, err = ParseGPS(s); err == nil {
-		return l, nil
-	} else if l, err = ParseDecimal(s); err == nil {
-		return l, nil
+	if v, err := ParseDMS(s); err == nil {
+		l = v
+	} else if v, err := ParseGPS(s); err == nil {
+		l = v
+	} else if v, err := ParseDecimal(s); err == nil {
+		l = v
+	} else {
+		return 0, fmt.Errorf("cannot parse [%s], unknown format", s)
 	}
 	if !l.ValidRange() {
-		return invalid, errors.New("coordinate is not in range -180, 180")
+		return 0, errors.New("coordinate is not in range -180, 180")
 	}
-	return invalid, fmt.Errorf("cannot parse [%s], unknown format", s)
+	return l, nil
 }
 
 // ParseGPS parses a GPS/NMEA coordinate.
 // e.g 15113.4322S
 func ParseGPS(s string) (LatLong, error) {
 	parts := strings.Split(s, " ")
+	if len(parts) != 2 {
+		return 0, fmt.Errorf("invalid format: %s", s)
+	}
 	dir := parts[1]
 	value, err := strconv.ParseFloat(parts[0], 64)
 	if err != nil {
@@ -138,37 +140,41 @@ func ParseDMS(s string) (LatLong, error) {
 	var err error
 
 	for i, r := range s {
-		if unicode.IsNumber(r) || r == '.' {
+		switch {
+		case unicode.IsNumber(r) || r == '.':
 			if !endNumber {
 				tmpBytes = append(tmpBytes, s[i])
 			} else {
 				return 0, errors.New("parse error (no delimiter)")
 			}
-		} else if unicode.IsSpace(r) && len(tmpBytes) > 0 {
+		case unicode.IsSpace(r) && len(tmpBytes) > 0:
 			endNumber = true
-		} else if r == Degrees {
+		case r == Degrees:
 			if degrees, err = strconv.Atoi(string(tmpBytes)); err != nil {
 				return 0, errors.New("parse error (degrees)")
 			}
 			tmpBytes = tmpBytes[:0]
 			endNumber = false
-		} else if s[i] == Minutes {
+		case s[i] == Minutes:
 			if minutes, err = strconv.Atoi(string(tmpBytes)); err != nil {
 				return 0, errors.New("parse error (minutes)")
 			}
 			tmpBytes = tmpBytes[:0]
 			endNumber = false
-		} else if s[i] == Seconds {
+		case s[i] == Seconds:
 			if seconds, err = strconv.ParseFloat(string(tmpBytes), 64); err != nil {
 				return 0, errors.New("parse error (seconds)")
 			}
 			tmpBytes = tmpBytes[:0]
 			endNumber = false
-		} else if unicode.IsSpace(r) && len(tmpBytes) == 0 {
+		case unicode.IsSpace(r) && len(tmpBytes) == 0:
 			continue
-		} else {
+		default:
 			return 0, fmt.Errorf("parse error (unknown symbol [%d])", s[i])
 		}
+	}
+	if len(tmpBytes) > 0 {
+		return 0, fmt.Errorf("parse error (trailing data [%s])", string(tmpBytes))
 	}
 	val := LatLong(float64(degrees) + (float64(minutes) / 60.0) + (float64(seconds) / 60.0 / 60.0))
 	return val, nil

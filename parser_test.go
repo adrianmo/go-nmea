@@ -224,3 +224,9 @@ func TestParser(t *testing.T) {
 		})
 	}
 }
+
+func TestBadParserPrefix(t *testing.T) {
+	sent, _ := ParseSentence("$TYPE,123*04")
+	p := newParser(sent, "OTHER_TYPE")
+	assert.Error(t, p.Err())
+}
