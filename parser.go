@@ -22,7 +22,7 @@ func newParser(s BaseSentence, prefix string) *parser {
 	return p
 }
 
-// Err returns the first error encounterd during the parser's usage.
+// Err returns the first error encountered during the parser's usage.
 func (p *parser) Err() error {
 	return p.err
 }
@@ -64,7 +64,7 @@ func (p *parser) EnumString(i int, context string, options ...string) string {
 }
 
 // Int64 returns the int64 value at the specified index.
-// If the value is an emtpy string, 0 is returned.
+// If the value is an empty string, 0 is returned.
 func (p *parser) Int64(i int, context string) int64 {
 	s := p.String(i, context)
 	if p.err != nil {
