@@ -19,8 +19,8 @@ type GPGLL struct {
 	Validity  string  // validity - A-valid
 }
 
-// NewGPGLL constructor
-func NewGPGLL(s BaseSentence) (GPGLL, error) {
+// newGPGLL constructor
+func newGPGLL(s BaseSentence) (GPGLL, error) {
 	p := newParser(s, PrefixGPGLL)
 	return GPGLL{
 		BaseSentence: s,

@@ -15,9 +15,9 @@ type GPVTG struct {
 	GroundSpeedKPH   float64
 }
 
-// NewGPVTG parses the GPVTG sentence into this struct.
+// newGPVTG parses the GPVTG sentence into this struct.
 // e.g: $GPVTG,360.0,T,348.7,M,000.0,N,000.0,K*43
-func NewGPVTG(s BaseSentence) (GPVTG, error) {
+func newGPVTG(s BaseSentence) (GPVTG, error) {
 	p := newParser(s, PrefixGPVTG)
 	return GPVTG{
 		BaseSentence:     s,

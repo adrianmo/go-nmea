@@ -16,8 +16,8 @@ type PGRME struct {
 	Spherical  float64 // Overall spherical equivalent position error in meters
 }
 
-// NewPGRME constructor
-func NewPGRME(s BaseSentence) (PGRME, error) {
+// newPGRME constructor
+func newPGRME(s BaseSentence) (PGRME, error) {
 	p := newParser(s, PrefixPGRME)
 
 	horizontal := p.Float64(0, "horizontal error")

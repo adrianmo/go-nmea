@@ -23,8 +23,8 @@ type GPRMC struct {
 	Variation float64 // Magnetic variation
 }
 
-// NewGPRMC constructor
-func NewGPRMC(s BaseSentence) (GPRMC, error) {
+// newGPRMC constructor
+func newGPRMC(s BaseSentence) (GPRMC, error) {
 	p := newParser(s, PrefixGPRMC)
 	m := GPRMC{
 		BaseSentence: s,

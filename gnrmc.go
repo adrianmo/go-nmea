@@ -19,8 +19,8 @@ type GNRMC struct {
 	Variation float64 // Magnetic variation
 }
 
-// NewGNRMC constructor
-func NewGNRMC(s BaseSentence) (GNRMC, error) {
+// newGNRMC constructor
+func newGNRMC(s BaseSentence) (GNRMC, error) {
 	p := newParser(s, PrefixGNRMC)
 	m := GNRMC{
 		BaseSentence: s,

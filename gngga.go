@@ -20,8 +20,8 @@ type GNGGA struct {
 	DGPSId        string  // DGPS reference station ID.
 }
 
-// NewGNGGA constructor
-func NewGNGGA(s BaseSentence) (GNGGA, error) {
+// newGNGGA constructor
+func newGNGGA(s BaseSentence) (GNGGA, error) {
 	p := newParser(s, PrefixGNGGA)
 	return GNGGA{
 		BaseSentence:  s,

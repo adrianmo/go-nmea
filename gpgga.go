@@ -33,9 +33,9 @@ type GPGGA struct {
 	DGPSId        string  // DGPS reference station ID.
 }
 
-// NewGPGGA parses the GPGGA sentence into this struct.
+// newGPGGA parses the GPGGA sentence into this struct.
 // e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
-func NewGPGGA(s BaseSentence) (GPGGA, error) {
+func newGPGGA(s BaseSentence) (GPGGA, error) {
 	p := newParser(s, PrefixGPGGA)
 	return GPGGA{
 		BaseSentence:  s,
