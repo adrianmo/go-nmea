@@ -67,7 +67,7 @@ var sentencetests = []struct {
 func TestSentences(t *testing.T) {
 	for _, tt := range sentencetests {
 		t.Run(tt.name, func(t *testing.T) {
-			sent, err := ParseSentence(tt.raw)
+			sent, err := parseSentence(tt.raw)
 			if tt.err != "" {
 				assert.EqualError(t, err, tt.err)
 			} else {
