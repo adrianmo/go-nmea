@@ -29,7 +29,7 @@ func newGNGGA(s BaseSentence) (GNGGA, error) {
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),
 		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS, PPS, RTK, FRTK),
-		NumSatellites: p.Int64(6, "number of satelites"),
+		NumSatellites: p.Int64(6, "number of satellites"),
 		HDOP:          p.Float64(7, "hdop"),
 		Altitude:      p.Float64(8, "altitude"),
 		Separation:    p.Float64(10, "separation"),

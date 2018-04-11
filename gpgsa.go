@@ -37,7 +37,7 @@ func newGPGSA(s BaseSentence) (GPGSA, error) {
 	}
 	// Satellites in view.
 	for i := 2; i < 14; i++ {
-		if v := p.String(i, "satelite in view"); v != "" {
+		if v := p.String(i, "satellite in view"); v != "" {
 			m.SV = append(m.SV, v)
 		}
 	}
