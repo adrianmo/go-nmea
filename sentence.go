@@ -44,8 +44,8 @@ func (s Sent) String() string { return s.Raw }
 // Validate returns an error if the sentence is not valid
 func (s Sent) Validate() error { return nil }
 
-// ParseSentence parses a raw message into it's fields
-func ParseSentence(raw string) (Sent, error) {
+// parseSentence parses a raw message into it's fields
+func parseSentence(raw string) (Sent, error) {
 	startIndex := strings.Index(raw, SentenceStart)
 	if startIndex != 0 {
 		return Sent{}, fmt.Errorf("nmea: sentence does not start with a '$'")
@@ -85,7 +85,7 @@ func xorChecksum(s string) string {
 
 // Parse parses the given string into the correct sentence type.
 func Parse(raw string) (Message, error) {
-	s, err := ParseSentence(raw)
+	s, err := parseSentence(raw)
 	if err != nil {
 		return nil, err
 	}
