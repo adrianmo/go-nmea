@@ -11,8 +11,8 @@ type GNRMC struct {
 	BaseSentence
 	Time      Time    // Time Stamp
 	Validity  string  // validity - A-ok, V-invalid
-	Latitude  LatLong // Latitude
-	Longitude LatLong // Longitude
+	Latitude  float64 // Latitude
+	Longitude float64 // Longitude
 	Speed     float64 // Speed in knots
 	Course    float64 // True course
 	Date      Date    // Date
