@@ -57,7 +57,7 @@ func TestGPRMC(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				gprmc := m.(GPRMC)
-				gprmc.Sent = Sent{}
+				gprmc.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gprmc)
 			}
 		})

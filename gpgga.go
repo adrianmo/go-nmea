@@ -20,7 +20,7 @@ const (
 // GPGGA represents fix data.
 // http://aprs.gids.nl/nmea/#gga
 type GPGGA struct {
-	Sent
+	BaseSentence
 	Time          Time    // Time of fix.
 	Latitude      LatLong // Latitude.
 	Longitude     LatLong // Longitude.
@@ -35,10 +35,10 @@ type GPGGA struct {
 
 // NewGPGGA parses the GPGGA sentence into this struct.
 // e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
-func NewGPGGA(s Sent) (GPGGA, error) {
+func NewGPGGA(s BaseSentence) (GPGGA, error) {
 	p := newParser(s, PrefixGPGGA)
 	return GPGGA{
-		Sent:          s,
+		BaseSentence:  s,
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),

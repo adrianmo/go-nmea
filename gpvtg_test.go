@@ -39,7 +39,7 @@ func TestGPVTG(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				gpvtg := m.(GPVTG)
-				gpvtg.Sent = Sent{}
+				gpvtg.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gpvtg)
 			}
 		})

@@ -8,14 +8,14 @@ import (
 // parser provides a simple way of accessing and parsing
 // sentence fields
 type parser struct {
-	Sent
+	BaseSentence
 	prefix string
 	err    error
 }
 
 // newParser constructor
-func newParser(s Sent, prefix string) *parser {
-	p := &parser{Sent: s, prefix: prefix}
+func newParser(s BaseSentence, prefix string) *parser {
+	p := &parser{BaseSentence: s, prefix: prefix}
 	if p.Type != prefix {
 		p.SetErr("prefix", p.Type)
 	}

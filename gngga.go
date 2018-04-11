@@ -7,7 +7,7 @@ const (
 
 // GNGGA is the Time, position, and fix related data of the receiver.
 type GNGGA struct {
-	Sent
+	BaseSentence
 	Time          Time    // Time of fix.
 	Latitude      LatLong // Latitude.
 	Longitude     LatLong // Longitude.
@@ -21,10 +21,10 @@ type GNGGA struct {
 }
 
 // NewGNGGA constructor
-func NewGNGGA(s Sent) (GNGGA, error) {
+func NewGNGGA(s BaseSentence) (GNGGA, error) {
 	p := newParser(s, PrefixGNGGA)
 	return GNGGA{
-		Sent:          s,
+		BaseSentence:  s,
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),

@@ -12,7 +12,7 @@ const (
 // GPGLL is Geographic Position, Latitude / Longitude and time.
 // http://aprs.gids.nl/nmea/#gll
 type GPGLL struct {
-	Sent
+	BaseSentence
 	Latitude  LatLong // Latitude
 	Longitude LatLong // Longitude
 	Time      Time    // Time Stamp
@@ -20,13 +20,13 @@ type GPGLL struct {
 }
 
 // NewGPGLL constructor
-func NewGPGLL(s Sent) (GPGLL, error) {
+func NewGPGLL(s BaseSentence) (GPGLL, error) {
 	p := newParser(s, PrefixGPGLL)
 	return GPGLL{
-		Sent:      s,
-		Latitude:  p.LatLong(0, 1, "latitude"),
-		Longitude: p.LatLong(2, 3, "longitude"),
-		Time:      p.Time(4, "time"),
-		Validity:  p.EnumString(5, "validity", ValidGLL, InvalidGLL),
+		BaseSentence: s,
+		Latitude:     p.LatLong(0, 1, "latitude"),
+		Longitude:    p.LatLong(2, 3, "longitude"),
+		Time:         p.Time(4, "time"),
+		Validity:     p.EnumString(5, "validity", ValidGLL, InvalidGLL),
 	}, p.Err()
 }

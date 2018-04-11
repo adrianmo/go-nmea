@@ -58,7 +58,7 @@ func TestPGRME(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				pgrme := m.(PGRME)
-				pgrme.Sent = Sent{}
+				pgrme.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, pgrme)
 			}
 		})

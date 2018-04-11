@@ -55,7 +55,7 @@ func TestGPGGA(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				gpgga := m.(GPGGA)
-				gpgga.Sent = Sent{}
+				gpgga.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gpgga)
 			}
 		})

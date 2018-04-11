@@ -46,7 +46,7 @@ func TestGPGSA(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				gpgsa := m.(GPGSA)
-				gpgsa.Sent = Sent{}
+				gpgsa.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gpgsa)
 			}
 		})

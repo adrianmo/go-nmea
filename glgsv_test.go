@@ -88,7 +88,7 @@ func TestGLGSV(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				glgsv := m.(GLGSV)
-				glgsv.Sent = Sent{}
+				glgsv.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, glgsv)
 			}
 		})
