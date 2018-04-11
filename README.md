@@ -42,22 +42,22 @@ import (
 
 func main() {
 	sentence := "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70"
-	m, err := nmea.Parse(sentence)
+	s, err := nmea.Parse(sentence)
 	if err != nil {
 		log.Fatal(err)
 	}
-	s := m.(nmea.GPRMC)
-	fmt.Printf("Raw sentence: %v\n", s)
-	fmt.Printf("Time: %s\n", s.Time)
-	fmt.Printf("Validity: %s\n", s.Validity)
-	fmt.Printf("Latitude GPS: %s\n", s.Latitude.PrintGPS())
-	fmt.Printf("Latitude DMS: %s\n", s.Latitude.PrintDMS())
-	fmt.Printf("Longitude GPS: %s\n", s.Longitude.PrintGPS())
-	fmt.Printf("Longitude DMS: %s\n", s.Longitude.PrintDMS())
-	fmt.Printf("Speed: %f\n", s.Speed)
-	fmt.Printf("Course: %f\n", s.Course)
-	fmt.Printf("Date: %s\n", s.Date)
-	fmt.Printf("Variation: %f\n", s.Variation)
+	m := s.(nmea.GPRMC)
+	fmt.Printf("Raw sentence: %v\n", m)
+	fmt.Printf("Time: %s\n", m.Time)
+	fmt.Printf("Validity: %s\n", m.Validity)
+	fmt.Printf("Latitude GPS: %s\n", m.Latitude.PrintGPS())
+	fmt.Printf("Latitude DMS: %s\n", m.Latitude.PrintDMS())
+	fmt.Printf("Longitude GPS: %s\n", m.Longitude.PrintGPS())
+	fmt.Printf("Longitude DMS: %s\n", m.Longitude.PrintDMS())
+	fmt.Printf("Speed: %f\n", m.Speed)
+	fmt.Printf("Course: %f\n", m.Course)
+	fmt.Printf("Date: %s\n", m.Date)
+	fmt.Printf("Variation: %f\n", m.Variation)
 }
 ```
 
