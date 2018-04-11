@@ -45,7 +45,7 @@ func TestGPGLL(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				gpgll := m.(GPGLL)
-				gpgll.Sent = Sent{}
+				gpgll.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gpgll)
 			}
 		})

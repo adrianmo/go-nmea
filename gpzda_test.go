@@ -47,7 +47,7 @@ func TestGPZDA(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				gpzda := m.(GPZDA)
-				gpzda.Sent = Sent{}
+				gpzda.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gpzda)
 			}
 		})

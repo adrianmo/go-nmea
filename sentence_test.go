@@ -10,12 +10,12 @@ var sentencetests = []struct {
 	name string
 	raw  string
 	err  string
-	sent Sent
+	sent BaseSentence
 }{
 	{
 		name: "checksum ok",
 		raw:  "$GPFOO,1,2,3.3,x,y,zz,*51",
-		sent: Sent{
+		sent: BaseSentence{
 			Type:     "GPFOO",
 			Fields:   []string{"1", "2", "3.3", "x", "y", "zz", ""},
 			Checksum: "51",
@@ -25,7 +25,7 @@ var sentencetests = []struct {
 	{
 		name: "good parsing",
 		raw:  "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
-		sent: Sent{
+		sent: BaseSentence{
 			Type:     "GPRMC",
 			Fields:   []string{"235236", "A", "3925.9479", "N", "11945.9211", "W", "44.7", "153.6", "250905", "15.2", "E", "A"},
 			Checksum: "0C",
@@ -79,13 +79,12 @@ func TestSentences(t *testing.T) {
 }
 
 func TestSentenceMethods(t *testing.T) {
-	sent := Sent{
+	sent := BaseSentence{
 		Type: "type",
 		Raw:  "raw",
 	}
 	assert.Equal(t, "type", sent.Prefix())
 	assert.Equal(t, "raw", sent.String())
-	assert.Equal(t, sent, sent.Sentence())
 	assert.NoError(t, sent.Validate())
 }
 

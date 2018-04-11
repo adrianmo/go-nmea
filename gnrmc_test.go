@@ -71,7 +71,7 @@ func TestGNRMC(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				gnrmc := m.(GNRMC)
-				gnrmc.Sent = Sent{}
+				gnrmc.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gnrmc)
 			}
 		})

@@ -211,7 +211,7 @@ var parsertests = []struct {
 func TestParser(t *testing.T) {
 	for _, tt := range parsertests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := newParser(Sent{
+			p := newParser(BaseSentence{
 				Type:   "type",
 				Fields: tt.fields,
 			}, "type")

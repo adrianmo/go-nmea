@@ -88,7 +88,7 @@ func TestGPGSV(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				gpgsv := m.(GPGSV)
-				gpgsv.Sent = Sent{}
+				gpgsv.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gpgsv)
 			}
 		})

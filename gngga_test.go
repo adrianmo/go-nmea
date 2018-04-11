@@ -61,7 +61,7 @@ func TestGNGGA(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				gngga := m.(GNGGA)
-				gngga.Sent = Sent{}
+				gngga.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gngga)
 			}
 		})
