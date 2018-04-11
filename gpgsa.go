@@ -27,8 +27,8 @@ type GPGSA struct {
 	VDOP    float64  // Vertical dilution of precision.
 }
 
-// NewGPGSA parses the GPGSA sentence into this struct.
-func NewGPGSA(s BaseSentence) (GPGSA, error) {
+// newGPGSA parses the GPGSA sentence into this struct.
+func newGPGSA(s BaseSentence) (GPGSA, error) {
 	p := newParser(s, PrefixGPGSA)
 	m := GPGSA{
 		BaseSentence: s,

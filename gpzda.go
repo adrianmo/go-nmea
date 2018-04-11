@@ -17,8 +17,8 @@ type GPZDA struct {
 	OffsetMinutes int64 // Local time zone offset from GMT, minutes
 }
 
-// NewGPZDA constructor
-func NewGPZDA(s BaseSentence) (GPZDA, error) {
+// newGPZDA constructor
+func newGPZDA(s BaseSentence) (GPZDA, error) {
 	p := newParser(s, PrefixGPZDA)
 	return GPZDA{
 		BaseSentence:  s,

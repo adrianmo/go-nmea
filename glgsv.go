@@ -23,8 +23,8 @@ type GLGSVInfo struct {
 	SNR         int64 // SNR, 00-99 dB (null when not tracking)
 }
 
-// NewGLGSV constructor
-func NewGLGSV(s BaseSentence) (GLGSV, error) {
+// newGLGSV constructor
+func newGLGSV(s BaseSentence) (GLGSV, error) {
 	p := newParser(s, PrefixGLGSV)
 	m := GLGSV{
 		BaseSentence:    s,

@@ -87,27 +87,27 @@ func Parse(raw string) (Sentence, error) {
 	}
 	switch s.Type {
 	case PrefixGPRMC:
-		return NewGPRMC(s)
+		return newGPRMC(s)
 	case PrefixGNRMC:
-		return NewGNRMC(s)
+		return newGNRMC(s)
 	case PrefixGPGGA:
-		return NewGPGGA(s)
+		return newGPGGA(s)
 	case PrefixGNGGA:
-		return NewGNGGA(s)
+		return newGNGGA(s)
 	case PrefixGPGSA:
-		return NewGPGSA(s)
+		return newGPGSA(s)
 	case PrefixGPGLL:
-		return NewGPGLL(s)
+		return newGPGLL(s)
 	case PrefixGPVTG:
-		return NewGPVTG(s)
+		return newGPVTG(s)
 	case PrefixGPZDA:
-		return NewGPZDA(s)
+		return newGPZDA(s)
 	case PrefixPGRME:
-		return NewPGRME(s)
+		return newPGRME(s)
 	case PrefixGPGSV:
-		return NewGPGSV(s)
+		return newGPGSV(s)
 	case PrefixGLGSV:
-		return NewGLGSV(s)
+		return newGLGSV(s)
 	default:
 		return nil, fmt.Errorf("nmea: sentence type '%s' not implemented", s.Type)
 	}

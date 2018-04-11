@@ -23,8 +23,8 @@ type GPGSVInfo struct {
 	SNR         int64 // SNR, 00-99 dB (null when not tracking)
 }
 
-// NewGPGSV constructor
-func NewGPGSV(s BaseSentence) (GPGSV, error) {
+// newGPGSV constructor
+func newGPGSV(s BaseSentence) (GPGSV, error) {
 	p := newParser(s, PrefixGPGSV)
 	m := GPGSV{
 		BaseSentence:    s,
