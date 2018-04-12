@@ -22,8 +22,8 @@ const (
 type GPGGA struct {
 	BaseSentence
 	Time          Time    // Time of fix.
-	Latitude      LatLong // Latitude.
-	Longitude     LatLong // Longitude.
+	Latitude      float64 // Latitude.
+	Longitude     float64 // Longitude.
 	FixQuality    string  // Quality of fix.
 	NumSatellites int64   // Number of satellites in use.
 	HDOP          float64 // Horizontal dilution of precision.

@@ -13,8 +13,8 @@ const (
 // http://aprs.gids.nl/nmea/#gll
 type GPGLL struct {
 	BaseSentence
-	Latitude  LatLong // Latitude
-	Longitude LatLong // Longitude
+	Latitude  float64 // Latitude
+	Longitude float64 // Longitude
 	Time      Time    // Time Stamp
 	Validity  string  // validity - A-valid
 }

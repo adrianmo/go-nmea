@@ -126,7 +126,7 @@ func (p *parser) Date(i int, context string) Date {
 }
 
 // LatLong returns the coordinate value of the specified fields.
-func (p *parser) LatLong(i, j int, context string) LatLong {
+func (p *parser) LatLong(i, j int, context string) float64 {
 	a := p.String(i, context)
 	b := p.String(j, context)
 	if p.err != nil {

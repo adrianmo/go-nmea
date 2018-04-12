@@ -12,7 +12,7 @@ var nearDistance = 0.001
 func TestParseLatLong(t *testing.T) {
 	var tests = []struct {
 		value    string
-		expected LatLong
+		expected float64
 		err      bool
 	}{
 		{"33\u00B0 12' 34.3423\"", 33.209540, false}, // dms
@@ -26,9 +26,7 @@ func TestParseLatLong(t *testing.T) {
 			if tt.err {
 				assert.Error(t, err)
 			} else {
-				if !l.IsNear(tt.expected, nearDistance) {
-					t.Errorf("ParseLatLong got %f, expected %f", l, tt.expected)
-				}
+				assert.InDelta(t, tt.expected, l, nearDistance)
 			}
 		})
 	}
@@ -37,7 +35,7 @@ func TestParseLatLong(t *testing.T) {
 func TestParseGPS(t *testing.T) {
 	var tests = []struct {
 		value    string
-		expected LatLong
+		expected float64
 		err      bool
 	}{
 		{"3345.1232 N", 33.752054, false},
@@ -51,9 +49,7 @@ func TestParseGPS(t *testing.T) {
 			if tt.err {
 				assert.Error(t, err)
 			} else {
-				if !l.IsNear(tt.expected, nearDistance) {
-					t.Errorf("ParseGPS got %f, expected %f", l, tt.expected)
-				}
+				assert.InDelta(t, tt.expected, l, nearDistance)
 			}
 		})
 	}
@@ -62,7 +58,7 @@ func TestParseGPS(t *testing.T) {
 func TestParseDMS(t *testing.T) {
 	var tests = []struct {
 		value    string
-		expected LatLong
+		expected float64
 		err      bool
 	}{
 		{"33\u00B0 12' 34.3423\"", 33.209540, false},
@@ -78,9 +74,7 @@ func TestParseDMS(t *testing.T) {
 			if tt.err {
 				assert.Error(t, err)
 			} else {
-				if !l.IsNear(tt.expected, nearDistance) {
-					t.Errorf("ParseDMS got %f, expected %f", l, tt.expected)
-				}
+				assert.InDelta(t, tt.expected, l, nearDistance)
 			}
 		})
 	}
@@ -89,7 +83,7 @@ func TestParseDMS(t *testing.T) {
 func TestParseDecimal(t *testing.T) {
 	var tests = []struct {
 		value    string
-		expected LatLong
+		expected float64
 		err      bool
 	}{
 		{"151.234532", 151.234532, false},
@@ -101,9 +95,7 @@ func TestParseDecimal(t *testing.T) {
 			if tt.err {
 				assert.Error(t, err)
 			} else {
-				if !l.IsNear(tt.expected, nearDistance) {
-					t.Errorf("ParseDecimal got %f, expected %f", l, tt.expected)
-				}
+				assert.InDelta(t, tt.expected, l, nearDistance)
 			}
 		})
 	}
@@ -111,7 +103,7 @@ func TestParseDecimal(t *testing.T) {
 
 func TestLatLongPrint(t *testing.T) {
 	var tests = []struct {
-		value LatLong
+		value float64
 		dms   string
 		gps   string
 	}{
@@ -134,8 +126,8 @@ func TestLatLongPrint(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%f", tt.value), func(t *testing.T) {
-			assert.Equal(t, tt.dms, tt.value.PrintDMS())
-			assert.Equal(t, tt.gps, tt.value.PrintGPS())
+			assert.Equal(t, tt.dms, FormatDMS(tt.value))
+			assert.Equal(t, tt.gps, FormatGPS(tt.value))
 		})
 	}
 }
