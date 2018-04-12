@@ -73,19 +73,11 @@ func TestSentences(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.sent, sent)
+				assert.Equal(t, tt.sent.Type, sent.Prefix())
+				assert.Equal(t, tt.sent.Raw, sent.String())
 			}
 		})
 	}
-}
-
-func TestSentenceMethods(t *testing.T) {
-	sent := BaseSentence{
-		Type: "type",
-		Raw:  "raw",
-	}
-	assert.Equal(t, "type", sent.Prefix())
-	assert.Equal(t, "raw", sent.String())
-	assert.NoError(t, sent.Validate())
 }
 
 var parsetests = []struct {
