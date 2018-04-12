@@ -20,7 +20,6 @@ const (
 type Sentence interface {
 	fmt.Stringer
 	Prefix() string
-	Validate() error
 }
 
 // BaseSentence contains the information about the NMEA sentence
@@ -36,9 +35,6 @@ func (s BaseSentence) Prefix() string { return s.Type }
 
 // String formats the sentence into a string
 func (s BaseSentence) String() string { return s.Raw }
-
-// Validate returns an error if the sentence is not valid
-func (s BaseSentence) Validate() error { return nil }
 
 // parseSentence parses a raw message into it's fields
 func parseSentence(raw string) (BaseSentence, error) {
