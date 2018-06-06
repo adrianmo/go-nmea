@@ -27,6 +27,7 @@ At this moment, this library supports the following sentence types:
 - [GPVTG](http://aprs.gids.nl/nmea/#vtg) - Track Made Good and Ground Speed
 - [GPZDA](http://aprs.gids.nl/nmea/#zda) - Date & time data
 - [PGRME](http://aprs.gids.nl/nmea/#rme) - Estimated Position Error (Garmin proprietary sentence)
+- [GPHDT](http://aprs.gids.nl/nmea/#hdt) - Actual vessel heading in degrees True
 
 
 ## Example
