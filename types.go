@@ -205,11 +205,12 @@ func ParseTime(s string) (Time, error) {
 	if err != nil {
 		return Time{}, errors.New(hhmmss)
 	}
-	millisecond, err := strconv.Atoi(ms)
+	secondsInFloat, err := strconv.ParseFloat("."+ms, 64)
 	if err != nil {
 		return Time{}, errors.New(hhmmss)
 	}
-	return Time{true, hour, minute, second, millisecond}, nil
+	millisecond := secondsInFloat * 1000
+	return Time{true, hour, minute, second, int(millisecond)}, nil
 }
 
 // Date type
