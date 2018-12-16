@@ -62,6 +62,27 @@ func (p *parser) EnumString(i int, context string, options ...string) string {
 	p.SetErr(context, s)
 	return ""
 }
+func (p *parser) EnumStrings(i int, context string, options ...string) []string {
+	s := p.String(i, context)
+	if p.err != nil || s == "" {
+		return []string{}
+	}
+	strs := []string{}
+	for i := 0; i < len(s); i++ {
+		r := string(s[i])
+		for _, o := range options {
+			if o == r {
+				strs = append(strs, o)
+			}
+		}
+	}
+	if len(strs) != len(s) {
+
+		p.SetErr(context, s)
+		return []string{}
+	}
+	return strs
+}
 
 // Int64 returns the int64 value at the specified index.
 // If the value is an empty string, 0 is returned.
