@@ -1,7 +1,5 @@
 package nmea
 
-import "fmt"
-
 const (
 	// Prefix GNGNS prefix
 	PrefixGNGNS            = "GNGNS"
@@ -45,6 +43,5 @@ func newGNGNS(s BaseSentence) (GNGNS, error) {
 		Age:          p.Float64(10, "age"),
 		Station:      p.Int64(11, "station"),
 	}
-	fmt.Println(p.Err())
 	return m, p.Err()
 }
