@@ -45,3 +45,13 @@ func newGNGNS(s BaseSentence) (GNGNS, error) {
 	}
 	return m, p.Err()
 }
+func (g GNGNS) IsMode(modes ...string) bool {
+	for _, md := range modes {
+		for _, m := range g.Mode {
+			if m == md {
+				return true
+			}
+		}
+	}
+	return false
+}
