@@ -35,7 +35,7 @@ func newGNGNS(s BaseSentence) (GNGNS, error) {
 		Time:         p.Time(0, "time"),
 		Latitude:     p.LatLong(1, 2, "latitude"),
 		Longitude:    p.LatLong(3, 4, "longitude"),
-		Mode:         p.EnumStrings(5, "mode", NoFixGNGNS, AutonomousGNGNS, DifferentialGNGNS, PreciseGNGNS, RealTimeKinematicGNGNS, FloatRTKGNGNS, EstimatedGNGNS, ManualGNGNS, SimulatorGNGNS),
+		Mode:         p.EnumChars(5, "mode", NoFixGNGNS, AutonomousGNGNS, DifferentialGNGNS, PreciseGNGNS, RealTimeKinematicGNGNS, FloatRTKGNGNS, EstimatedGNGNS, ManualGNGNS, SimulatorGNGNS),
 		SVs:          p.Int64(6, "SVs"),
 		HDOP:         p.Float64(7, "HDOP"),
 		Altitude:     p.Float64(8, "altitude"),

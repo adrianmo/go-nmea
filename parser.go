@@ -62,16 +62,16 @@ func (p *parser) EnumString(i int, context string, options ...string) string {
 	p.SetErr(context, s)
 	return ""
 }
-func (p *parser) EnumStrings(i int, context string, options ...string) []string {
+func (p *parser) EnumChars(i int, context string, options ...string) []string {
 	s := p.String(i, context)
 	if p.err != nil || s == "" {
 		return []string{}
 	}
 	strs := []string{}
-	for i := 0; i < len(s); i++ {
-		r := string(s[i])
+	for _, r := range s {
+		rs := string(r)
 		for _, o := range options {
-			if o == r {
+			if o == rs {
 				strs = append(strs, o)
 			}
 		}
