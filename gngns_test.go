@@ -66,31 +66,6 @@ var gngnstests = []struct {
 		err:  "nmea: GNGNS invalid mode: AAX",
 	},
 }
-var gngnsmodetests = []struct {
-	name     string
-	raw      string
-	modes    []string
-	expected bool
-}{
-	{
-		name:     "matched mode string A",
-		raw:      "$GNGNS,014035.00,4332.69262,S,17235.48549,E,AAA,13,0.9,25.63,11.24,,*31",
-		modes:    []string{AutonomousGNGNS, DifferentialGNGNS},
-		expected: true,
-	},
-	{
-		name:     "matched mode string B",
-		raw:      "$GNGNS,014035.00,4332.69262,S,17235.48549,E,AAD,13,0.9,25.63,11.24,,*34",
-		modes:    []string{DifferentialGNGNS},
-		expected: true,
-	},
-	{
-		name:     "unmatched mode string",
-		raw:      "$GNGNS,014035.00,4332.69262,S,17235.48549,E,AAD,13,0.9,25.63,11.24,,*34",
-		modes:    []string{EstimatedGNGNS},
-		expected: false,
-	},
-}
 
 func TestGNGNS(t *testing.T) {
 	for _, tt := range gngnstests {
@@ -105,16 +80,6 @@ func TestGNGNS(t *testing.T) {
 				gngns.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, gngns)
 			}
-		})
-	}
-	for _, tt := range gngnsmodetests {
-		t.Run(tt.name, func(t *testing.T) {
-			m, err := Parse(tt.raw)
-			assert.NoError(t, err)
-			gngns := m.(GNGNS)
-			hasMode := gngns.IsMode(tt.modes...)
-			assert.Equal(t, tt.expected, hasMode)
-
 		})
 	}
 }

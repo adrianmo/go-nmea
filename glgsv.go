@@ -17,10 +17,10 @@ type GLGSV struct {
 
 // GLGSVInfo represents information about a visible satellite
 type GLGSVInfo struct {
-	SVPRNNumber int64   // SV PRN number, pseudo-random noise or gold code
-	Elevation   int64   // Elevation in degrees, 90 maximum
-	Azimuth     int64   // Azimuth, degrees from true north, 000 to 359
-	SNR         float64 // SNR, 00-99 dB (null when not tracking)
+	SVPRNNumber int64 // SV PRN number, pseudo-random noise or gold code
+	Elevation   int64 // Elevation in degrees, 90 maximum
+	Azimuth     int64 // Azimuth, degrees from true north, 000 to 359
+	SNR         int64 // SNR, 00-99 dB (null when not tracking)
 }
 
 // newGLGSV constructor
@@ -40,7 +40,7 @@ func newGLGSV(s BaseSentence) (GLGSV, error) {
 			SVPRNNumber: p.Int64(3+i*4, "SV prn number"),
 			Elevation:   p.Int64(4+i*4, "elevation"),
 			Azimuth:     p.Int64(5+i*4, "azimuth"),
-			SNR:         p.Float64(6+i*4, "SNR"),
+			SNR:         p.Int64(6+i*4, "SNR"),
 		})
 	}
 	return m, p.Err()
