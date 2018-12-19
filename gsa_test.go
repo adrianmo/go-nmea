@@ -6,16 +6,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var gpgsatests = []struct {
+var gsatests = []struct {
 	name string
 	raw  string
 	err  string
-	msg  GPGSA
+	msg  GSA
 }{
 	{
 		name: "good sentence",
 		raw:  "$GPGSA,A,3,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*36",
-		msg: GPGSA{
+		msg: GSA{
 			Mode:    "A",
 			FixType: "3",
 			SV:      []string{"22", "19", "18", "27", "14", "03"},
@@ -27,17 +27,17 @@ var gpgsatests = []struct {
 	{
 		name: "bad mode",
 		raw:  "$GPGSA,F,3,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*31",
-		err:  "nmea: GPGSA invalid selection mode: F",
+		err:  "nmea: GSA invalid selection mode: F",
 	},
 	{
 		name: "bad fix",
 		raw:  "$GPGSA,A,6,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*33",
-		err:  "nmea: GPGSA invalid fix type: 6",
+		err:  "nmea: GSA invalid fix type: 6",
 	},
 }
 
-func TestGPGSA(t *testing.T) {
-	for _, tt := range gpgsatests {
+func TestGSA(t *testing.T) {
+	for _, tt := range gsatests {
 		t.Run(tt.name, func(t *testing.T) {
 			m, err := Parse(tt.raw)
 			if tt.err != "" {
@@ -45,9 +45,9 @@ func TestGPGSA(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				gpgsa := m.(GPGSA)
-				gpgsa.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, gpgsa)
+				gsa := m.(GSA)
+				gsa.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, gsa)
 			}
 		})
 	}
