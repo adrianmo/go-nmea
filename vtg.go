@@ -1,13 +1,13 @@
 package nmea
 
 const (
-	// PrefixGPVTG prefix
-	PrefixGPVTG = "GPVTG"
+	// PrefixVTG prefix
+	PrefixVTG = "VTG"
 )
 
-// GPVTG represents track & speed data.
+// VTG represents track & speed data.
 // http://aprs.gids.nl/nmea/#vtg
-type GPVTG struct {
+type VTG struct {
 	BaseSentence
 	TrueTrack        float64
 	MagneticTrack    float64
@@ -15,11 +15,13 @@ type GPVTG struct {
 	GroundSpeedKPH   float64
 }
 
-// newGPVTG parses the GPVTG sentence into this struct.
+// newVTG parses the VTG sentence into this struct.
 // e.g: $GPVTG,360.0,T,348.7,M,000.0,N,000.0,K*43
-func newGPVTG(s BaseSentence) (GPVTG, error) {
-	p := newParser(s, PrefixGPVTG)
-	return GPVTG{
+func newVTG(s BaseSentence) (VTG, error) {
+	p := newParser(s, PrefixVTG)
+	p.AssertType(PrefixVTG)
+	p.AssertTalker("GP")
+	return VTG{
 		BaseSentence:     s,
 		TrueTrack:        p.Float64(0, "true track"),
 		MagneticTrack:    p.Float64(2, "magnetic track"),
