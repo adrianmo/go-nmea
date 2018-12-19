@@ -16,7 +16,8 @@ var sentencetests = []struct {
 		name: "checksum ok",
 		raw:  "$GPFOO,1,2,3.3,x,y,zz,*51",
 		sent: BaseSentence{
-			Type:     "GPFOO",
+			Talker:   "GP",
+			Type:     "FOO",
 			Fields:   []string{"1", "2", "3.3", "x", "y", "zz", ""},
 			Checksum: "51",
 			Raw:      "$GPFOO,1,2,3.3,x,y,zz,*51",
@@ -26,7 +27,8 @@ var sentencetests = []struct {
 		name: "good parsing",
 		raw:  "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
 		sent: BaseSentence{
-			Type:     "GPRMC",
+			Talker:   "GP",
+			Type:     "RMC",
 			Fields:   []string{"235236", "A", "3925.9479", "N", "11945.9211", "W", "44.7", "153.6", "250905", "15.2", "E", "A"},
 			Checksum: "0C",
 			Raw:      "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
@@ -73,7 +75,6 @@ func TestSentences(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.sent, sent)
-				assert.Equal(t, tt.sent.Type, sent.Prefix())
 				assert.Equal(t, tt.sent.Raw, sent.String())
 			}
 		})
@@ -94,7 +95,7 @@ var parsetests = []struct {
 	{
 		name: "bad sentence type",
 		raw:  "$INVALID,123,123,*7D",
-		err:  "nmea: sentence type 'INVALID' not implemented",
+		err:  "nmea: sentence prefix 'INVALID' not supported",
 	},
 }
 

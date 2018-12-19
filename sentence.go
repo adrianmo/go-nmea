@@ -32,7 +32,12 @@ type BaseSentence struct {
 }
 
 // Prefix returns the type of the message
-func (s BaseSentence) Prefix() string { return s.Type }
+func (s BaseSentence) Prefix() string {
+	if s.Talker == "P" {
+		return s.Type
+	}
+	return s.Talker + s.Type
+}
 
 // String formats the sentence into a string
 func (s BaseSentence) String() string { return s.Raw }
@@ -118,6 +123,6 @@ func Parse(raw string) (Sentence, error) {
 	case PrefixGNS:
 		return newGNS(s)
 	default:
-		return nil, fmt.Errorf("nmea: sentence type '%s' not implemented", s.Type)
+		return nil, fmt.Errorf("nmea: sentence prefix '%s' not supported", s.Prefix())
 	}
 }
