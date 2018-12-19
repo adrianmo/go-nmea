@@ -97,8 +97,6 @@ func Parse(raw string) (Sentence, error) {
 		return nil, err
 	}
 	switch s.Type {
-	case PrefixGPRMC:
-		return newGPRMC(s)
 	case PrefixRMC:
 		return newRMC(s)
 	case PrefixGPGGA:

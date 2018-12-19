@@ -3,6 +3,11 @@ package nmea
 const (
 	// PrefixRMC prefix of RMC sentence type
 	PrefixRMC = "RMC"
+
+	// ValidRMC character
+	ValidRMC = "A"
+	// InvalidRMC character
+	InvalidRMC = "V"
 )
 
 // RMC is the Recommended Minimum Specific GNSS data.
@@ -23,7 +28,7 @@ type RMC struct {
 func newRMC(s BaseSentence) (RMC, error) {
 	p := newParser(s, "")
 	p.AssertType(PrefixRMC)
-	p.AssertTalker("GN")
+	p.AssertTalker("GN", "GP")
 	m := RMC{
 		BaseSentence: s,
 		Time:         p.Time(0, "time"),
