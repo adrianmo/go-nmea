@@ -101,8 +101,8 @@ func Parse(raw string) (Sentence, error) {
 		return newRMC(s)
 	case PrefixGPGGA:
 		return newGPGGA(s)
-	case PrefixGNGGA:
-		return newGNGGA(s)
+	case PrefixGGA:
+		return newGGA(s)
 	case PrefixGPGSA:
 		return newGPGSA(s)
 	case PrefixGPGLL:
