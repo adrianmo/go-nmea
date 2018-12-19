@@ -67,6 +67,33 @@ var parsertests = []struct {
 		},
 	},
 	{
+		name:     "EnumChars",
+		fields:   []string{"AA", "AB", "BA", "BB"},
+		expected: []string{"A", "B"},
+		parse: func(p *parser) interface{} {
+			return p.EnumChars(1, "context", "A", "B")
+		},
+	},
+	{
+		name:     "EnumChars invalid",
+		fields:   []string{"a", "AB", "c"},
+		expected: []string{},
+		hasErr:   true,
+		parse: func(p *parser) interface{} {
+			return p.EnumChars(1, "context", "X", "Y")
+		},
+	},
+	{
+		name:     "EnumChars with existing error",
+		fields:   []string{"a", "AB", "c"},
+		expected: []string{},
+		hasErr:   true,
+		parse: func(p *parser) interface{} {
+			p.SetErr("context", "value")
+			return p.EnumChars(1, "context", "A", "B")
+		},
+	},
+	{
 		name:     "Int64",
 		fields:   []string{"123"},
 		expected: int64(123),

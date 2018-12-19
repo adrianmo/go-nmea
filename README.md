@@ -28,6 +28,7 @@ At this moment, this library supports the following sentence types:
 - [GPZDA](http://aprs.gids.nl/nmea/#zda) - Date & time data
 - [PGRME](http://aprs.gids.nl/nmea/#rme) - Estimated Position Error (Garmin proprietary sentence)
 - [GPHDT](http://aprs.gids.nl/nmea/#hdt) - Actual vessel heading in degrees True
+- [GNGNS](https://www.trimble.com/oem_receiverhelp/v4.44/en/NMEA-0183messages_GNS.html) - Combined GPS fix for GPS, Glonass, Galileo, and BeiDou
 
 
 ## Example

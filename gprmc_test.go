@@ -16,7 +16,7 @@ var gprmctests = []struct {
 		name: "good sentence A",
 		raw:  "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70",
 		msg: GPRMC{
-			Time:      Time{true, 22, 05, 16, 0},
+			Time:      Time{true, 22, 5, 16, 0},
 			Validity:  "A",
 			Speed:     173.8,
 			Course:    231.8,
