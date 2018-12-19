@@ -24,7 +24,8 @@ type Sentence interface {
 
 // BaseSentence contains the information about the NMEA sentence
 type BaseSentence struct {
-	Type     string   // The sentence type (e.g $GPGSA)
+	Talker   string   // The talker id (e.g GP)
+	Type     string   // The data type (e.g GSA)
 	Fields   []string // Array of fields
 	Checksum string   // The Checksum
 	Raw      string   // The raw NMEA sentence received
@@ -57,12 +58,26 @@ func parseSentence(raw string) (BaseSentence, error) {
 		return BaseSentence{}, fmt.Errorf(
 			"nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
+	talker, typ := parsePrefix(fields[0])
 	return BaseSentence{
-		Type:     fields[0],
+		Talker:   talker,
+		Type:     typ,
 		Fields:   fields[1:],
 		Checksum: checksumRaw,
 		Raw:      raw,
 	}, nil
+}
+
+// parsePrefix takes the first field and splits it into a
+// talker id and data type.
+func parsePrefix(s string) (string, string) {
+	if strings.HasPrefix(s, "P") {
+		return s[:1], s[1:]
+	}
+	if len(s) < 2 {
+		return s, ""
+	}
+	return s[:2], s[2:]
 }
 
 // xor all the bytes in a string an return it
