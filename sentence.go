@@ -73,8 +73,8 @@ func parseSentence(raw string) (BaseSentence, error) {
 	}, nil
 }
 
-// parsePrefix takes the first field and splits it into a
-// talker id and data type.
+// parsePrefix takes the first field and splits it into a talker id and data type.
+// If it's a proprietary sentence, then return the entire prefix as the type.
 func parsePrefix(s string) (string, string) {
 	if strings.HasPrefix(s, "P") {
 		return "P", s
@@ -102,25 +102,25 @@ func Parse(raw string) (Sentence, error) {
 		return nil, err
 	}
 	switch s.Type {
-	case PrefixRMC:
+	case TypeRMC:
 		return newRMC(s)
-	case PrefixGGA:
+	case TypeGGA:
 		return newGGA(s)
-	case PrefixGSA:
+	case TypeGSA:
 		return newGSA(s)
-	case PrefixGLL:
+	case TypeGLL:
 		return newGLL(s)
-	case PrefixVTG:
+	case TypeVTG:
 		return newVTG(s)
-	case PrefixZDA:
+	case TypeZDA:
 		return newZDA(s)
-	case PrefixPGRME:
+	case TypePGRME:
 		return newPGRME(s)
-	case PrefixGSV:
+	case TypeGSV:
 		return newGSV(s)
-	case PrefixHDT:
+	case TypeHDT:
 		return newHDT(s)
-	case PrefixGNS:
+	case TypeGNS:
 		return newGNS(s)
 	default:
 		return nil, fmt.Errorf("nmea: sentence prefix '%s' not supported", s.Prefix())

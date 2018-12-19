@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixGSA prefix of GSA sentence type
-	PrefixGSA = "GSA"
+	// TypeGSA prefix of GSA sentence type
+	TypeGSA = "GSA"
 	// Auto - Field 1, auto or manual fix.
 	Auto = "A"
 	// Manual - Field 1, auto or manual fix.
@@ -30,7 +30,7 @@ type GSA struct {
 // newGSA parses the GSA sentence into this struct.
 func newGSA(s BaseSentence) (GSA, error) {
 	p := newParser(s)
-	p.AssertType(PrefixGSA)
+	p.AssertType(TypeGSA)
 	p.AssertTalker("GP")
 	m := GSA{
 		BaseSentence: s,

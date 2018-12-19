@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixGGA prefix
-	PrefixGGA = "GGA"
+	// TypeGGA prefix
+	TypeGGA = "GGA"
 	// Invalid fix quality.
 	Invalid = "0"
 	// GPS fix quality
@@ -35,7 +35,7 @@ type GGA struct {
 // newGGA constructor
 func newGGA(s BaseSentence) (GGA, error) {
 	p := newParser(s)
-	p.AssertType(PrefixGGA)
+	p.AssertType(TypeGGA)
 	p.AssertTalker("GN", "GP")
 	return GGA{
 		BaseSentence:  s,

@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixRMC prefix of RMC sentence type
-	PrefixRMC = "RMC"
+	// TypeRMC prefix of RMC sentence type
+	TypeRMC = "RMC"
 
 	// ValidRMC character
 	ValidRMC = "A"
@@ -27,7 +27,7 @@ type RMC struct {
 // newRMC constructor
 func newRMC(s BaseSentence) (RMC, error) {
 	p := newParser(s)
-	p.AssertType(PrefixRMC)
+	p.AssertType(TypeRMC)
 	p.AssertTalker("GN", "GP")
 	m := RMC{
 		BaseSentence: s,

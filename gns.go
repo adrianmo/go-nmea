@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixGNS prefix
-	PrefixGNS = "GNS"
+	// TypeGNS prefix
+	TypeGNS = "GNS"
 	// NoFixGNS Character
 	NoFixGNS = "N"
 	// AutonomousGNS Character
@@ -41,7 +41,7 @@ type GNS struct {
 // newGNS Constructor
 func newGNS(s BaseSentence) (GNS, error) {
 	p := newParser(s)
-	p.AssertType(PrefixGNS)
+	p.AssertType(TypeGNS)
 	p.AssertTalker("GN")
 	m := GNS{
 		BaseSentence: s,

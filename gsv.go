@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixGSV prefix
-	PrefixGSV = "GSV"
+	// TypeGSV prefix
+	TypeGSV = "GSV"
 )
 
 // GSV represents the GPS Satellites in view
@@ -26,7 +26,7 @@ type GSVInfo struct {
 // newGSV constructor
 func newGSV(s BaseSentence) (GSV, error) {
 	p := newParser(s)
-	p.AssertType(PrefixGSV)
+	p.AssertType(TypeGSV)
 	p.AssertTalker("GL", "GP")
 	m := GSV{
 		BaseSentence:    s,

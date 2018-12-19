@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixHDT prefix of HDT sentence type
-	PrefixHDT = "HDT"
+	// TypeHDT prefix of HDT sentence type
+	TypeHDT = "HDT"
 )
 
 // HDT is the Actual vessel heading in degrees True.
@@ -16,7 +16,7 @@ type HDT struct {
 // newHDT constructor
 func newHDT(s BaseSentence) (HDT, error) {
 	p := newParser(s)
-	p.AssertType(PrefixHDT)
+	p.AssertType(TypeHDT)
 	p.AssertTalker("GP")
 	m := HDT{
 		BaseSentence: s,

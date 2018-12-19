@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixGLL prefix for GLL sentence type
-	PrefixGLL = "GLL"
+	// TypeGLL prefix for GLL sentence type
+	TypeGLL = "GLL"
 	// ValidGLL character
 	ValidGLL = "A"
 	// InvalidGLL character
@@ -22,7 +22,7 @@ type GLL struct {
 // newGLL constructor
 func newGLL(s BaseSentence) (GLL, error) {
 	p := newParser(s)
-	p.AssertType(PrefixGLL)
+	p.AssertType(TypeGLL)
 	p.AssertTalker("GP")
 	return GLL{
 		BaseSentence: s,

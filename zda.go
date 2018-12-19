@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixZDA prefix
-	PrefixZDA = "ZDA"
+	// TypeZDA prefix
+	TypeZDA = "ZDA"
 )
 
 // ZDA represents date & time data.
@@ -20,7 +20,7 @@ type ZDA struct {
 // newZDA constructor
 func newZDA(s BaseSentence) (ZDA, error) {
 	p := newParser(s)
-	p.AssertType(PrefixZDA)
+	p.AssertType(TypeZDA)
 	p.AssertTalker("GP")
 	return ZDA{
 		BaseSentence:  s,
