@@ -106,6 +106,8 @@ func Parse(raw string) (Sentence, error) {
 		return newGLGSV(s)
 	case PrefixGPHDT:
 		return newGPHDT(s)
+	case PrefixGNGNS:
+		return newGNGNS(s)
 	default:
 		return nil, fmt.Errorf("nmea: sentence type '%s' not implemented", s.Type)
 	}
