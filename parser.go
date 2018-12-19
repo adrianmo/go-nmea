@@ -14,12 +14,27 @@ type parser struct {
 }
 
 // newParser constructor
-func newParser(s BaseSentence, prefix string) *parser {
+func newParser(s BaseSentence) *parser {
 	p := &parser{BaseSentence: s, prefix: prefix}
 	if p.Type != prefix {
 		p.SetErr("prefix", p.Type)
 	}
 	return p
+}
+
+func (p *parser) AssertType(typ string) {
+	if p.Type != typ {
+		p.SetErr("prefix", p.Type)
+	}
+}
+
+func (p *parser) AssertTalker(talkers ...string) {
+	for _, t := range talkers {
+		if p.Talker == t {
+			return
+		}
+	}
+	p.SetErr("talker", p.Talker)
 }
 
 // Err returns the first error encountered during the parser's usage.
