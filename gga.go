@@ -3,6 +3,18 @@ package nmea
 const (
 	// PrefixGGA prefix
 	PrefixGGA = "GGA"
+	// Invalid fix quality.
+	Invalid = "0"
+	// GPS fix quality
+	GPS = "1"
+	// DGPS fix quality
+	DGPS = "2"
+	// PPS fix
+	PPS = "3"
+	// RTK real time kinematic fix
+	RTK = "4"
+	// FRTK float RTK fix
+	FRTK = "5"
 )
 
 // GGA is the Time, position, and fix related data of the receiver.
