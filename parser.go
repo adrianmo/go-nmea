@@ -17,12 +17,15 @@ func newParser(s BaseSentence) *parser {
 	return &parser{BaseSentence: s}
 }
 
+// AssertType makes sure the sentence's type matches the provided one.
 func (p *parser) AssertType(typ string) {
 	if p.Type != typ {
 		p.SetErr("prefix", p.Type)
 	}
 }
 
+// AssertTalker makes sure the sentence's talker is one of the provided
+// talker ids.
 func (p *parser) AssertTalker(talkers ...string) {
 	for _, t := range talkers {
 		if p.Talker == t {
