@@ -27,7 +27,7 @@ type GSVInfo struct {
 func newGSV(s BaseSentence) (GSV, error) {
 	p := newParser(s, "")
 	p.AssertType(PrefixGSV)
-	p.AssertType("GL")
+	p.AssertTalker("GL", "GP")
 	m := GSV{
 		BaseSentence:    s,
 		TotalMessages:   p.Int64(0, "total number of messages"),

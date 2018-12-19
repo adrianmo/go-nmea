@@ -113,8 +113,6 @@ func Parse(raw string) (Sentence, error) {
 		return newGPZDA(s)
 	case PrefixPGRME:
 		return newPGRME(s)
-	case PrefixGPGSV:
-		return newGPGSV(s)
 	case PrefixGSV:
 		return newGSV(s)
 	case PrefixGPHDT:
