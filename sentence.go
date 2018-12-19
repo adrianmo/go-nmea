@@ -72,7 +72,7 @@ func parseSentence(raw string) (BaseSentence, error) {
 // talker id and data type.
 func parsePrefix(s string) (string, string) {
 	if strings.HasPrefix(s, "P") {
-		return s[:1], s[1:]
+		return "P", s
 	}
 	if len(s) < 2 {
 		return s, ""

@@ -19,6 +19,8 @@ type PGRME struct {
 // newPGRME constructor
 func newPGRME(s BaseSentence) (PGRME, error) {
 	p := newParser(s, PrefixPGRME)
+	p.AssertType(PrefixPGRME)
+	p.AssertTalker("P")
 
 	horizontal := p.Float64(0, "horizontal error")
 	_ = p.EnumString(1, "horizontal error unit", ErrorUnit)
