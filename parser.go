@@ -62,6 +62,10 @@ func (p *parser) EnumString(i int, context string, options ...string) string {
 	p.SetErr(context, s)
 	return ""
 }
+
+// EnumChars returns an array of strings that are matched in the Mode field.
+// It will only match the number of characters that are in the Mode field.
+// If the value is empty, it will return an empty array
 func (p *parser) EnumChars(i int, context string, options ...string) []string {
 	s := p.String(i, context)
 	if p.err != nil || s == "" {
@@ -73,6 +77,7 @@ func (p *parser) EnumChars(i int, context string, options ...string) []string {
 		for _, o := range options {
 			if o == rs {
 				strs = append(strs, o)
+				break
 			}
 		}
 	}

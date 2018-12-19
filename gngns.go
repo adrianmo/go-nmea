@@ -1,19 +1,29 @@
 package nmea
 
 const (
-	// Prefix GNGNS prefix
-	PrefixGNGNS            = "GNGNS"
-	NoFixGNGNS             = "N"
-	AutonomousGNGNS        = "A"
-	DifferentialGNGNS      = "D"
-	PreciseGNGNS           = "P"
+	// PrefixGNGNS prefix
+	PrefixGNGNS = "GNGNS"
+	// NoFixGNGNS Character
+	NoFixGNGNS = "N"
+	// AutonomousGNGNS Character
+	AutonomousGNGNS = "A"
+	// DifferentialGNGNS Character
+	DifferentialGNGNS = "D"
+	// PreciseGNGNS Character
+	PreciseGNGNS = "P"
+	// RealTimeKinematicGNGNS Character
 	RealTimeKinematicGNGNS = "R"
-	FloatRTKGNGNS          = "F"
-	EstimatedGNGNS         = "E"
-	ManualGNGNS            = "M"
-	SimulatorGNGNS         = "S"
+	// FloatRTKGNGNS RealTime Kinematic Character
+	FloatRTKGNGNS = "F"
+	// EstimatedGNGNS Fix Character
+	EstimatedGNGNS = "E"
+	// ManualGNGNS Fix Character
+	ManualGNGNS = "M"
+	// SimulatorGNGNS Character
+	SimulatorGNGNS = "S"
 )
 
+// GNGNS is standard GNSS sentance that combined multiple constellations
 type GNGNS struct {
 	BaseSentence
 	Time       Time
@@ -28,6 +38,7 @@ type GNGNS struct {
 	Station    int64
 }
 
+// newGNGNS Constructor
 func newGNGNS(s BaseSentence) (GNGNS, error) {
 	p := newParser(s, PrefixGNGNS)
 	m := GNGNS{
