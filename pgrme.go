@@ -18,7 +18,7 @@ type PGRME struct {
 
 // newPGRME constructor
 func newPGRME(s BaseSentence) (PGRME, error) {
-	p := newParser(s, PrefixPGRME)
+	p := newParser(s)
 	p.AssertType(PrefixPGRME)
 	p.AssertTalker("P")
 

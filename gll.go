@@ -21,7 +21,7 @@ type GLL struct {
 
 // newGLL constructor
 func newGLL(s BaseSentence) (GLL, error) {
-	p := newParser(s, "")
+	p := newParser(s)
 	p.AssertType(PrefixGLL)
 	p.AssertTalker("GP")
 	return GLL{

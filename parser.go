@@ -13,7 +13,7 @@ type parser struct {
 }
 
 // newParser constructor
-func newParser(s BaseSentence, _ string) *parser {
+func newParser(s BaseSentence) *parser {
 	return &parser{BaseSentence: s}
 }
 

@@ -19,7 +19,7 @@ type ZDA struct {
 
 // newZDA constructor
 func newZDA(s BaseSentence) (ZDA, error) {
-	p := newParser(s, PrefixZDA)
+	p := newParser(s)
 	p.AssertType(PrefixZDA)
 	p.AssertTalker("GP")
 	return ZDA{
