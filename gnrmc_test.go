@@ -6,16 +6,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var gnrmctests = []struct {
+var rmctests = []struct {
 	name string
 	raw  string
 	err  string
-	msg  GNRMC
+	msg  RMC
 }{
 	{
 		name: "good sentence A",
 		raw:  "$GNRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*6E",
-		msg: GNRMC{
+		msg: RMC{
 			Time:      Time{true, 22, 05, 16, 0},
 			Validity:  "A",
 			Speed:     173.8,
@@ -29,7 +29,7 @@ var gnrmctests = []struct {
 	{
 		name: "good sentence B",
 		raw:  "$GNRMC,142754.0,A,4302.539570,N,07920.379823,W,0.0,,070617,0.0,E,A*21",
-		msg: GNRMC{
+		msg: RMC{
 			Time:      Time{true, 14, 27, 54, 0},
 			Validity:  "A",
 			Speed:     0,
@@ -43,7 +43,7 @@ var gnrmctests = []struct {
 	{
 		name: "good sentence C",
 		raw:  "$GNRMC,100538.00,A,5546.27711,N,03736.91144,E,0.061,,260318,,,A*60",
-		msg: GNRMC{
+		msg: RMC{
 			Time:      Time{true, 10, 5, 38, 0},
 			Validity:  "A",
 			Speed:     0.061,
@@ -57,12 +57,12 @@ var gnrmctests = []struct {
 	{
 		name: "bad sentence",
 		raw:  "$GNRMC,220516,D,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*6B",
-		err:  "nmea: GNRMC invalid validity: D",
+		err:  "nmea: RMC invalid validity: D",
 	},
 }
 
-func TestGNRMC(t *testing.T) {
-	for _, tt := range gnrmctests {
+func TestRMC(t *testing.T) {
+	for _, tt := range rmctests {
 		t.Run(tt.name, func(t *testing.T) {
 			m, err := Parse(tt.raw)
 			if tt.err != "" {
@@ -70,9 +70,9 @@ func TestGNRMC(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				gnrmc := m.(GNRMC)
-				gnrmc.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, gnrmc)
+				rmc := m.(RMC)
+				rmc.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, rmc)
 			}
 		})
 	}
