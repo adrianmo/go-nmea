@@ -107,8 +107,8 @@ func Parse(raw string) (Sentence, error) {
 		return newGLL(s)
 	case PrefixVTG:
 		return newVTG(s)
-	case PrefixGPZDA:
-		return newGPZDA(s)
+	case PrefixZDA:
+		return newZDA(s)
 	case PrefixPGRME:
 		return newPGRME(s)
 	case PrefixGSV:
