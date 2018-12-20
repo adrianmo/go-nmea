@@ -1,7 +1,7 @@
 package nmea
 
 const (
-	// TypeHDT prefix of HDT sentence type
+	// TypeHDT type for HDT sentences
 	TypeHDT = "HDT"
 )
 

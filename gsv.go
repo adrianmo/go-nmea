@@ -1,7 +1,7 @@
 package nmea
 
 const (
-	// TypeGSV prefix
+	// TypeGSV type for GSV sentences
 	TypeGSV = "GSV"
 )
 

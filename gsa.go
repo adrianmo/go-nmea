@@ -1,7 +1,7 @@
 package nmea
 
 const (
-	// TypeGSA prefix of GSA sentence type
+	// TypeGSA type for GSA sentences
 	TypeGSA = "GSA"
 	// Auto - Field 1, auto or manual fix.
 	Auto = "A"

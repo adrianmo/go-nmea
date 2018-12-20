@@ -1,7 +1,7 @@
 package nmea
 
 const (
-	// TypeVTG prefix
+	// TypeVTG type for VTG sentences
 	TypeVTG = "VTG"
 )
 

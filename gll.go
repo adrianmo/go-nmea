@@ -1,7 +1,7 @@
 package nmea
 
 const (
-	// TypeGLL prefix for GLL sentence type
+	// TypeGLL type for GLL sentences
 	TypeGLL = "GLL"
 	// ValidGLL character
 	ValidGLL = "A"

@@ -1,7 +1,7 @@
 package nmea
 
 const (
-	// TypeZDA prefix
+	// TypeZDA type for ZDA sentences
 	TypeZDA = "ZDA"
 )
 

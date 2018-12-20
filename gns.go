@@ -1,7 +1,7 @@
 package nmea
 
 const (
-	// TypeGNS prefix
+	// TypeGNS type for GNS sentences
 	TypeGNS = "GNS"
 	// NoFixGNS Character
 	NoFixGNS = "N"

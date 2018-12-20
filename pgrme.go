@@ -1,7 +1,7 @@
 package nmea
 
 const (
-	// TypePGRME type for PGRME sentence type
+	// TypePGRME type for PGRME sentences
 	TypePGRME = "GRME"
 	// ErrorUnit must be meters (M)
 	ErrorUnit = "M"

@@ -1,7 +1,7 @@
 package nmea
 
 const (
-	// TypeGGA prefix
+	// TypeGGA type for GGA sentences
 	TypeGGA = "GGA"
 	// Invalid fix quality.
 	Invalid = "0"

@@ -1,9 +1,8 @@
 package nmea
 
 const (
-	// TypeRMC prefix of RMC sentence type
+	// TypeRMC type for RMC sentences
 	TypeRMC = "RMC"
-
 	// ValidRMC character
 	ValidRMC = "A"
 	// InvalidRMC character
