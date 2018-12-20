@@ -25,7 +25,7 @@ var vtgtests = []struct {
 	{
 		name: "bad true track",
 		raw:  "$GPVTG,T,45.5,67.5,M,30.45,N,56.40,K*4B",
-		err:  "nmea: VTG invalid true track: T",
+		err:  "nmea: GPVTG invalid true track: T",
 	},
 }
 

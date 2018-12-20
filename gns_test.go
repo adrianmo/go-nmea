@@ -63,7 +63,7 @@ var gnstests = []struct {
 	{
 		name: "bad sentence",
 		raw:  "$GNGNS,094821.0,4849.931307,N,00216.053323,E,AAX,14,0.6,161.5,48.0,,*35",
-		err:  "nmea: GNS invalid mode: AAX",
+		err:  "nmea: GNGNS invalid mode: AAX",
 	},
 }
 

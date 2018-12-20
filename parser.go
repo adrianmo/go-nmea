@@ -20,7 +20,7 @@ func newParser(s BaseSentence) *parser {
 // AssertType makes sure the sentence's type matches the provided one.
 func (p *parser) AssertType(typ string) {
 	if p.Type != typ {
-		p.SetErr("prefix", p.Type)
+		p.SetErr("type", p.Type)
 	}
 }
 
@@ -44,7 +44,7 @@ func (p *parser) Err() error {
 // effect if there is already an error.
 func (p *parser) SetErr(context, value string) {
 	if p.err == nil {
-		p.err = fmt.Errorf("nmea: %s invalid %s: %s", p.Type, context, value)
+		p.err = fmt.Errorf("nmea: %s invalid %s: %s", p.Prefix(), context, value)
 	}
 }
 

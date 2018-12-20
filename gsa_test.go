@@ -27,12 +27,12 @@ var gsatests = []struct {
 	{
 		name: "bad mode",
 		raw:  "$GPGSA,F,3,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*31",
-		err:  "nmea: GSA invalid selection mode: F",
+		err:  "nmea: GPGSA invalid selection mode: F",
 	},
 	{
 		name: "bad fix",
 		raw:  "$GPGSA,A,6,22,19,18,27,14,03,,,,,,,3.1,2.0,2.4*33",
-		err:  "nmea: GSA invalid fix type: 6",
+		err:  "nmea: GPGSA invalid fix type: 6",
 	},
 }
 

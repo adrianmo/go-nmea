@@ -44,37 +44,37 @@ var gsvtests = []struct {
 	{
 		name: "invalid number of svs",
 		raw:  "$GLGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*77",
-		err:  "nmea: GSV invalid number of SVs in view: 11.2",
+		err:  "nmea: GLGSV invalid number of SVs in view: 11.2",
 	},
 	{
 		name: "invalid number of messages",
 		raw:  "$GLGSV,A3,1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A",
-		err:  "nmea: GSV invalid total number of messages: A3",
+		err:  "nmea: GLGSV invalid total number of messages: A3",
 	},
 	{
 		name: "invalid message number",
 		raw:  "$GLGSV,3,A1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A",
-		err:  "nmea: GSV invalid message number: A1",
+		err:  "nmea: GLGSV invalid message number: A1",
 	},
 	{
 		name: "invalid SV prn number",
 		raw:  "$GLGSV,3,1,11,A03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A",
-		err:  "nmea: GSV invalid SV prn number: A03",
+		err:  "nmea: GLGSV invalid SV prn number: A03",
 	},
 	{
 		name: "invalid elevation",
 		raw:  "$GLGSV,3,1,11,03,A03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A",
-		err:  "nmea: GSV invalid elevation: A03",
+		err:  "nmea: GLGSV invalid elevation: A03",
 	},
 	{
 		name: "invalid azimuth",
 		raw:  "$GLGSV,3,1,11,03,03,A111,00,04,15,270,00,06,01,010,12,13,06,292,00*2A",
-		err:  "nmea: GSV invalid azimuth: A111",
+		err:  "nmea: GLGSV invalid azimuth: A111",
 	},
 	{
 		name: "invalid SNR",
 		raw:  "$GLGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*2A",
-		err:  "nmea: GSV invalid SNR: A00",
+		err:  "nmea: GLGSV invalid SNR: A00",
 	},
 	{
 		name: "good sentence",
@@ -108,37 +108,37 @@ var gsvtests = []struct {
 	{
 		name: "invalid number of SVs",
 		raw:  "$GPGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*6b",
-		err:  "nmea: GSV invalid number of SVs in view: 11.2",
+		err:  "nmea: GPGSV invalid number of SVs in view: 11.2",
 	},
 	{
 		name: "invalid total number of messages",
 		raw:  "$GPGSV,A3,1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36",
-		err:  "nmea: GSV invalid total number of messages: A3",
+		err:  "nmea: GPGSV invalid total number of messages: A3",
 	},
 	{
 		name: "invalid message number",
 		raw:  "$GPGSV,3,A1,11,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36",
-		err:  "nmea: GSV invalid message number: A1",
+		err:  "nmea: GPGSV invalid message number: A1",
 	},
 	{
 		name: "invalid SV prn number",
 		raw:  "$GPGSV,3,1,11,A03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36",
-		err:  "nmea: GSV invalid SV prn number: A03",
+		err:  "nmea: GPGSV invalid SV prn number: A03",
 	},
 	{
 		name: "invalid elevation",
 		raw:  "$GPGSV,3,1,11,03,A03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*36",
-		err:  "nmea: GSV invalid elevation: A03",
+		err:  "nmea: GPGSV invalid elevation: A03",
 	},
 	{
 		name: "invalid azimuth",
 		raw:  "$GPGSV,3,1,11,03,03,A111,00,04,15,270,00,06,01,010,12,13,06,292,00*36",
-		err:  "nmea: GSV invalid azimuth: A111",
+		err:  "nmea: GPGSV invalid azimuth: A111",
 	},
 	{
 		name: "invalid SNR",
 		raw:  "$GPGSV,3,1,11,03,03,111,A00,04,15,270,00,06,01,010,12,13,06,292,00*36",
-		err:  "nmea: GSV invalid SNR: A00",
+		err:  "nmea: GPGSV invalid SNR: A00",
 	},
 }
 

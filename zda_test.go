@@ -33,7 +33,7 @@ var zdatests = []struct {
 	{
 		name: "invalid day",
 		raw:  "$GPZDA,220516,D,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*76",
-		err:  "nmea: ZDA invalid day: D",
+		err:  "nmea: GPZDA invalid day: D",
 	},
 }
 

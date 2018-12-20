@@ -57,7 +57,7 @@ var rmctests = []struct {
 	{
 		name: "bad sentence",
 		raw:  "$GNRMC,220516,D,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*6B",
-		err:  "nmea: RMC invalid validity: D",
+		err:  "nmea: GNRMC invalid validity: D",
 	},
 	{
 		name: "good sentence A",
@@ -90,7 +90,7 @@ var rmctests = []struct {
 	{
 		name: "bad validity",
 		raw:  "$GPRMC,220516,D,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*75",
-		err:  "nmea: RMC invalid validity: D",
+		err:  "nmea: GPRMC invalid validity: D",
 	},
 }
 

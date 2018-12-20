@@ -31,7 +31,7 @@ var glltests = []struct {
 	{
 		name: "bad validity",
 		raw:  "$GPGLL,3926.7952,N,12000.5947,W,022732,D,A*5D",
-		err:  "nmea: GLL invalid validity: D",
+		err:  "nmea: GPGLL invalid validity: D",
 	},
 }
 

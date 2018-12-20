@@ -37,17 +37,17 @@ var ggatests = []struct {
 	{
 		name: "bad latitude",
 		raw:  "$GNGGA,034225.077,A,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*24",
-		err:  "nmea: GGA invalid latitude: cannot parse [A S], unknown format",
+		err:  "nmea: GNGGA invalid latitude: cannot parse [A S], unknown format",
 	},
 	{
 		name: "bad longitude",
 		raw:  "$GNGGA,034225.077,3356.4650,S,A,E,1,03,9.7,-25.0,M,21.0,M,,0000*12",
-		err:  "nmea: GGA invalid longitude: cannot parse [A E], unknown format",
+		err:  "nmea: GNGGA invalid longitude: cannot parse [A E], unknown format",
 	},
 	{
 		name: "bad fix quality",
 		raw:  "$GNGGA,034225.077,3356.4650,S,15124.5567,E,12,03,9.7,-25.0,M,21.0,M,,0000*7D",
-		err:  "nmea: GGA invalid fix quality: 12",
+		err:  "nmea: GNGGA invalid fix quality: 12",
 	},
 	{
 		name: "good sentence",
@@ -68,17 +68,17 @@ var ggatests = []struct {
 	{
 		name: "bad latitude",
 		raw:  "$GPGGA,034225.077,A,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*3A",
-		err:  "nmea: GGA invalid latitude: cannot parse [A S], unknown format",
+		err:  "nmea: GPGGA invalid latitude: cannot parse [A S], unknown format",
 	},
 	{
 		name: "bad longitude",
 		raw:  "$GPGGA,034225.077,3356.4650,S,A,E,1,03,9.7,-25.0,M,21.0,M,,0000*0C",
-		err:  "nmea: GGA invalid longitude: cannot parse [A E], unknown format",
+		err:  "nmea: GPGGA invalid longitude: cannot parse [A E], unknown format",
 	},
 	{
 		name: "bad fix quality",
 		raw:  "$GPGGA,034225.077,3356.4650,S,15124.5567,E,12,03,9.7,-25.0,M,21.0,M,,0000*63",
-		err:  "nmea: GGA invalid fix quality: 12",
+		err:  "nmea: GPGGA invalid fix quality: 12",
 	},
 }
 

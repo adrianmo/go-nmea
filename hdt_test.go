@@ -23,12 +23,12 @@ var hdttests = []struct {
 	{
 		name: "invalid True",
 		raw:  "$GPHDT,123.456,X*3E",
-		err:  "nmea: HDT invalid true: X",
+		err:  "nmea: GPHDT invalid true: X",
 	},
 	{
 		name: "invalid Heading",
 		raw:  "$GPHDT,XXX,T*43",
-		err:  "nmea: HDT invalid heading: XXX",
+		err:  "nmea: GPHDT invalid heading: XXX",
 	},
 }
 

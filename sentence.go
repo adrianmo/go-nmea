@@ -33,9 +33,6 @@ type BaseSentence struct {
 
 // Prefix returns the type of the message
 func (s BaseSentence) Prefix() string {
-	if s.Talker == "P" {
-		return s.Type
-	}
 	return s.Talker + s.Type
 }
 
@@ -77,7 +74,7 @@ func parseSentence(raw string) (BaseSentence, error) {
 // If it's a proprietary sentence, then return the entire prefix as the type.
 func parsePrefix(s string) (string, string) {
 	if strings.HasPrefix(s, "P") {
-		return "P", s
+		return "P", s[1:]
 	}
 	if len(s) < 2 {
 		return s, ""
