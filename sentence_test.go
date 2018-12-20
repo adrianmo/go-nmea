@@ -81,6 +81,54 @@ func TestSentences(t *testing.T) {
 	}
 }
 
+var prefixtests = []struct {
+	name   string
+	prefix string
+	talker string
+	typ    string
+}{
+	{
+		name:   "normal prefix",
+		prefix: "GPRMC",
+		talker: "GP",
+		typ:    "RMC",
+	},
+	{
+		name:   "missing type",
+		prefix: "GP",
+		talker: "GP",
+		typ:    "",
+	},
+	{
+		name:   "one character",
+		prefix: "X",
+		talker: "X",
+		typ:    "",
+	},
+	{
+		name:   "proprietary talker",
+		prefix: "PGRME",
+		talker: "P",
+		typ:    "GRME",
+	},
+	{
+		name:   "short proprietary talker",
+		prefix: "PX",
+		talker: "P",
+		typ:    "X",
+	},
+}
+
+func TestPrefix(t *testing.T) {
+	for _, tt := range prefixtests {
+		t.Run(tt.name, func(t *testing.T) {
+			talker, typ := parsePrefix(tt.prefix)
+			assert.Equal(t, tt.talker, talker)
+			assert.Equal(t, tt.typ, typ)
+		})
+	}
+}
+
 var parsetests = []struct {
 	name string
 	raw  string
