@@ -2,112 +2,139 @@ package nmea
 
 type (
 	// GLGSV represents the GPS Satellites in view http://aprs.gids.nl/nmea/#glgsv
-	// Deprecated
+	//
+	// Deprecated: Use GSV instead
 	GLGSV = GSV
 
 	// GLGSVInfo represents information about a visible satellite
-	// Deprecated
+	//
+	// Deprecated: Use GSVInfo instead
 	GLGSVInfo = GSVInfo
 
 	// GNGGA is the Time, position, and fix related data of the receiver.
-	// Deprecated
+	//
+	// Deprecated: Use GNGGA instead
 	GNGGA = GGA
 
 	// GNGNS is standard GNSS sentance that combined multiple constellations
-	// Deprecated
+	//
+	// Deprecated: Use GNS instead
 	GNGNS = GNS
 
 	// GNRMC is the Recommended Minimum Specific GNSS data. http://aprs.gids.nl/nmea/#rmc
-	// Deprecated
+	//
+	// Deprecated: Use RCM instead
 	GNRMC = RMC
 
 	// GPGGA represents fix data. http://aprs.gids.nl/nmea/#gga
-	// Deprecated
+	//
+	// Deprecated: Use GGA instead
 	GPGGA = GGA
 
 	// GPGLL is Geographic Position, Latitude / Longitude and time. http://aprs.gids.nl/nmea/#gll
-	// Deprecated
+	//
+	// Deprecated: Use GLL instead
 	GPGLL = GLL
 
 	// GPGSA represents overview satellite data. http://aprs.gids.nl/nmea/#gsa
-	// Deprecated
+	//
+	// Deprecated: Use GSA instead
 	GPGSA = GSA
 
 	// GPGSV represents the GPS Satellites in view http://aprs.gids.nl/nmea/#gpgsv
-	// Deprecated
+	//
+	// Deprecated: Use GSV instead
 	GPGSV = GSV
 
 	// GPGSVInfo represents information about a visible satellite
-	// Deprecated
+	//
+	// Deprecated: Use GSVInfo instead
 	GPGSVInfo = GSVInfo
 
 	// GPHDT is the Actual vessel heading in degrees True. http://aprs.gids.nl/nmea/#hdt
-	// Deprecated
+	//
+	// Deprecated: Use HDT instead
 	GPHDT = HDT
 
 	// GPRMC is the Recommended Minimum Specific GNSS data. http://aprs.gids.nl/nmea/#rmc
-	// Deprecated
+	//
+	// Deprecated: Use RMC instead
 	GPRMC = RMC
 
 	// GPVTG represents track & speed data. http://aprs.gids.nl/nmea/#vtg
-	// Deprecated
+	//
+	// Deprecated: Use VTG instead
 	GPVTG = VTG
 
 	// GPZDA represents date & time data. http://aprs.gids.nl/nmea/#zda
-	// Deprecated
+	//
+	// Deprecated: Use ZDA instead
 	GPZDA = ZDA
 )
 
 const (
 	// PrefixGNGNS prefix
-	// Deprecated
+	//
+	// Deprecated: Use TypeGNS instead
 	PrefixGNGNS = "GNGNS"
 
 	// PrefixGPGGA prefix
-	// Deprecated
+	//
+	// Deprecated: Use TypeGGA instead
 	PrefixGPGGA = "GPGGA"
 
 	// PrefixGPGLL prefix for GPGLL sentence type
-	// Deprecated
+	//
+	// Deprecated: Use TypeGLL instead
 	PrefixGPGLL = "GPGLL"
 
 	// PrefixGPGSA prefix of GPGSA sentence type
-	// Deprecated
+	//
+	// Deprecated: Use TypeGSA instead
 	PrefixGPGSA = "GPGSA"
 
 	// PrefixGPRMC prefix of GPRMC sentence type
-	// Deprecated
+	//
+	// Deprecated: Use TypeRMC instead
 	PrefixGPRMC = "GPRMC"
 
 	// PrefixPGRME prefix for PGRME sentence type
-	// Deprecated
+	//
+	// Deprecated: Use TypePGRME instead
 	PrefixPGRME = "PGRME"
 
 	// PrefixGLGSV prefix
-	// Deprecated
+	//
+	// Deprecated: Use TypeGSV instead
 	PrefixGLGSV = "GLGSV"
 
 	// PrefixGNGGA prefix
-	// Deprecated
+	//
+	// Deprecated: Use TypeGGA instead
 	PrefixGNGGA = "GNGGA"
 
 	// PrefixGNRMC prefix of GNRMC sentence type
-	// Deprecated
+	//
+	// Deprecated: Use TypeRMC instead
 	PrefixGNRMC = "GNRMC"
 
 	// PrefixGPGSV prefix
-	// Deprecated
+	//
+	// Deprecated: Use TypeGSV instead
 	PrefixGPGSV = "GPGSV"
 
 	// PrefixGPHDT prefix of GPHDT sentence type
-	// Deprecated
+	//
+	// Deprecated: Use TypeHDT instead
 	PrefixGPHDT = "GPHDT"
 
 	// PrefixGPVTG prefix
-	// Deprecated
+	//
+	// Deprecated: Use TypeVTG instead
 	PrefixGPVTG = "GPVTG"
 
 	// PrefixGPZDA prefix
-	// Deprecated
+	//
+	// Deprecated: Use TypeZDA instead
 	PrefixGPZDA = "GPZDA"
 )
