@@ -20,7 +20,6 @@ type VTG struct {
 func newVTG(s BaseSentence) (VTG, error) {
 	p := newParser(s)
 	p.AssertType(TypeVTG)
-	p.AssertTalker("GP")
 	return VTG{
 		BaseSentence:     s,
 		TrueTrack:        p.Float64(0, "true track"),

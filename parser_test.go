@@ -23,15 +23,6 @@ var parsertests = []struct {
 		},
 	},
 	{
-		name:   "Bad Talker",
-		fields: []string{},
-		hasErr: true,
-		parse: func(p *parser) interface{} {
-			p.AssertTalker("Foo", "Bar", "Baz")
-			return nil
-		},
-	},
-	{
 		name:     "String",
 		fields:   []string{"foo", "bar"},
 		expected: "bar",

@@ -24,17 +24,6 @@ func (p *parser) AssertType(typ string) {
 	}
 }
 
-// AssertTalker makes sure the sentence's talker is one of the provided
-// talker ids.
-func (p *parser) AssertTalker(talkers ...string) {
-	for _, t := range talkers {
-		if p.Talker == t {
-			return
-		}
-	}
-	p.SetErr("talker", p.Talker)
-}
-
 // Err returns the first error encountered during the parser's usage.
 func (p *parser) Err() error {
 	return p.err

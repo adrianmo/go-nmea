@@ -23,7 +23,6 @@ type GLL struct {
 func newGLL(s BaseSentence) (GLL, error) {
 	p := newParser(s)
 	p.AssertType(TypeGLL)
-	p.AssertTalker("GP")
 	return GLL{
 		BaseSentence: s,
 		Latitude:     p.LatLong(0, 1, "latitude"),

@@ -21,7 +21,6 @@ type ZDA struct {
 func newZDA(s BaseSentence) (ZDA, error) {
 	p := newParser(s)
 	p.AssertType(TypeZDA)
-	p.AssertTalker("GP")
 	return ZDA{
 		BaseSentence:  s,
 		Time:          p.Time(0, "time"),

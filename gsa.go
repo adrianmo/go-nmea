@@ -31,7 +31,6 @@ type GSA struct {
 func newGSA(s BaseSentence) (GSA, error) {
 	p := newParser(s)
 	p.AssertType(TypeGSA)
-	p.AssertTalker("GP")
 	m := GSA{
 		BaseSentence: s,
 		Mode:         p.EnumString(0, "selection mode", Auto, Manual),

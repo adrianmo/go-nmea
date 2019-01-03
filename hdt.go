@@ -17,7 +17,6 @@ type HDT struct {
 func newHDT(s BaseSentence) (HDT, error) {
 	p := newParser(s)
 	p.AssertType(TypeHDT)
-	p.AssertTalker("GP")
 	m := HDT{
 		BaseSentence: s,
 		Heading:      p.Float64(0, "heading"),

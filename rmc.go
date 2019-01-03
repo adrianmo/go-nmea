@@ -27,7 +27,6 @@ type RMC struct {
 func newRMC(s BaseSentence) (RMC, error) {
 	p := newParser(s)
 	p.AssertType(TypeRMC)
-	p.AssertTalker("GN", "GP")
 	m := RMC{
 		BaseSentence: s,
 		Time:         p.Time(0, "time"),

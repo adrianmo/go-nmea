@@ -42,7 +42,6 @@ type GNS struct {
 func newGNS(s BaseSentence) (GNS, error) {
 	p := newParser(s)
 	p.AssertType(TypeGNS)
-	p.AssertTalker("GN")
 	m := GNS{
 		BaseSentence: s,
 		Time:         p.Time(0, "time"),
