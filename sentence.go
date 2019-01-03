@@ -71,7 +71,6 @@ func parseSentence(raw string) (BaseSentence, error) {
 }
 
 // parsePrefix takes the first field and splits it into a talker id and data type.
-// If it's a proprietary sentence, then return the entire prefix as the type.
 func parsePrefix(s string) (string, string) {
 	if strings.HasPrefix(s, "P") {
 		return "P", s[1:]

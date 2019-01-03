@@ -13,7 +13,7 @@ type (
 
 	// GNGGA is the Time, position, and fix related data of the receiver.
 	//
-	// Deprecated: Use GNGGA instead
+	// Deprecated: Use GGA instead
 	GNGGA = GGA
 
 	// GNGNS is standard GNSS sentance that combined multiple constellations
