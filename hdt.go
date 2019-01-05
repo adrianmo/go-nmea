@@ -1,22 +1,23 @@
 package nmea
 
 const (
-	// PrefixGPHDT prefix of GPHDT sentence type
-	PrefixGPHDT = "GPHDT"
+	// TypeHDT type for HDT sentences
+	TypeHDT = "HDT"
 )
 
-// GPHDT is the Actual vessel heading in degrees True.
+// HDT is the Actual vessel heading in degrees True.
 // http://aprs.gids.nl/nmea/#hdt
-type GPHDT struct {
+type HDT struct {
 	BaseSentence
 	Heading float64 // Heading in degrees
 	True    bool    // Heading is relative to true north
 }
 
-// newGPHDT constructor
-func newGPHDT(s BaseSentence) (GPHDT, error) {
-	p := newParser(s, PrefixGPHDT)
-	m := GPHDT{
+// newHDT constructor
+func newHDT(s BaseSentence) (HDT, error) {
+	p := newParser(s)
+	p.AssertType(TypeHDT)
+	m := HDT{
 		BaseSentence: s,
 		Heading:      p.Float64(0, "heading"),
 		True:         p.EnumString(1, "true", "T") == "T",

@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixPGRME prefix for PGRME sentence type
-	PrefixPGRME = "PGRME"
+	// TypePGRME type for PGRME sentences
+	TypePGRME = "GRME"
 	// ErrorUnit must be meters (M)
 	ErrorUnit = "M"
 )
@@ -18,7 +18,8 @@ type PGRME struct {
 
 // newPGRME constructor
 func newPGRME(s BaseSentence) (PGRME, error) {
-	p := newParser(s, PrefixPGRME)
+	p := newParser(s)
+	p.AssertType(TypePGRME)
 
 	horizontal := p.Float64(0, "horizontal error")
 	_ = p.EnumString(1, "horizontal error unit", ErrorUnit)

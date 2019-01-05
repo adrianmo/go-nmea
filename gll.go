@@ -1,17 +1,17 @@
 package nmea
 
 const (
-	// PrefixGPGLL prefix for GPGLL sentence type
-	PrefixGPGLL = "GPGLL"
+	// TypeGLL type for GLL sentences
+	TypeGLL = "GLL"
 	// ValidGLL character
 	ValidGLL = "A"
 	// InvalidGLL character
 	InvalidGLL = "V"
 )
 
-// GPGLL is Geographic Position, Latitude / Longitude and time.
+// GLL is Geographic Position, Latitude / Longitude and time.
 // http://aprs.gids.nl/nmea/#gll
-type GPGLL struct {
+type GLL struct {
 	BaseSentence
 	Latitude  float64 // Latitude
 	Longitude float64 // Longitude
@@ -19,10 +19,11 @@ type GPGLL struct {
 	Validity  string  // validity - A-valid
 }
 
-// newGPGLL constructor
-func newGPGLL(s BaseSentence) (GPGLL, error) {
-	p := newParser(s, PrefixGPGLL)
-	return GPGLL{
+// newGLL constructor
+func newGLL(s BaseSentence) (GLL, error) {
+	p := newParser(s)
+	p.AssertType(TypeGLL)
+	return GLL{
 		BaseSentence: s,
 		Latitude:     p.LatLong(0, 1, "latitude"),
 		Longitude:    p.LatLong(2, 3, "longitude"),

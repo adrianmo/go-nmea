@@ -16,20 +16,16 @@ After this command *go-nmea* is ready to use. Its source will be in:
 
 At this moment, this library supports the following sentence types:
 
-- [GPRMC](http://aprs.gids.nl/nmea/#rmc) - Recommended Minimum Specific GPS/Transit data
-- [GNRMC](http://aprs.gids.nl/nmea/#rmc) - Recommended Minimum Specific GNSS data
-- [GPGGA](http://aprs.gids.nl/nmea/#gga) - GPS Positioning System Fix Data
-- [GNGGA](http://aprs.gids.nl/nmea/#gga) - GNSS Positioning System Fix Data
-- [GPGSA](http://aprs.gids.nl/nmea/#gsa) - GPS DOP and active satellites
-- [GPGSV](http://aprs.gids.nl/nmea/#gsv) - GPS Satellites in view
-- [GLGSV](http://aprs.gids.nl/nmea/#gsv) - GLONASS Satellites in view
-- [GPGLL](http://aprs.gids.nl/nmea/#gll) - Geographic Position, Latitude / Longitude and time
-- [GPVTG](http://aprs.gids.nl/nmea/#vtg) - Track Made Good and Ground Speed
-- [GPZDA](http://aprs.gids.nl/nmea/#zda) - Date & time data
+- [RMC](http://aprs.gids.nl/nmea/#rmc) - Recommended Minimum Specific GPS/Transit data
+- [GGA](http://aprs.gids.nl/nmea/#gga) - GPS Positioning System Fix Data
+- [GSA](http://aprs.gids.nl/nmea/#gsa) - GPS DOP and active satellites
+- [GSV](http://aprs.gids.nl/nmea/#gsv) - GPS Satellites in view
+- [GLL](http://aprs.gids.nl/nmea/#gll) - Geographic Position, Latitude / Longitude and time
+- [VTG](http://aprs.gids.nl/nmea/#vtg) - Track Made Good and Ground Speed
+- [ZDA](http://aprs.gids.nl/nmea/#zda) - Date & time data
+- [HDT](http://aprs.gids.nl/nmea/#hdt) - Actual vessel heading in degrees True
+- [GNS](https://www.trimble.com/oem_receiverhelp/v4.44/en/NMEA-0183messages_GNS.html) - Combined GPS fix for GPS, Glonass, Galileo, and BeiDou
 - [PGRME](http://aprs.gids.nl/nmea/#rme) - Estimated Position Error (Garmin proprietary sentence)
-- [GPHDT](http://aprs.gids.nl/nmea/#hdt) - Actual vessel heading in degrees True
-- [GNGNS](https://www.trimble.com/oem_receiverhelp/v4.44/en/NMEA-0183messages_GNS.html) - Combined GPS fix for GPS, Glonass, Galileo, and BeiDou
-
 
 ## Example
 
@@ -48,7 +44,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	m := s.(nmea.GPRMC)
+	m := s.(nmea.RMC)
 	fmt.Printf("Raw sentence: %v\n", m)
 	fmt.Printf("Time: %s\n", m.Time)
 	fmt.Printf("Validity: %s\n", m.Validity)

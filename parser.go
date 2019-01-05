@@ -9,17 +9,19 @@ import (
 // sentence fields
 type parser struct {
 	BaseSentence
-	prefix string
-	err    error
+	err error
 }
 
 // newParser constructor
-func newParser(s BaseSentence, prefix string) *parser {
-	p := &parser{BaseSentence: s, prefix: prefix}
-	if p.Type != prefix {
-		p.SetErr("prefix", p.Type)
+func newParser(s BaseSentence) *parser {
+	return &parser{BaseSentence: s}
+}
+
+// AssertType makes sure the sentence's type matches the provided one.
+func (p *parser) AssertType(typ string) {
+	if p.Type != typ {
+		p.SetErr("type", p.Type)
 	}
-	return p
 }
 
 // Err returns the first error encountered during the parser's usage.
@@ -31,7 +33,7 @@ func (p *parser) Err() error {
 // effect if there is already an error.
 func (p *parser) SetErr(context, value string) {
 	if p.err == nil {
-		p.err = fmt.Errorf("nmea: %s invalid %s: %s", p.prefix, context, value)
+		p.err = fmt.Errorf("nmea: %s invalid %s: %s", p.Prefix(), context, value)
 	}
 }
 

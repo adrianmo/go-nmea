@@ -1,13 +1,17 @@
 package nmea
 
 const (
-	// PrefixGNRMC prefix of GNRMC sentence type
-	PrefixGNRMC = "GNRMC"
+	// TypeRMC type for RMC sentences
+	TypeRMC = "RMC"
+	// ValidRMC character
+	ValidRMC = "A"
+	// InvalidRMC character
+	InvalidRMC = "V"
 )
 
-// GNRMC is the Recommended Minimum Specific GNSS data.
+// RMC is the Recommended Minimum Specific GNSS data.
 // http://aprs.gids.nl/nmea/#rmc
-type GNRMC struct {
+type RMC struct {
 	BaseSentence
 	Time      Time    // Time Stamp
 	Validity  string  // validity - A-ok, V-invalid
@@ -19,10 +23,11 @@ type GNRMC struct {
 	Variation float64 // Magnetic variation
 }
 
-// newGNRMC constructor
-func newGNRMC(s BaseSentence) (GNRMC, error) {
-	p := newParser(s, PrefixGNRMC)
-	m := GNRMC{
+// newRMC constructor
+func newRMC(s BaseSentence) (RMC, error) {
+	p := newParser(s)
+	p.AssertType(TypeRMC)
+	m := RMC{
 		BaseSentence: s,
 		Time:         p.Time(0, "time"),
 		Validity:     p.EnumString(1, "validity", ValidRMC, InvalidRMC),

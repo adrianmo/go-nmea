@@ -1,13 +1,13 @@
 package nmea
 
 const (
-	// PrefixGPZDA prefix
-	PrefixGPZDA = "GPZDA"
+	// TypeZDA type for ZDA sentences
+	TypeZDA = "ZDA"
 )
 
-// GPZDA represents date & time data.
+// ZDA represents date & time data.
 // http://aprs.gids.nl/nmea/#zda
-type GPZDA struct {
+type ZDA struct {
 	BaseSentence
 	Time          Time
 	Day           int64
@@ -17,10 +17,11 @@ type GPZDA struct {
 	OffsetMinutes int64 // Local time zone offset from GMT, minutes
 }
 
-// newGPZDA constructor
-func newGPZDA(s BaseSentence) (GPZDA, error) {
-	p := newParser(s, PrefixGPZDA)
-	return GPZDA{
+// newZDA constructor
+func newZDA(s BaseSentence) (ZDA, error) {
+	p := newParser(s)
+	p.AssertType(TypeZDA)
+	return ZDA{
 		BaseSentence:  s,
 		Time:          p.Time(0, "time"),
 		Day:           p.Int64(1, "day"),

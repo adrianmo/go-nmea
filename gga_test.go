@@ -6,16 +6,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var gnggatests = []struct {
+var ggatests = []struct {
 	name string
 	raw  string
 	err  string
-	msg  GNGGA
+	msg  GGA
 }{
 	{
 		name: "good sentence",
 		raw:  "$GNGGA,203415.000,6325.6138,N,01021.4290,E,1,8,2.42,72.5,M,41.5,M,,*7C",
-		msg: GNGGA{
+		msg: GGA{
 			Time: Time{
 				Valid:       true,
 				Hour:        20,
@@ -49,10 +49,41 @@ var gnggatests = []struct {
 		raw:  "$GNGGA,034225.077,3356.4650,S,15124.5567,E,12,03,9.7,-25.0,M,21.0,M,,0000*7D",
 		err:  "nmea: GNGGA invalid fix quality: 12",
 	},
+	{
+		name: "good sentence",
+		raw:  "$GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*51",
+		msg: GGA{
+			Time:          Time{true, 3, 42, 25, 77},
+			Latitude:      MustParseLatLong("3356.4650 S"),
+			Longitude:     MustParseLatLong("15124.5567 E"),
+			FixQuality:    GPS,
+			NumSatellites: 03,
+			HDOP:          9.7,
+			Altitude:      -25.0,
+			Separation:    21.0,
+			DGPSAge:       "",
+			DGPSId:        "0000",
+		},
+	},
+	{
+		name: "bad latitude",
+		raw:  "$GPGGA,034225.077,A,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*3A",
+		err:  "nmea: GPGGA invalid latitude: cannot parse [A S], unknown format",
+	},
+	{
+		name: "bad longitude",
+		raw:  "$GPGGA,034225.077,3356.4650,S,A,E,1,03,9.7,-25.0,M,21.0,M,,0000*0C",
+		err:  "nmea: GPGGA invalid longitude: cannot parse [A E], unknown format",
+	},
+	{
+		name: "bad fix quality",
+		raw:  "$GPGGA,034225.077,3356.4650,S,15124.5567,E,12,03,9.7,-25.0,M,21.0,M,,0000*63",
+		err:  "nmea: GPGGA invalid fix quality: 12",
+	},
 }
 
-func TestGNGGA(t *testing.T) {
-	for _, tt := range gnggatests {
+func TestGGA(t *testing.T) {
+	for _, tt := range ggatests {
 		t.Run(tt.name, func(t *testing.T) {
 			m, err := Parse(tt.raw)
 			if tt.err != "" {
@@ -60,9 +91,9 @@ func TestGNGGA(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				gngga := m.(GNGGA)
-				gngga.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, gngga)
+				gga := m.(GGA)
+				gga.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, gga)
 			}
 		})
 	}

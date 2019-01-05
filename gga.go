@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixGPGGA prefix
-	PrefixGPGGA = "GPGGA"
+	// TypeGGA type for GGA sentences
+	TypeGGA = "GGA"
 	// Invalid fix quality.
 	Invalid = "0"
 	// GPS fix quality
@@ -17,9 +17,8 @@ const (
 	FRTK = "5"
 )
 
-// GPGGA represents fix data.
-// http://aprs.gids.nl/nmea/#gga
-type GPGGA struct {
+// GGA is the Time, position, and fix related data of the receiver.
+type GGA struct {
 	BaseSentence
 	Time          Time    // Time of fix.
 	Latitude      float64 // Latitude.
@@ -33,18 +32,18 @@ type GPGGA struct {
 	DGPSId        string  // DGPS reference station ID.
 }
 
-// newGPGGA parses the GPGGA sentence into this struct.
-// e.g: $GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*58
-func newGPGGA(s BaseSentence) (GPGGA, error) {
-	p := newParser(s, PrefixGPGGA)
-	return GPGGA{
+// newGGA constructor
+func newGGA(s BaseSentence) (GGA, error) {
+	p := newParser(s)
+	p.AssertType(TypeGGA)
+	return GGA{
 		BaseSentence:  s,
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),
 		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS, PPS, RTK, FRTK),
 		NumSatellites: p.Int64(6, "number of satellites"),
-		HDOP:          p.Float64(7, "hdap"),
+		HDOP:          p.Float64(7, "hdop"),
 		Altitude:      p.Float64(8, "altitude"),
 		Separation:    p.Float64(10, "separation"),
 		DGPSAge:       p.String(12, "dgps age"),

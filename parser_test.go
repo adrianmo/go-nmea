@@ -14,6 +14,15 @@ var parsertests = []struct {
 	parse    func(p *parser) interface{}
 }{
 	{
+		name:   "Bad Type",
+		fields: []string{},
+		hasErr: true,
+		parse: func(p *parser) interface{} {
+			p.AssertType("WRONG_TYPE")
+			return nil
+		},
+	},
+	{
 		name:     "String",
 		fields:   []string{"foo", "bar"},
 		expected: "bar",
@@ -239,9 +248,10 @@ func TestParser(t *testing.T) {
 	for _, tt := range parsertests {
 		t.Run(tt.name, func(t *testing.T) {
 			p := newParser(BaseSentence{
+				Talker: "talker",
 				Type:   "type",
 				Fields: tt.fields,
-			}, "type")
+			})
 			assert.Equal(t, tt.expected, tt.parse(p))
 			if tt.hasErr {
 				assert.Error(t, p.Err())
@@ -250,10 +260,4 @@ func TestParser(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestBadParserPrefix(t *testing.T) {
-	sent, _ := parseSentence("$TYPE,123*04")
-	p := newParser(sent, "OTHER_TYPE")
-	assert.Error(t, p.Err())
 }

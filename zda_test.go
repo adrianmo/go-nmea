@@ -6,16 +6,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var gpzdatests = []struct {
+var zdatests = []struct {
 	name string
 	raw  string
 	err  string
-	msg  GPZDA
+	msg  ZDA
 }{
 	{
 		name: "good sentence",
 		raw:  "$GPZDA,172809.456,12,07,1996,00,00*57",
-		msg: GPZDA{
+		msg: ZDA{
 			Time: Time{
 				Valid:       true,
 				Hour:        17,
@@ -37,8 +37,8 @@ var gpzdatests = []struct {
 	},
 }
 
-func TestGPZDA(t *testing.T) {
-	for _, tt := range gpzdatests {
+func TestZDA(t *testing.T) {
+	for _, tt := range zdatests {
 		t.Run(tt.name, func(t *testing.T) {
 			m, err := Parse(tt.raw)
 			if tt.err != "" {
@@ -46,9 +46,9 @@ func TestGPZDA(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				gpzda := m.(GPZDA)
-				gpzda.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, gpzda)
+				zda := m.(ZDA)
+				zda.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, zda)
 			}
 		})
 	}

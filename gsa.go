@@ -1,8 +1,8 @@
 package nmea
 
 const (
-	// PrefixGPGSA prefix of GPGSA sentence type
-	PrefixGPGSA = "GPGSA"
+	// TypeGSA type for GSA sentences
+	TypeGSA = "GSA"
 	// Auto - Field 1, auto or manual fix.
 	Auto = "A"
 	// Manual - Field 1, auto or manual fix.
@@ -15,9 +15,9 @@ const (
 	Fix3D = "3"
 )
 
-// GPGSA represents overview satellite data.
+// GSA represents overview satellite data.
 // http://aprs.gids.nl/nmea/#gsa
-type GPGSA struct {
+type GSA struct {
 	BaseSentence
 	Mode    string   // The selection mode.
 	FixType string   // The fix type.
@@ -27,10 +27,11 @@ type GPGSA struct {
 	VDOP    float64  // Vertical dilution of precision.
 }
 
-// newGPGSA parses the GPGSA sentence into this struct.
-func newGPGSA(s BaseSentence) (GPGSA, error) {
-	p := newParser(s, PrefixGPGSA)
-	m := GPGSA{
+// newGSA parses the GSA sentence into this struct.
+func newGSA(s BaseSentence) (GSA, error) {
+	p := newParser(s)
+	p.AssertType(TypeGSA)
+	m := GSA{
 		BaseSentence: s,
 		Mode:         p.EnumString(0, "selection mode", Auto, Manual),
 		FixType:      p.EnumString(1, "fix type", FixNone, Fix2D, Fix3D),

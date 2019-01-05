@@ -24,14 +24,17 @@ type Sentence interface {
 
 // BaseSentence contains the information about the NMEA sentence
 type BaseSentence struct {
-	Type     string   // The sentence type (e.g $GPGSA)
+	Talker   string   // The talker id (e.g GP)
+	Type     string   // The data type (e.g GSA)
 	Fields   []string // Array of fields
 	Checksum string   // The Checksum
 	Raw      string   // The raw NMEA sentence received
 }
 
 // Prefix returns the type of the message
-func (s BaseSentence) Prefix() string { return s.Type }
+func (s BaseSentence) Prefix() string {
+	return s.Talker + s.Type
+}
 
 // String formats the sentence into a string
 func (s BaseSentence) String() string { return s.Raw }
@@ -57,12 +60,25 @@ func parseSentence(raw string) (BaseSentence, error) {
 		return BaseSentence{}, fmt.Errorf(
 			"nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
+	talker, typ := parsePrefix(fields[0])
 	return BaseSentence{
-		Type:     fields[0],
+		Talker:   talker,
+		Type:     typ,
 		Fields:   fields[1:],
 		Checksum: checksumRaw,
 		Raw:      raw,
 	}, nil
+}
+
+// parsePrefix takes the first field and splits it into a talker id and data type.
+func parsePrefix(s string) (string, string) {
+	if strings.HasPrefix(s, "P") {
+		return "P", s[1:]
+	}
+	if len(s) < 2 {
+		return s, ""
+	}
+	return s[:2], s[2:]
 }
 
 // xor all the bytes in a string an return it
@@ -82,33 +98,27 @@ func Parse(raw string) (Sentence, error) {
 		return nil, err
 	}
 	switch s.Type {
-	case PrefixGPRMC:
-		return newGPRMC(s)
-	case PrefixGNRMC:
-		return newGNRMC(s)
-	case PrefixGPGGA:
-		return newGPGGA(s)
-	case PrefixGNGGA:
-		return newGNGGA(s)
-	case PrefixGPGSA:
-		return newGPGSA(s)
-	case PrefixGPGLL:
-		return newGPGLL(s)
-	case PrefixGPVTG:
-		return newGPVTG(s)
-	case PrefixGPZDA:
-		return newGPZDA(s)
-	case PrefixPGRME:
+	case TypeRMC:
+		return newRMC(s)
+	case TypeGGA:
+		return newGGA(s)
+	case TypeGSA:
+		return newGSA(s)
+	case TypeGLL:
+		return newGLL(s)
+	case TypeVTG:
+		return newVTG(s)
+	case TypeZDA:
+		return newZDA(s)
+	case TypePGRME:
 		return newPGRME(s)
-	case PrefixGPGSV:
-		return newGPGSV(s)
-	case PrefixGLGSV:
-		return newGLGSV(s)
-	case PrefixGPHDT:
-		return newGPHDT(s)
-	case PrefixGNGNS:
-		return newGNGNS(s)
+	case TypeGSV:
+		return newGSV(s)
+	case TypeHDT:
+		return newHDT(s)
+	case TypeGNS:
+		return newGNS(s)
 	default:
-		return nil, fmt.Errorf("nmea: sentence type '%s' not implemented", s.Type)
+		return nil, fmt.Errorf("nmea: sentence prefix '%s' not supported", s.Prefix())
 	}
 }
