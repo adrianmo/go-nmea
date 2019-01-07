@@ -142,6 +142,7 @@ func TestTimeParse(t *testing.T) {
 		{"", Time{}, true},
 		{"112233.123", Time{true, 11, 22, 33, 123}, true},
 		{"010203.04", Time{true, 1, 2, 3, 40}, true},
+		{"10203.04", Time{}, false},
 		{"x0u2xd", Time{}, false},
 		{"xx2233.123", Time{}, false},
 		{"11xx33.123", Time{}, false},

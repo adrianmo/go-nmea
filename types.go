@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
@@ -179,6 +180,9 @@ func (t Time) String() string {
 	return fmt.Sprintf("%02d:%02d:%07.4f", t.Hour, t.Minute, seconds)
 }
 
+// timeRe is used to validate time strings
+var timeRe = regexp.MustCompile(`\d{6}(\.\d*)?`)
+
 // ParseTime parses wall clock time.
 // e.g. hhmmss.ssss
 // An empty time string will result in an invalid time.
@@ -186,8 +190,8 @@ func ParseTime(s string) (Time, error) {
 	if s == "" {
 		return Time{}, nil
 	}
-	if len(s) < 6 {
-		return Time{}, fmt.Errorf("parse time: exptected hhmmss.ss format, got '%s'", s)
+	if !timeRe.MatchString(s) {
+		return Time{}, fmt.Errorf("parse time: expected hhmmss.ss format, got '%s'", s)
 	}
 	hour, err := strconv.Atoi(s[0:2])
 	if err != nil {
