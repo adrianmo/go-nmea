@@ -193,7 +193,7 @@ func ParseTime(s string) (Time, error) {
 	if !timeRe.MatchString(s) {
 		return Time{}, fmt.Errorf("parse time: expected hhmmss.ss format, got '%s'", s)
 	}
-	hour, _ := strconv.Atoi(s[0:2])
+	hour, _ := strconv.Atoi(s[:2])
 	minute, _ := strconv.Atoi(s[2:4])
 	second, _ := strconv.ParseFloat(s[4:], 64)
 	whole, frac := math.Modf(second)
