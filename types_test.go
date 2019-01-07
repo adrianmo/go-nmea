@@ -172,7 +172,7 @@ func TestTimeString(t *testing.T) {
 		Second:      3,
 		Millisecond: 4,
 	}
-	expected := "01:02:03.0004"
+	expected := "01:02:03.0040"
 	if s := d.String(); s != expected {
 		t.Fatalf("got %s, expected %s", s, expected)
 	}

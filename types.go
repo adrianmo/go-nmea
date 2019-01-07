@@ -176,7 +176,7 @@ type Time struct {
 // String representation of Time
 func (t Time) String() string {
 	seconds := float64(t.Second) + float64(t.Millisecond)/1000
-	return fmt.Sprintf("%02d:%02d:%.2f", t.Hour, t.Minute, seconds)
+	return fmt.Sprintf("%02d:%02d:%07.4f", t.Hour, t.Minute, seconds)
 }
 
 // ParseTime parses wall clock time.
@@ -202,7 +202,7 @@ func ParseTime(s string) (Time, error) {
 		return Time{}, errors.New(s)
 	}
 	whole, frac := math.Modf(second)
-	return Time{true, hour, minute, int(whole), int(frac * 1000)}, nil
+	return Time{true, hour, minute, int(whole), int(math.Round(frac * 1000))}, nil
 }
 
 // Date type
