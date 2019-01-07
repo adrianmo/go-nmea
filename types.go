@@ -181,7 +181,7 @@ func (t Time) String() string {
 }
 
 // timeRe is used to validate time strings
-var timeRe = regexp.MustCompile(`\d{6}(\.\d*)?`)
+var timeRe = regexp.MustCompile(`^\d{6}(\.\d*)?$`)
 
 // ParseTime parses wall clock time.
 // e.g. hhmmss.ssss
@@ -193,18 +193,9 @@ func ParseTime(s string) (Time, error) {
 	if !timeRe.MatchString(s) {
 		return Time{}, fmt.Errorf("parse time: expected hhmmss.ss format, got '%s'", s)
 	}
-	hour, err := strconv.Atoi(s[0:2])
-	if err != nil {
-		return Time{}, errors.New(s)
-	}
-	minute, err := strconv.Atoi(s[2:4])
-	if err != nil {
-		return Time{}, errors.New(s)
-	}
-	second, err := strconv.ParseFloat(s[4:], 64)
-	if err != nil {
-		return Time{}, errors.New(s)
-	}
+	hour, _ := strconv.Atoi(s[0:2])
+	minute, _ := strconv.Atoi(s[2:4])
+	second, _ := strconv.ParseFloat(s[4:], 64)
 	whole, frac := math.Modf(second)
 	return Time{true, hour, minute, int(whole), int(round(frac * 1000))}, nil
 }
