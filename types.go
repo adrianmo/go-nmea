@@ -175,7 +175,8 @@ type Time struct {
 
 // String representation of Time
 func (t Time) String() string {
-	return fmt.Sprintf("%02d:%02d:%02d.%04d", t.Hour, t.Minute, t.Second, t.Millisecond)
+	seconds := float64(t.Second) + float64(t.Millisecond)/1000
+	return fmt.Sprintf("%02d:%02d:%.2f", t.Hour, t.Minute, seconds)
 }
 
 // ParseTime parses wall clock time.
@@ -185,31 +186,23 @@ func ParseTime(s string) (Time, error) {
 	if s == "" {
 		return Time{}, nil
 	}
-	ms := "0000"
-	hhmmss := s
-	if parts := strings.SplitN(s, ".", 2); len(parts) > 1 {
-		hhmmss, ms = parts[0], parts[1]
-	}
-	if len(hhmmss) != 6 {
+	if len(s) < 6 {
 		return Time{}, fmt.Errorf("parse time: exptected hhmmss.ss format, got '%s'", s)
 	}
-	hour, err := strconv.Atoi(hhmmss[0:2])
+	hour, err := strconv.Atoi(s[0:2])
 	if err != nil {
-		return Time{}, errors.New(hhmmss)
+		return Time{}, errors.New(s)
 	}
-	minute, err := strconv.Atoi(hhmmss[2:4])
+	minute, err := strconv.Atoi(s[2:4])
 	if err != nil {
-		return Time{}, errors.New(hhmmss)
+		return Time{}, errors.New(s)
 	}
-	second, err := strconv.Atoi(hhmmss[4:6])
+	second, err := strconv.ParseFloat(s[4:], 64)
 	if err != nil {
-		return Time{}, errors.New(hhmmss)
+		return Time{}, errors.New(s)
 	}
-	millisecond, err := strconv.Atoi(ms)
-	if err != nil {
-		return Time{}, errors.New(hhmmss)
-	}
-	return Time{true, hour, minute, second, millisecond}, nil
+	whole, frac := math.Modf(second)
+	return Time{true, hour, minute, int(whole), int(frac * 1000)}, nil
 }
 
 // Date type
