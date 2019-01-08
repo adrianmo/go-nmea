@@ -118,6 +118,8 @@ func Parse(raw string) (Sentence, error) {
 		return newHDT(s)
 	case TypeGNS:
 		return newGNS(s)
+	case TypeTHS:
+		return newTHS(s)
 	default:
 		return nil, fmt.Errorf("nmea: sentence prefix '%s' not supported", s.Prefix())
 	}
