@@ -26,6 +26,7 @@ At this moment, this library supports the following sentence types:
 - [HDT](http://aprs.gids.nl/nmea/#hdt) - Actual vessel heading in degrees True
 - [GNS](https://www.trimble.com/oem_receiverhelp/v4.44/en/NMEA-0183messages_GNS.html) - Combined GPS fix for GPS, Glonass, Galileo, and BeiDou
 - [PGRME](http://aprs.gids.nl/nmea/#rme) - Estimated Position Error (Garmin proprietary sentence)
+- [THS](http://www.nuovamarea.net/pytheas_9.html) - Actual vessel heading in degrees True and status
 
 ## Example
 
