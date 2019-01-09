@@ -45,11 +45,11 @@ var thstests = []struct {
 		},
 	},
 	{
-		name: "good sentence NotValidTHS",
+		name: "good sentence InvalidTHS",
 		raw:  "$INTHS,,V*1E",
 		msg: THS{
 			Heading: 0.0,
-			Status:  NotValidTHS,
+			Status:  InvalidTHS,
 		},
 	},
 	{

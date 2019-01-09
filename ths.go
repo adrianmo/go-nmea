@@ -11,8 +11,8 @@ const (
 	ManualTHS = "M"
 	// SimulatorTHS simulated THS heading
 	SimulatorTHS = "S"
-	// NotValidTHS not valid THS heading (or standby)
-	NotValidTHS = "V"
+	// InvalidTHS not valid THS heading (or standby)
+	InvalidTHS = "V"
 )
 
 // THS is the Actual vessel heading in degrees True with status.
@@ -30,7 +30,7 @@ func newTHS(s BaseSentence) (THS, error) {
 	m := THS{
 		BaseSentence: s,
 		Heading:      p.Float64(0, "heading"),
-		Status:       p.EnumString(1, "status", AutonomousTHS, EstimatedTHS, ManualTHS, SimulatorTHS, NotValidTHS),
+		Status:       p.EnumString(1, "status", AutonomousTHS, EstimatedTHS, ManualTHS, SimulatorTHS, InvalidTHS),
 	}
 	return m, p.Err()
 }
