@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
@@ -175,8 +176,12 @@ type Time struct {
 
 // String representation of Time
 func (t Time) String() string {
-	return fmt.Sprintf("%02d:%02d:%02d.%04d", t.Hour, t.Minute, t.Second, t.Millisecond)
+	seconds := float64(t.Second) + float64(t.Millisecond)/1000
+	return fmt.Sprintf("%02d:%02d:%07.4f", t.Hour, t.Minute, seconds)
 }
+
+// timeRe is used to validate time strings
+var timeRe = regexp.MustCompile(`^\d{6}(\.\d*)?$`)
 
 // ParseTime parses wall clock time.
 // e.g. hhmmss.ssss
@@ -185,31 +190,25 @@ func ParseTime(s string) (Time, error) {
 	if s == "" {
 		return Time{}, nil
 	}
-	ms := "0000"
-	hhmmss := s
-	if parts := strings.SplitN(s, ".", 2); len(parts) > 1 {
-		hhmmss, ms = parts[0], parts[1]
+	if !timeRe.MatchString(s) {
+		return Time{}, fmt.Errorf("parse time: expected hhmmss.ss format, got '%s'", s)
 	}
-	if len(hhmmss) != 6 {
-		return Time{}, fmt.Errorf("parse time: exptected hhmmss.ss format, got '%s'", s)
+	hour, _ := strconv.Atoi(s[:2])
+	minute, _ := strconv.Atoi(s[2:4])
+	second, _ := strconv.ParseFloat(s[4:], 64)
+	whole, frac := math.Modf(second)
+	return Time{true, hour, minute, int(whole), int(round(frac * 1000))}, nil
+}
+
+// round is implemented here because it wasn't added until go1.10
+// this code is taken directly from the math.Round documentation
+// TODO: use math.Round after a reasonable amount of time
+func round(x float64) float64 {
+	t := math.Trunc(x)
+	if math.Abs(x-t) >= 0.5 {
+		return t + math.Copysign(1, x)
 	}
-	hour, err := strconv.Atoi(hhmmss[0:2])
-	if err != nil {
-		return Time{}, errors.New(hhmmss)
-	}
-	minute, err := strconv.Atoi(hhmmss[2:4])
-	if err != nil {
-		return Time{}, errors.New(hhmmss)
-	}
-	second, err := strconv.Atoi(hhmmss[4:6])
-	if err != nil {
-		return Time{}, errors.New(hhmmss)
-	}
-	millisecond, err := strconv.Atoi(ms)
-	if err != nil {
-		return Time{}, errors.New(hhmmss)
-	}
-	return Time{true, hour, minute, second, millisecond}, nil
+	return t
 }
 
 // Date type
