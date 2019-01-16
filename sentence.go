@@ -21,6 +21,7 @@ type Sentence interface {
 	fmt.Stringer
 	Prefix() string
 	MessageType() string
+	MessageTalker() string
 }
 
 // BaseSentence contains the information about the NMEA sentence
@@ -40,6 +41,11 @@ func (s BaseSentence) Prefix() string {
 // MessageType returns the type of the message
 func (s BaseSentence) MessageType() string {
 	return s.Type
+}
+
+// MessageTalker returns the talker of the message
+func (s BaseSentence) MessageTalker() string {
+	return s.Talker
 }
 
 // String formats the sentence into a string
