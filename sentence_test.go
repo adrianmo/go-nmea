@@ -7,18 +7,18 @@ import (
 )
 
 var sentencetests = []struct {
-	name      string
-	raw       string
-	msgtype   string
-	msgtalker string
-	err       string
-	sent      BaseSentence
+	name     string
+	raw      string
+	datatype string
+	talkerid string
+	err      string
+	sent     BaseSentence
 }{
 	{
-		name:      "checksum ok",
-		raw:       "$GPFOO,1,2,3.3,x,y,zz,*51",
-		msgtype:   "FOO",
-		msgtalker: "GP",
+		name:     "checksum ok",
+		raw:      "$GPFOO,1,2,3.3,x,y,zz,*51",
+		datatype: "FOO",
+		talkerid: "GP",
 		sent: BaseSentence{
 			Talker:   "GP",
 			Type:     "FOO",
@@ -28,10 +28,10 @@ var sentencetests = []struct {
 		},
 	},
 	{
-		name:      "good parsing",
-		raw:       "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
-		msgtype:   "RMC",
-		msgtalker: "GP",
+		name:     "good parsing",
+		raw:      "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
+		datatype: "RMC",
+		talkerid: "GP",
 		sent: BaseSentence{
 			Talker:   "GP",
 			Type:     "RMC",
@@ -82,8 +82,8 @@ func TestSentences(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.sent, sent)
 				assert.Equal(t, tt.sent.Raw, sent.String())
-				assert.Equal(t, tt.msgtype, sent.MessageType())
-				assert.Equal(t, tt.msgtalker, sent.MessageTalker())
+				assert.Equal(t, tt.datatype, sent.DataType())
+				assert.Equal(t, tt.talkerid, sent.TalkerID())
 			}
 		})
 	}

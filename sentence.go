@@ -20,8 +20,8 @@ const (
 type Sentence interface {
 	fmt.Stringer
 	Prefix() string
-	MessageType() string
-	MessageTalker() string
+	DataType() string
+	TalkerID() string
 }
 
 // BaseSentence contains the information about the NMEA sentence
@@ -38,13 +38,13 @@ func (s BaseSentence) Prefix() string {
 	return s.Talker + s.Type
 }
 
-// MessageType returns the type of the message
-func (s BaseSentence) MessageType() string {
+// DataType returns the type of the message
+func (s BaseSentence) DataType() string {
 	return s.Type
 }
 
-// MessageTalker returns the talker of the message
-func (s BaseSentence) MessageTalker() string {
+// TalkerID returns the talker of the message
+func (s BaseSentence) TalkerID() string {
 	return s.Talker
 }
 
