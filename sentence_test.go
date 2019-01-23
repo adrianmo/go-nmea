@@ -11,6 +11,7 @@ var sentencetests = []struct {
 	raw      string
 	datatype string
 	talkerid string
+	prefix   string
 	err      string
 	sent     BaseSentence
 }{
@@ -19,6 +20,7 @@ var sentencetests = []struct {
 		raw:      "$GPFOO,1,2,3.3,x,y,zz,*51",
 		datatype: "FOO",
 		talkerid: "GP",
+		prefix:   "GPFOO",
 		sent: BaseSentence{
 			Talker:   "GP",
 			Type:     "FOO",
@@ -32,6 +34,7 @@ var sentencetests = []struct {
 		raw:      "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
 		datatype: "RMC",
 		talkerid: "GP",
+		prefix:   "GPRMC",
 		sent: BaseSentence{
 			Talker:   "GP",
 			Type:     "RMC",
@@ -84,6 +87,7 @@ func TestSentences(t *testing.T) {
 				assert.Equal(t, tt.sent.Raw, sent.String())
 				assert.Equal(t, tt.datatype, sent.DataType())
 				assert.Equal(t, tt.talkerid, sent.TalkerID())
+				assert.Equal(t, tt.prefix, sent.Prefix())
 			}
 		})
 	}
