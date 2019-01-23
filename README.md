@@ -45,18 +45,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	m := s.(nmea.RMC)
-	fmt.Printf("Raw sentence: %v\n", m)
-	fmt.Printf("Time: %s\n", m.Time)
-	fmt.Printf("Validity: %s\n", m.Validity)
-	fmt.Printf("Latitude GPS: %s\n", nmea.FormatGPS(m.Latitude))
-	fmt.Printf("Latitude DMS: %s\n", nmea.FormatDMS(m.Latitude))
-	fmt.Printf("Longitude GPS: %s\n", nmea.FormatGPS(m.Longitude))
-	fmt.Printf("Longitude DMS: %s\n", nmea.FormatDMS(m.Longitude))
-	fmt.Printf("Speed: %f\n", m.Speed)
-	fmt.Printf("Course: %f\n", m.Course)
-	fmt.Printf("Date: %s\n", m.Date)
-	fmt.Printf("Variation: %f\n", m.Variation)
+	if s.DataType() == nmea.TypeRMC {
+		m := s.(nmea.RMC)
+		fmt.Printf("Raw sentence: %v\n", m)
+		fmt.Printf("Time: %s\n", m.Time)
+		fmt.Printf("Validity: %s\n", m.Validity)
+		fmt.Printf("Latitude GPS: %s\n", nmea.FormatGPS(m.Latitude))
+		fmt.Printf("Latitude DMS: %s\n", nmea.FormatDMS(m.Latitude))
+		fmt.Printf("Longitude GPS: %s\n", nmea.FormatGPS(m.Longitude))
+		fmt.Printf("Longitude DMS: %s\n", nmea.FormatDMS(m.Longitude))
+		fmt.Printf("Speed: %f\n", m.Speed)
+		fmt.Printf("Course: %f\n", m.Course)
+		fmt.Printf("Date: %s\n", m.Date)
+		fmt.Printf("Variation: %f\n", m.Variation)
+	}
 }
 ```
 

@@ -20,6 +20,8 @@ const (
 type Sentence interface {
 	fmt.Stringer
 	Prefix() string
+	DataType() string
+	TalkerID() string
 }
 
 // BaseSentence contains the information about the NMEA sentence
@@ -31,9 +33,19 @@ type BaseSentence struct {
 	Raw      string   // The raw NMEA sentence received
 }
 
-// Prefix returns the type of the message
+// Prefix returns the talker and type of message
 func (s BaseSentence) Prefix() string {
 	return s.Talker + s.Type
+}
+
+// DataType returns the type of the message
+func (s BaseSentence) DataType() string {
+	return s.Type
+}
+
+// TalkerID returns the talker of the message
+func (s BaseSentence) TalkerID() string {
+	return s.Talker
 }
 
 // String formats the sentence into a string
