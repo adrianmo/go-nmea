@@ -9,6 +9,9 @@ const (
 	// SentenceStart is the token to indicate the start of a sentence.
 	SentenceStart = "$"
 
+	// SentenceStartEncapsulated is the token to indicate the start of encapsulated data.
+	SentenceStartEncapsulated = "!"
+
 	// FieldSep is the token to delimit fields of a sentence.
 	FieldSep = ","
 
@@ -53,9 +56,9 @@ func (s BaseSentence) String() string { return s.Raw }
 
 // parseSentence parses a raw message into it's fields
 func parseSentence(raw string) (BaseSentence, error) {
-	startIndex := strings.Index(raw, SentenceStart)
+	startIndex := strings.IndexAny(raw, SentenceStart+SentenceStartEncapsulated)
 	if startIndex != 0 {
-		return BaseSentence{}, fmt.Errorf("nmea: sentence does not start with a '$'")
+		return BaseSentence{}, fmt.Errorf("nmea: sentence does not start with a '$' or '!'")
 	}
 	sumSepIndex := strings.Index(raw, ChecksumSep)
 	if sumSepIndex == -1 {
@@ -109,30 +112,39 @@ func Parse(raw string) (Sentence, error) {
 	if err != nil {
 		return nil, err
 	}
-	switch s.Type {
-	case TypeRMC:
-		return newRMC(s)
-	case TypeGGA:
-		return newGGA(s)
-	case TypeGSA:
-		return newGSA(s)
-	case TypeGLL:
-		return newGLL(s)
-	case TypeVTG:
-		return newVTG(s)
-	case TypeZDA:
-		return newZDA(s)
-	case TypePGRME:
-		return newPGRME(s)
-	case TypeGSV:
-		return newGSV(s)
-	case TypeHDT:
-		return newHDT(s)
-	case TypeGNS:
-		return newGNS(s)
-	case TypeTHS:
-		return newTHS(s)
-	default:
-		return nil, fmt.Errorf("nmea: sentence prefix '%s' not supported", s.Prefix())
+
+	if s.Raw[0] == SentenceStart[0] {
+		switch s.Type {
+		case TypeRMC:
+			return newRMC(s)
+		case TypeGGA:
+			return newGGA(s)
+		case TypeGSA:
+			return newGSA(s)
+		case TypeGLL:
+			return newGLL(s)
+		case TypeVTG:
+			return newVTG(s)
+		case TypeZDA:
+			return newZDA(s)
+		case TypePGRME:
+			return newPGRME(s)
+		case TypeGSV:
+			return newGSV(s)
+		case TypeHDT:
+			return newHDT(s)
+		case TypeGNS:
+			return newGNS(s)
+		case TypeTHS:
+			return newTHS(s)
+		}
+	} else if s.Raw[0] == SentenceStartEncapsulated[0] {
+		switch s.Type {
+		case TypeVDM, TypeVDO:
+			return newVDMVDO(s)
+		}
 	}
+
+	return nil, fmt.Errorf("nmea: sentence prefix '%s' not supported", s.Prefix())
+
 }

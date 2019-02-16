@@ -51,7 +51,7 @@ var sentencetests = []struct {
 	{
 		name: "bad start character",
 		raw:  "%GPFOO,1,2,3,x,y,z*1A",
-		err:  "nmea: sentence does not start with a '$'",
+		err:  "nmea: sentence does not start with a '$' or '!'",
 	},
 	{
 		name: "bad checksum delimiter",
@@ -61,12 +61,12 @@ var sentencetests = []struct {
 	{
 		name: "no start delimiter",
 		raw:  "abc$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
-		err:  "nmea: sentence does not start with a '$'",
+		err:  "nmea: sentence does not start with a '$' or '!'",
 	},
 	{
 		name: "no contain delimiter",
 		raw:  "GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
-		err:  "nmea: sentence does not start with a '$'",
+		err:  "nmea: sentence does not start with a '$' or '!'",
 	},
 	{
 		name: "another bad checksum",
@@ -150,11 +150,16 @@ var parsetests = []struct {
 	{
 		name: "bad sentence",
 		raw:  "SDFSD,2340dfmswd",
-		err:  "nmea: sentence does not start with a '$'",
+		err:  "nmea: sentence does not start with a '$' or '!'",
 	},
 	{
 		name: "bad sentence type",
 		raw:  "$INVALID,123,123,*7D",
+		err:  "nmea: sentence prefix 'INVALID' not supported",
+	},
+	{
+		name: "bad encapsulated sentence type",
+		raw:  "!INVALID,1,2,*7E",
 		err:  "nmea: sentence prefix 'INVALID' not supported",
 	},
 }
