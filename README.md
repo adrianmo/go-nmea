@@ -27,6 +27,7 @@ At this moment, this library supports the following sentence types:
 - [GNS](https://www.trimble.com/oem_receiverhelp/v4.44/en/NMEA-0183messages_GNS.html) - Combined GPS fix for GPS, Glonass, Galileo, and BeiDou
 - [PGRME](http://aprs.gids.nl/nmea/#rme) - Estimated Position Error (Garmin proprietary sentence)
 - [THS](http://www.nuovamarea.net/pytheas_9.html) - Actual vessel heading in degrees True and status
+- [VDM/VDO](http://catb.org/gpsd/AIVDM.html) - Encapsulated binary payload
 
 ## Example
 
