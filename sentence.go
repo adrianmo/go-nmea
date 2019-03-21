@@ -112,8 +112,7 @@ func Parse(raw string) (Sentence, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	if s.Raw[0] == SentenceStart[0] {
+	if strings.HasPrefix(s.Raw, SentenceStart) {
 		switch s.Type {
 		case TypeRMC:
 			return newRMC(s)
@@ -138,13 +137,12 @@ func Parse(raw string) (Sentence, error) {
 		case TypeTHS:
 			return newTHS(s)
 		}
-	} else if s.Raw[0] == SentenceStartEncapsulated[0] {
+	}
+	if strings.HasPrefix(s.Raw, SentenceStartEncapsulated) {
 		switch s.Type {
 		case TypeVDM, TypeVDO:
 			return newVDMVDO(s)
 		}
 	}
-
 	return nil, fmt.Errorf("nmea: sentence prefix '%s' not supported", s.Prefix())
-
 }
