@@ -59,22 +59,22 @@ var vdmtests = []struct {
 	{
 		name: "Invalid symbol in payload",
 		raw:  "!AIVDM,1,1,,1,000 00,0*46",
-		err:  "nmea: AIVDM invalid payload: Decode failed",
+		err:  "nmea: AIVDM invalid payload: data byte",
 	},
 	{
 		name: "Negative number of fill bits",
 		raw:  "!AIVDM,1,1,,1,000,-3*48",
-		err:  "nmea: AIVDM invalid payload: Decode failed",
+		err:  "nmea: AIVDM invalid payload: fill bits",
 	},
 	{
 		name: "Too high number of fill bits",
 		raw:  "!AIVDO,1,1,,1,000,20*56",
-		err:  "nmea: AIVDO invalid payload: Decode failed",
+		err:  "nmea: AIVDO invalid payload: fill bits",
 	},
 	{
 		name: "Negative number of bits",
 		raw:  "!AIVDM,1,1,,1,,2*54",
-		err:  "nmea: AIVDM invalid payload: Decode failed",
+		err:  "nmea: AIVDM invalid payload: num bits",
 	},
 }
 
