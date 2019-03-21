@@ -57,6 +57,11 @@ var vdmtests = []struct {
 		},
 	},
 	{
+		name: "Invalid number of fragments",
+		raw:  "!AIVDM,x,1,,1,000 00,0*0F",
+		err:  "nmea: AIVDM invalid number of fragments: x",
+	},
+	{
 		name: "Invalid symbol in payload",
 		raw:  "!AIVDM,1,1,,1,000 00,0*46",
 		err:  "nmea: AIVDM invalid payload: data byte",
