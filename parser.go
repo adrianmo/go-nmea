@@ -167,3 +167,44 @@ func (p *parser) LatLong(i, j int, context string) float64 {
 	}
 	return v
 }
+
+// SixBitASCIIArmour decodes the 6-bit ascii armor used for VDM and VDO messages
+func (p *parser) SixBitASCIIArmour(i int, fillBits int, context string) []byte {
+	if p.err != nil {
+		return nil
+	}
+	if fillBits < 0 || fillBits >= 6 {
+		p.SetErr(context, "fill bits")
+		return nil
+	}
+
+	payload := []byte(p.String(i, "encoded payload"))
+	numBits := len(payload)*6 - fillBits
+
+	if numBits < 0 {
+		p.SetErr(context, "num bits")
+		return nil
+	}
+
+	result := make([]byte, numBits)
+	resultIndex := 0
+
+	for _, v := range payload {
+		if v < 48 || v >= 120 {
+			p.SetErr(context, "data byte")
+			return nil
+		}
+
+		d := v - 48
+		if d > 40 {
+			d -= 8
+		}
+
+		for i := 5; i >= 0 && resultIndex < len(result); i-- {
+			result[resultIndex] = (d >> uint(i)) & 1
+			resultIndex++
+		}
+	}
+
+	return result
+}
