@@ -94,7 +94,7 @@ func parseSentence(raw string) (BaseSentence, error) {
 // parsePrefix takes the first field and splits it into a talker id and data type.
 func parsePrefix(s string) (string, string) {
 	if s == TypeGSensord {
-		return "P", s
+		return "", s
 	}
 	if strings.HasPrefix(s, "P") {
 		return "P", s[1:]
