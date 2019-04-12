@@ -55,8 +55,8 @@ var sentencetests = []struct {
 	},
 	{
 		name: "bad checksum delimiter",
-		raw:  "$GPFOO,1,2,3,x,y,z",
-		err:  "nmea: sentence does not contain checksum separator",
+		raw:  "$GPFOO,1,2,3,x,y,z*",
+		err:  "nmea: sentence does not contain checksum",
 	},
 	{
 		name: "no start delimiter",
