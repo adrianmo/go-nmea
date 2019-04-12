@@ -54,6 +54,11 @@ var sentencetests = []struct {
 		err:  "nmea: sentence does not start with a '$' or '!'",
 	},
 	{
+		name: "bad checksum delimiter",
+		raw:  "$GPFOO,1,2,3,x,y,z*",
+		err:  "nmea: sentence does not contain checksum",
+	},
+	{
 		name: "no start delimiter",
 		raw:  "abc$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
 		err:  "nmea: sentence does not start with a '$' or '!'",

@@ -1,6 +1,7 @@
 package nmea
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -68,9 +69,9 @@ func parseSentence(raw string) (BaseSentence, error) {
 
 	if len(splice) == 2 {
 		checksumRaw = strings.ToUpper(splice[1])
-	}
-
-	if checksumRaw != "" {
+		if checksumRaw == "" {
+			return BaseSentence{}, errors.New("nmea: sentence does not contain checksum")
+		}
 		checksum := xorChecksum(fieldsRaw)
 
 		// Validate the checksum
@@ -93,7 +94,7 @@ func parseSentence(raw string) (BaseSentence, error) {
 // parsePrefix takes the first field and splits it into a talker id and data type.
 func parsePrefix(s string) (string, string) {
 	if s == TypeGSensord {
-		return "S", s
+		return "P", s
 	}
 	if strings.HasPrefix(s, "P") {
 		return "P", s[1:]
