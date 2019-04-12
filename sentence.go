@@ -60,21 +60,26 @@ func parseSentence(raw string) (BaseSentence, error) {
 	if startIndex != 0 {
 		return BaseSentence{}, fmt.Errorf("nmea: sentence does not start with a '$' or '!'")
 	}
-	sumSepIndex := strings.Index(raw, ChecksumSep)
-	if sumSepIndex == -1 {
-		return BaseSentence{}, fmt.Errorf("nmea: sentence does not contain checksum separator")
+
+	var checksumRaw string
+	splice := strings.Split(raw[startIndex+1:], ChecksumSep)
+	fieldsRaw := splice[0]
+	fields := strings.Split(fieldsRaw, FieldSep)
+
+	if len(splice) == 2 {
+		checksumRaw = strings.ToUpper(splice[1])
 	}
-	var (
-		fieldsRaw   = raw[startIndex+1 : sumSepIndex]
-		fields      = strings.Split(fieldsRaw, FieldSep)
-		checksumRaw = strings.ToUpper(raw[sumSepIndex+1:])
-		checksum    = xorChecksum(fieldsRaw)
-	)
-	// Validate the checksum
-	if checksum != checksumRaw {
-		return BaseSentence{}, fmt.Errorf(
-			"nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
+
+	if checksumRaw != "" {
+		checksum := xorChecksum(fieldsRaw)
+
+		// Validate the checksum
+		if checksum != checksumRaw {
+			return BaseSentence{}, fmt.Errorf(
+				"nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
+		}
 	}
+
 	talker, typ := parsePrefix(fields[0])
 	return BaseSentence{
 		Talker:   talker,
@@ -87,6 +92,9 @@ func parseSentence(raw string) (BaseSentence, error) {
 
 // parsePrefix takes the first field and splits it into a talker id and data type.
 func parsePrefix(s string) (string, string) {
+	if s == TypeGSensord {
+		return "S", s
+	}
 	if strings.HasPrefix(s, "P") {
 		return "P", s[1:]
 	}
@@ -112,6 +120,7 @@ func Parse(raw string) (Sentence, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if strings.HasPrefix(s.Raw, SentenceStart) {
 		switch s.Type {
 		case TypeRMC:
@@ -136,6 +145,8 @@ func Parse(raw string) (Sentence, error) {
 			return newGNS(s)
 		case TypeTHS:
 			return newTHS(s)
+		case TypeGSensord:
+			return newGSensord(s)
 		}
 	}
 	if strings.HasPrefix(s.Raw, SentenceStartEncapsulated) {
