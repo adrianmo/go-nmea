@@ -49,6 +49,19 @@ func (p *parser) String(i int, context string) string {
 	return p.Fields[i]
 }
 
+// ListString returns a list of all fields from the given start index.
+// An error occurs if there is no fields after the given start index.
+func (p *parser) ListString(from int, context string) (list []string) {
+	if p.err != nil {
+		return []string{}
+	}
+	if from < 0 || from >= len(p.Fields) {
+		p.SetErr(context, "index out of range")
+		return []string{}
+	}
+	return append(list, p.Fields[from:]...)
+}
+
 // EnumString returns the field value at the specified index.
 // An error occurs if the value is not one of the options and not empty.
 func (p *parser) EnumString(i int, context string, options ...string) string {
