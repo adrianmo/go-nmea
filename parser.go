@@ -53,12 +53,12 @@ func (p *parser) String(i int, context string) string {
 // An error occurs if there is no fields after the given start index.
 func (p *parser) ListString(from int, context string) (list []string) {
 	if p.err != nil {
-		return list
+		return []string{}
 	}
 	fields := p.Fields[from:]
 	if len(fields) == 0 {
 		p.SetErr(context, "list can not be empty")
-		return list
+		return []string{}
 	}
 	return append(list, fields...)
 }
