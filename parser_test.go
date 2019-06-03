@@ -40,6 +40,23 @@ var parsertests = []struct {
 		},
 	},
 	{
+		name:     "ListString",
+		fields:   []string{"wot", "foo", "bar"},
+		expected: []string{"foo", "bar"},
+		parse: func(p *parser) interface{} {
+			return p.ListString(1, "thing")
+		},
+	},
+	{
+		name:     "ListString out of range",
+		fields:   []string{"wot"},
+		expected: []string{},
+		hasErr:   true,
+		parse: func(p *parser) interface{} {
+			return p.ListString(10, "thing")
+		},
+	},
+	{
 		name:     "String with existing error",
 		expected: "",
 		hasErr:   true,
