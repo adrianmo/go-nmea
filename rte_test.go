@@ -24,9 +24,9 @@ var rtetests = []struct {
 		},
 	},
 	{
-		name: "empty route",
+		name: "index out if range",
 		raw:  "$IIRTE,4,1,c,Rte 1*77",
-		err:  "nmea: IIRTE invalid ident of waypoints: list can not be empty",
+		err:  "nmea: IIRTE invalid ident of waypoints: index out of range",
 	},
 	{
 		name: "invalid number of sentences",

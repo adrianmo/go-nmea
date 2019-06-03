@@ -55,12 +55,11 @@ func (p *parser) ListString(from int, context string) (list []string) {
 	if p.err != nil {
 		return []string{}
 	}
-	fields := p.Fields[from:]
-	if len(fields) == 0 {
-		p.SetErr(context, "list can not be empty")
+	if from < 0 || from >= len(p.Fields) {
+		p.SetErr(context, "index out of range")
 		return []string{}
 	}
-	return append(list, fields...)
+	return append(list, p.Fields[from:]...)
 }
 
 // EnumString returns the field value at the specified index.

@@ -48,12 +48,12 @@ var parsertests = []struct {
 		},
 	},
 	{
-		name:     "ListString is empty",
+		name:     "ListString out of range",
 		fields:   []string{"wot"},
 		expected: []string{},
 		hasErr:   true,
 		parse: func(p *parser) interface{} {
-			return p.ListString(1, "thing")
+			return p.ListString(10, "thing")
 		},
 	},
 	{
