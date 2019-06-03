@@ -28,6 +28,7 @@ At this moment, this library supports the following sentence types:
 - [PGRME](http://aprs.gids.nl/nmea/#rme) - Estimated Position Error (Garmin proprietary sentence)
 - [THS](http://www.nuovamarea.net/pytheas_9.html) - Actual vessel heading in degrees True and status
 - [VDM/VDO](http://catb.org/gpsd/AIVDM.html) - Encapsulated binary payload
+- [WPL](http://aprs.gids.nl/nmea/#wpl) - Waypoint location
 
 ## Example
 

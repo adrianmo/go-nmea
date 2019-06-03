@@ -136,6 +136,8 @@ func Parse(raw string) (Sentence, error) {
 			return newGNS(s)
 		case TypeTHS:
 			return newTHS(s)
+		case TypeWPL:
+			return newWPL(s)
 		}
 	}
 	if strings.HasPrefix(s.Raw, SentenceStartEncapsulated) {
