@@ -30,6 +30,20 @@ var sentencetests = []struct {
 		},
 	},
 	{
+		name:     "trim leading and trailing spaces",
+		raw:      "   $GPFOO,1,2,3.3,x,y,zz,*51   ",
+		datatype: "FOO",
+		talkerid: "GP",
+		prefix:   "GPFOO",
+		sent: BaseSentence{
+			Talker:   "GP",
+			Type:     "FOO",
+			Fields:   []string{"1", "2", "3.3", "x", "y", "zz", ""},
+			Checksum: "51",
+			Raw:      "$GPFOO,1,2,3.3,x,y,zz,*51",
+		},
+	},
+	{
 		name:     "good parsing",
 		raw:      "$GPRMC,235236,A,3925.9479,N,11945.9211,W,44.7,153.6,250905,15.2,E,A*0C",
 		datatype: "RMC",
