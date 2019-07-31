@@ -56,6 +56,7 @@ func (s BaseSentence) String() string { return s.Raw }
 
 // parseSentence parses a raw message into it's fields
 func parseSentence(raw string) (BaseSentence, error) {
+	raw = strings.TrimSpace(raw)
 	startIndex := strings.IndexAny(raw, SentenceStart+SentenceStartEncapsulated)
 	if startIndex != 0 {
 		return BaseSentence{}, fmt.Errorf("nmea: sentence does not start with a '$' or '!'")
