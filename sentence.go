@@ -43,6 +43,7 @@ type BaseSentence struct {
 	Fields   []string // Array of fields
 	Checksum string   // The Checksum
 	Raw      string   // The raw NMEA sentence received
+	TagBlock TagBlock // NMEA tagblock
 }
 
 // Prefix returns the talker and type of message
@@ -66,6 +67,12 @@ func (s BaseSentence) String() string { return s.Raw }
 // parseSentence parses a raw message into it's fields
 func parseSentence(raw string) (BaseSentence, error) {
 	raw = strings.TrimSpace(raw)
+	var tagBlock TagBlock
+	tagBlock, raw, err := parseTagBlock(raw)
+	if err != nil {
+		return BaseSentence{}, err
+	}
+
 	startIndex := strings.IndexAny(raw, SentenceStart+SentenceStartEncapsulated)
 	if startIndex != 0 {
 		return BaseSentence{}, fmt.Errorf("nmea: sentence does not start with a '$' or '!'")
@@ -86,12 +93,14 @@ func parseSentence(raw string) (BaseSentence, error) {
 			"nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
 	talker, typ := parsePrefix(fields[0])
+
 	return BaseSentence{
 		Talker:   talker,
 		Type:     typ,
 		Fields:   fields[1:],
 		Checksum: checksumRaw,
 		Raw:      raw,
+		TagBlock: tagBlock,
 	}, nil
 }
 
