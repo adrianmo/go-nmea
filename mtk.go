@@ -1,7 +1,5 @@
 package nmea
 
-import "strconv"
-
 const (
 	// TypeMTK type for PMTK sentences
 	TypeMTK = "PMTK"
@@ -11,22 +9,17 @@ const (
 type MTK struct {
 	BaseSentence
 	Cmd,
-	Flag int
+	Flag int64
 }
 
 // newMTK constructor
 func newMTK(s BaseSentence) (MTK, error) {
-	cmd, err := strconv.Atoi(s.Fields[0])
-	if err != nil {
-		return MTK{}, err
-	}
-	flag, err := strconv.Atoi(s.Fields[1])
-	if err != nil {
-		return MTK{}, err
-	}
+	p := newParser(s)
+	cmd := p.Int64(0, "command")
+	flag := p.Int64(1, "flag")
 	return MTK{
 		BaseSentence: s,
 		Cmd:          cmd,
 		Flag:         flag,
-	}, nil
+	}, p.Err()
 }
