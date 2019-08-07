@@ -69,7 +69,7 @@ func parseSentence(raw string) (BaseSentence, error) {
 		fieldsRaw   = raw[startIndex+1 : sumSepIndex]
 		fields      = strings.Split(fieldsRaw, FieldSep)
 		checksumRaw = strings.ToUpper(raw[sumSepIndex+1:])
-		checksum    = xorChecksum(fieldsRaw)
+		checksum    = XORChecksum(fieldsRaw)
 	)
 	// Validate the checksum
 	if checksum != checksumRaw {
@@ -97,9 +97,9 @@ func parsePrefix(s string) (string, string) {
 	return s[:2], s[2:]
 }
 
-// xor all the bytes in a string an return it
+// XORChecksum xor all the bytes in a string an return it
 // as an uppercase hex string
-func xorChecksum(s string) string {
+func XORChecksum(s string) string {
 	var checksum uint8
 	for i := 0; i < len(s); i++ {
 		checksum ^= s[i]
