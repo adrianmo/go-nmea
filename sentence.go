@@ -69,7 +69,7 @@ func parseSentence(raw string) (BaseSentence, error) {
 		fieldsRaw   = raw[startIndex+1 : sumSepIndex]
 		fields      = strings.Split(fieldsRaw, FieldSep)
 		checksumRaw = strings.ToUpper(raw[sumSepIndex+1:])
-		checksum    = XORChecksum(fieldsRaw)
+		checksum    = xorChecksum(fieldsRaw)
 	)
 	// Validate the checksum
 	if checksum != checksumRaw {
@@ -77,7 +77,6 @@ func parseSentence(raw string) (BaseSentence, error) {
 			"nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
 	talker, typ := parsePrefix(fields[0])
-
 	return BaseSentence{
 		Talker:   talker,
 		Type:     typ,
@@ -101,9 +100,9 @@ func parsePrefix(s string) (string, string) {
 	return s[:2], s[2:]
 }
 
-// XORChecksum xor all the bytes in a string an return it
+// xorChecksum xor all the bytes in a string an return it
 // as an uppercase hex string
-func XORChecksum(s string) string {
+func xorChecksum(s string) string {
 	var checksum uint8
 	for i := 0; i < len(s); i++ {
 		checksum ^= s[i]
