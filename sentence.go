@@ -58,7 +58,6 @@ func (s BaseSentence) String() string { return s.Raw }
 // parseSentence parses a raw message into it's fields
 func parseSentence(raw string) (BaseSentence, error) {
 	raw = strings.TrimSpace(raw)
-	var tagBlock TagBlock
 	tagBlock, raw, err := parseTagBlock(raw)
 	if err != nil {
 		return BaseSentence{}, err
