@@ -25,34 +25,34 @@ const (
 )
 
 var (
-	// TagBlockRegexp matches nmea tag blocks
-	TagBlockRegexp = regexp.MustCompile(`^(.*)\\(\S+)\\(.*)`)
+	// tagBlockRegexp matches nmea tag blocks
+	tagBlockRegexp = regexp.MustCompile(`^(.*)\\(\S+)\\(.*)`)
 )
 
 // TagBlock struct
 type TagBlock struct {
 	Head         string // *
-	Time         uint32 // -c
-	RelativeTime uint32 // -r
+	Time         int64  // -c
+	RelativeTime int64  // -r
 	Destination  string // -d 15 char max
 	Grouping     string // -g nummeric string
-	LineCount    uint32 // -n int
+	LineCount    int64  // -n int
 	Source       string // -s 15 char max
 	Text         string // -t Variable length text
 }
 
-func parseUint(raw string) (uint32, error) {
-	i, err := strconv.ParseUint(raw[2:], 10, 32)
+func parseUint(raw string) (int64, error) {
+	i, err := strconv.ParseInt(raw[2:], 10, 32)
 	if err != nil {
 		return 0, fmt.Errorf("nmea: tagblock unable to parse uint32 [%s]", raw)
 	}
-	return uint32(i), nil
+	return i, nil
 }
 
 // parseTagBlock adds support for tagblocks
 // https://rietman.wordpress.com/2016/09/17/nemastudio-now-supports-the-nmea-0183-tag-block/
 func parseTagBlock(raw string) (TagBlock, string, error) {
-	matches := TagBlockRegexp.FindStringSubmatch(raw)
+	matches := tagBlockRegexp.FindStringSubmatch(raw)
 	if matches == nil {
 		return TagBlock{}, raw, nil
 	}
@@ -64,7 +64,7 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 
 	sumSepIndex := strings.Index(tags, ChecksumSep)
 	if sumSepIndex == -1 {
-		return tagBlock, raw, fmt.Errorf("nmea: tagblock does not contain checksum separator")
+		return tagBlock, "", fmt.Errorf("nmea: tagblock does not contain checksum separator")
 	}
 
 	var (
@@ -76,12 +76,15 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 
 	// Validate the checksum
 	if checksum != checksumRaw {
-		return tagBlock, raw, fmt.Errorf("nmea: tagblock checksum mismatch [%s != %s]", checksum, checksumRaw)
+		return tagBlock, "", fmt.Errorf("nmea: tagblock checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
 
-	data := strings.Split(tags[:sumSepIndex], ",")
-	for _, item := range data {
-		switch item[0:1] {
+	items := strings.Split(tags[:sumSepIndex], ",")
+	for _, item := range items {
+		if len(item) == 0 {
+			continue
+		}
+		switch item[:1] {
 		case TypeUnixTime:
 			tagBlock.Time, err = parseUint(item)
 			if err != nil {

@@ -7,8 +7,6 @@ import (
 )
 
 var tagblocktests = []struct {
-	//name: "Tagblock ok",
-	//raw: "",
 	name string
 	raw  string
 	err  string
@@ -57,6 +55,22 @@ var tagblocktests = []struct {
 			Text:         "helloworld",
 			LineCount:    13,
 		},
+	},
+	{
+
+		name: "Test empty tag in tagblock",
+		raw:  "UdPbC?\\s:satelite,,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*68\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		msg: TagBlock{
+			Time:         0,
+			RelativeTime: 1553390539,
+			Destination:  "ara",
+			Grouping:     "bulk",
+			Source:       "satelite",
+			Head:         "UdPbC?",
+			Text:         "helloworld",
+			LineCount:    13,
+		},
+		//err: "nmea: tagblock checksum mismatch [25 != 49]",
 	},
 	{
 
