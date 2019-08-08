@@ -1,10 +1,12 @@
 package nmea
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -42,11 +44,28 @@ type TagBlock struct {
 }
 
 func parseInt64(raw string) (int64, error) {
-	i, err := strconv.ParseInt(raw[2:], 10, 32)
+	i, err := strconv.ParseInt(raw[2:], 10, 64)
 	if err != nil {
 		return 0, fmt.Errorf("nmea: tagblock unable to parse uint32 [%s]", raw)
 	}
 	return i, nil
+}
+
+// Timestamp can come as milliseconds or seconds
+func validUnixTimestamp(timestamp int64) (int64, error) {
+	if timestamp < 0 {
+		return 0, errors.New("nmea: Tagblock timestamp is not valid must be between 0 and now + 24h")
+	}
+	now := time.Now()
+	unix := now.Unix() + 24*3600
+	if timestamp > unix {
+		if timestamp > unix*1000 {
+			return 0, errors.New("nmea: Tagblock timestamp is not valid")
+		}
+		return timestamp / 1000, nil
+	}
+
+	return timestamp, nil
 }
 
 // parseTagBlock adds support for tagblocks
@@ -87,6 +106,10 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 		switch item[:1] {
 		case TypeUnixTime:
 			tagBlock.Time, err = parseInt64(item)
+			if err != nil {
+				return tagBlock, raw, err
+			}
+			tagBlock.Time, err = validUnixTimestamp(tagBlock.Time)
 			if err != nil {
 				return tagBlock, raw, err
 			}
