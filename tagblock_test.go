@@ -42,6 +42,37 @@ var tagblocktests = []struct {
 		},
 	},
 	{
+		name: "Test unix timestamp",
+		raw:  "UdPbC?\\x:NorSat_1,c:1564827317*42\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		msg: TagBlock{
+			Time:   1564827317,
+			Source: "",
+			Head:   "UdPbC?",
+		},
+	},
+	{
+
+		name: "Test milliseconds timestamp",
+		raw:  "UdPbC?\\x:NorSat_1,c:1564827317000*72\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		msg: TagBlock{
+			Time:   1564827317,
+			Source: "",
+			Head:   "UdPbC?",
+		},
+	},
+	{
+
+		name: "Test invalid high timestamp",
+		raw:  "UdPbC?\\x:NorSat_1,c:25648273170000000*71\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		err:  "nmea: Tagblock timestamp is not valid",
+	},
+	{
+
+		name: "Test invalid low timestamp",
+		raw:  "UdPbC?\\x:NorSat_1,c:-10*60\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		err:  "nmea: Tagblock timestamp is not valid must be between 0 and now + 24h",
+	},
+	{
 
 		name: "Test all input types",
 		raw:  "UdPbC?\\s:satelite,c:1564827317,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*3F\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
