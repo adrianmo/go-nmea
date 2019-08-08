@@ -41,7 +41,7 @@ type TagBlock struct {
 	Text         string // -t Variable length text
 }
 
-func parseUint(raw string) (int64, error) {
+func parseInt64(raw string) (int64, error) {
 	i, err := strconv.ParseInt(raw[2:], 10, 32)
 	if err != nil {
 		return 0, fmt.Errorf("nmea: tagblock unable to parse uint32 [%s]", raw)
@@ -86,7 +86,7 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 		}
 		switch item[:1] {
 		case TypeUnixTime:
-			tagBlock.Time, err = parseUint(item)
+			tagBlock.Time, err = parseInt64(item)
 			if err != nil {
 				return tagBlock, raw, err
 			}
@@ -95,12 +95,12 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 		case TypeGrouping:
 			tagBlock.Grouping = item[2:]
 		case TypeLineCount:
-			tagBlock.LineCount, err = parseUint(item)
+			tagBlock.LineCount, err = parseInt64(item)
 			if err != nil {
 				return tagBlock, raw, err
 			}
 		case TypeRelativeTime:
-			tagBlock.RelativeTime, err = parseUint(item)
+			tagBlock.RelativeTime, err = parseInt64(item)
 			if err != nil {
 				return tagBlock, raw, err
 			}
