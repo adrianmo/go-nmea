@@ -88,6 +88,9 @@ func parseSentence(raw string) (BaseSentence, error) {
 
 // parsePrefix takes the first field and splits it into a talker id and data type.
 func parsePrefix(s string) (string, string) {
+	if strings.HasPrefix(s, "PMTK") {
+		return "PMTK", s[4:]
+	}
 	if strings.HasPrefix(s, "P") {
 		return "P", s[1:]
 	}
@@ -97,7 +100,7 @@ func parsePrefix(s string) (string, string) {
 	return s[:2], s[2:]
 }
 
-// xor all the bytes in a string an return it
+// xorChecksum xor all the bytes in a string an return it
 // as an uppercase hex string
 func xorChecksum(s string) string {
 	var checksum uint8
@@ -114,6 +117,12 @@ func Parse(raw string) (Sentence, error) {
 		return nil, err
 	}
 	if strings.HasPrefix(s.Raw, SentenceStart) {
+		// MTK message types share the same format
+		// so we return the same struct for all types.
+		switch s.Talker {
+		case TypeMTK:
+			return newMTK(s)
+		}
 		switch s.Type {
 		case TypeRMC:
 			return newRMC(s)
