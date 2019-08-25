@@ -15,6 +15,8 @@ const (
 	RTK = "4"
 	// FRTK float RTK fix
 	FRTK = "5"
+	// EST estimated fix.
+	EST = "6"
 )
 
 // GGA is the Time, position, and fix related data of the receiver.
@@ -41,7 +43,7 @@ func newGGA(s BaseSentence) (GGA, error) {
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),
-		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS, PPS, RTK, FRTK),
+		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS, PPS, RTK, FRTK, EST),
 		NumSatellites: p.Int64(6, "number of satellites"),
 		HDOP:          p.Float64(7, "hdop"),
 		Altitude:      p.Float64(8, "altitude"),
