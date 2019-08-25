@@ -17,6 +17,7 @@ After this command *go-nmea* is ready to use. Its source will be in:
 At this moment, this library supports the following sentence types:
 
 - [RMC](http://aprs.gids.nl/nmea/#rmc) - Recommended Minimum Specific GPS/Transit data
+- [PMTK](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf) - Messages for setting and reading commands for MediaTek gps modules.
 - [GGA](http://aprs.gids.nl/nmea/#gga) - GPS Positioning System Fix Data
 - [GSA](http://aprs.gids.nl/nmea/#gsa) - GPS DOP and active satellites
 - [GSV](http://aprs.gids.nl/nmea/#gsv) - GPS Satellites in view
