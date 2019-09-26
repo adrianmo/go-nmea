@@ -12,17 +12,20 @@ var nearDistance = 0.001
 func TestParseLatLong(t *testing.T) {
 	var tests = []struct {
 		value    string
+		dir      string
 		expected float64
 		err      bool
 	}{
-		{"33\u00B0 12' 34.3423\"", 33.209540, false}, // dms
-		{"3345.1232 N", 33.752054, false},            // gps
-		{"151.234532", 151.234532, false},            // decimal
-		{"200.000", 0, true},                         // out of range
+		{"33\u00B0 12' 34.3423\"", "latitude", 33.209540, false}, // dms
+		{"3345.1232 N", "latitude", 33.752054, false},            // gps
+		{"151.234532", "longitude", 151.234532, false},           // decimal
+		{"100.000", "latitude", 0, true},                         // out of range
+		{"200.000", "longitude", 0, true},                        // out of range
+		{"151.234532", "lon", 151.234532, true},                  // wrong coordinate name
 	}
 	for _, tt := range tests {
 		t.Run(tt.value, func(t *testing.T) {
-			l, err := ParseLatLong(tt.value)
+			l, err := ParseLatLong(tt.value, tt.dir)
 			if tt.err {
 				assert.Error(t, err)
 			} else {

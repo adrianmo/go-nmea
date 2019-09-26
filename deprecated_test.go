@@ -112,8 +112,8 @@ var gnggatests = []struct {
 				Second:      15,
 				Millisecond: 0,
 			},
-			Latitude:      MustParseLatLong("6325.6138 N"),
-			Longitude:     MustParseLatLong("01021.4290 E"),
+			Latitude:      MustParseLatLong("6325.6138 N", "latitude"),
+			Longitude:     MustParseLatLong("01021.4290 E", "longitude"),
 			FixQuality:    "1",
 			NumSatellites: 8,
 			HDOP:          2.42,
@@ -318,8 +318,8 @@ var gpggatests = []struct {
 		raw:  "$GPGGA,034225.077,3356.4650,S,15124.5567,E,1,03,9.7,-25.0,M,21.0,M,,0000*51",
 		msg: GPGGA{
 			Time:          Time{true, 3, 42, 25, 77},
-			Latitude:      MustParseLatLong("3356.4650 S"),
-			Longitude:     MustParseLatLong("15124.5567 E"),
+			Latitude:      MustParseLatLong("3356.4650 S", "latitude"),
+			Longitude:     MustParseLatLong("15124.5567 E", "longitude"),
 			FixQuality:    GPS,
 			NumSatellites: 03,
 			HDOP:          9.7,
@@ -373,8 +373,8 @@ var gpglltests = []struct {
 		name: "good sentence",
 		raw:  "$GPGLL,3926.7952,N,12000.5947,W,022732,A,A*58",
 		msg: GPGLL{
-			Latitude:  MustParseLatLong("3926.7952 N"),
-			Longitude: MustParseLatLong("12000.5947 W"),
+			Latitude:  MustParseLatLong("3926.7952 N", "latitude"),
+			Longitude: MustParseLatLong("12000.5947 W", "longitude"),
 			Time: Time{
 				Valid:       true,
 				Hour:        2,

@@ -38,7 +38,7 @@ const (
 // - Decimal (e.g. 33.23454)
 // - GPS (e.g 15113.4322S)
 //
-func ParseLatLong(s string) (float64, error) {
+func ParseLatLong(s, context string) (float64, error) {
 	var l float64
 	if v, err := ParseDMS(s); err == nil {
 		l = v
@@ -49,8 +49,13 @@ func ParseLatLong(s string) (float64, error) {
 	} else {
 		return 0, fmt.Errorf("cannot parse [%s], unknown format", s)
 	}
-	if l < -180.0 || 180.0 < l {
-		return 0, errors.New("coordinate is not in range -180, 180")
+	if context != "latitude" && context != "longitude" {
+		return 0, fmt.Errorf("unknown coordinate name [%s]", context)
+	}
+	if context == "latitude" && (l < -90.0 || 90.0 < l) {
+		return 0, errors.New("latitude coordinate is not in range -90, 90")
+	} else if context == "longitude" && (l < -180.0 || 180.0 < l) {
+		return 0, errors.New("longitude coordinate is not in range -180, 180")
 	}
 	return l, nil
 }

@@ -2,8 +2,8 @@ package nmea
 
 // MustParseLatLong parses the supplied string into the LatLong.
 // It panics if an error is encountered
-func MustParseLatLong(s string) float64 {
-	l, err := ParseLatLong(s)
+func MustParseLatLong(s, c string) float64 {
+	l, err := ParseLatLong(s, c)
 	if err != nil {
 		panic(err)
 	}

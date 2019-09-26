@@ -16,8 +16,8 @@ var glltests = []struct {
 		name: "good sentence",
 		raw:  "$GPGLL,3926.7952,N,12000.5947,W,022732,A,A*58",
 		msg: GLL{
-			Latitude:  MustParseLatLong("3926.7952 N"),
-			Longitude: MustParseLatLong("12000.5947 W"),
+			Latitude:  MustParseLatLong("3926.7952 N", "latitude"),
+			Longitude: MustParseLatLong("12000.5947 W", "longitude"),
 			Time: Time{
 				Valid:       true,
 				Hour:        2,
