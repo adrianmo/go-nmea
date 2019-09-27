@@ -49,9 +49,6 @@ func ParseLatLong(s string) (float64, error) {
 	} else {
 		return 0, fmt.Errorf("cannot parse [%s], unknown format", s)
 	}
-	if l < -180.0 || 180.0 < l {
-		return 0, errors.New("coordinate is not in range -180, 180")
-	}
 	return l, nil
 }
 
