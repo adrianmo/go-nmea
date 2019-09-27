@@ -31,6 +31,20 @@ const (
 	West = "W"
 )
 
+// splitGPS splits the GPS format into a coordinate value and its direction symbol.
+func splitGPS(s string) (float64, string, error) {
+	parts := strings.Split(s, " ")
+	if len(parts) != 2 {
+		return 0, "", fmt.Errorf("invalid format: %s", s)
+	}
+	dir := parts[1]
+	value, err := strconv.ParseFloat(parts[0], 64)
+	if err != nil {
+		return 0, "", fmt.Errorf("parse error: %s", err.Error())
+	}
+	return value, dir, nil
+}
+
 // ParseLatLong parses the supplied string into the LatLong.
 //
 // Supported formats are:
@@ -49,8 +63,17 @@ func ParseLatLong(s string) (float64, error) {
 	} else {
 		return 0, fmt.Errorf("cannot parse [%s], unknown format", s)
 	}
-	if l < -180.0 || 180.0 < l {
-		return 0, errors.New("coordinate is not in range -180, 180")
+	_, dir, err := splitGPS(s)
+	if err != nil {
+		if l < -180.0 || 180.0 < l {
+			return 0, errors.New("coordinate is not in range -180, 180")
+		}
+	} else {
+		if (dir == North || dir == South) && (l < -90.0 || 90.0 < l) {
+			return 0, errors.New("latitude coordinate is not in range -90, 90")
+		} else if (dir == East || dir == West) && (l < -180.0 || 180.0 < l) {
+			return 0, errors.New("longitude coordinate is not in range -180, 180")
+		}
 	}
 	return l, nil
 }
@@ -58,14 +81,9 @@ func ParseLatLong(s string) (float64, error) {
 // ParseGPS parses a GPS/NMEA coordinate.
 // e.g 15113.4322S
 func ParseGPS(s string) (float64, error) {
-	parts := strings.Split(s, " ")
-	if len(parts) != 2 {
-		return 0, fmt.Errorf("invalid format: %s", s)
-	}
-	dir := parts[1]
-	value, err := strconv.ParseFloat(parts[0], 64)
+	value, dir, err := splitGPS(s)
 	if err != nil {
-		return 0, fmt.Errorf("parse error: %s", err.Error())
+		return 0, err
 	}
 
 	degrees := math.Floor(value / 100)
