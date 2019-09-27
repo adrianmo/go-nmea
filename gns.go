@@ -26,16 +26,18 @@ const (
 // GNS is standard GNSS sentance that combined multiple constellations
 type GNS struct {
 	BaseSentence
-	Time       Time
-	Latitude   float64
-	Longitude  float64
-	Mode       []string
-	SVs        int64
-	HDOP       float64
-	Altitude   float64
-	Separation float64
-	Age        float64
-	Station    int64
+	Time         Time
+	Latitude     float64
+	Longitude    float64
+	LatDirection string // Latitude direction.
+	LonDirection string // Longitude direction.
+	Mode         []string
+	SVs          int64
+	HDOP         float64
+	Altitude     float64
+	Separation   float64
+	Age          float64
+	Station      int64
 }
 
 // newGNS Constructor
@@ -47,6 +49,8 @@ func newGNS(s BaseSentence) (GNS, error) {
 		Time:         p.Time(0, "time"),
 		Latitude:     p.LatLong(1, 2, "latitude"),
 		Longitude:    p.LatLong(3, 4, "longitude"),
+		LatDirection: p.EnumString(2, "latitude direction", North, South),
+		LonDirection: p.EnumString(4, "longitude direction", East, West),
 		Mode:         p.EnumChars(5, "mode", NoFixGNS, AutonomousGNS, DifferentialGNS, PreciseGNS, RealTimeKinematicGNS, FloatRTKGNS, EstimatedGNS, ManualGNS, SimulatorGNS),
 		SVs:          p.Int64(6, "SVs"),
 		HDOP:         p.Float64(7, "HDOP"),

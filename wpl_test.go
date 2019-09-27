@@ -16,9 +16,11 @@ var wpltests = []struct {
 		name: "good sentence",
 		raw:  "$IIWPL,5503.4530,N,01037.2742,E,411*6F",
 		msg: WPL{
-			Latitude:  MustParseLatLong("5503.4530 N"),
-			Longitude: MustParseLatLong("01037.2742 E"),
-			Ident:     "411",
+			Latitude:     MustParseLatLong("5503.4530 N"),
+			Longitude:    MustParseLatLong("01037.2742 E"),
+			LatDirection: "N",
+			LonDirection: "E",
+			Ident:        "411",
 		},
 	},
 	{
@@ -35,9 +37,11 @@ var wpltests = []struct {
 		name: "good sentence",
 		raw:  "$IIWPL,3356.4650,S,15124.5567,E,411*73",
 		msg: WPL{
-			Latitude:  MustParseLatLong("3356.4650 S"),
-			Longitude: MustParseLatLong("15124.5567 E"),
-			Ident:     "411",
+			Latitude:     MustParseLatLong("3356.4650 S"),
+			Longitude:    MustParseLatLong("15124.5567 E"),
+			LatDirection: "S",
+			LonDirection: "E",
+			Ident:        "411",
 		},
 	},
 	{

@@ -25,6 +25,8 @@ type GGA struct {
 	Time          Time    // Time of fix.
 	Latitude      float64 // Latitude.
 	Longitude     float64 // Longitude.
+	LatDirection  string  // Latitude direction.
+	LonDirection  string  // Longitude direction.
 	FixQuality    string  // Quality of fix.
 	NumSatellites int64   // Number of satellites in use.
 	HDOP          float64 // Horizontal dilution of precision.
@@ -43,6 +45,8 @@ func newGGA(s BaseSentence) (GGA, error) {
 		Time:          p.Time(0, "time"),
 		Latitude:      p.LatLong(1, 2, "latitude"),
 		Longitude:     p.LatLong(3, 4, "longitude"),
+		LatDirection:  p.EnumString(2, "latitude direction", North, South),
+		LonDirection:  p.EnumString(4, "longitude direction", East, West),
 		FixQuality:    p.EnumString(5, "fix quality", Invalid, GPS, DGPS, PPS, RTK, FRTK, EST),
 		NumSatellites: p.Int64(6, "number of satellites"),
 		HDOP:          p.Float64(7, "hdop"),

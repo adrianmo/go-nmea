@@ -13,14 +13,16 @@ const (
 // http://aprs.gids.nl/nmea/#rmc
 type RMC struct {
 	BaseSentence
-	Time      Time    // Time Stamp
-	Validity  string  // validity - A-ok, V-invalid
-	Latitude  float64 // Latitude
-	Longitude float64 // Longitude
-	Speed     float64 // Speed in knots
-	Course    float64 // True course
-	Date      Date    // Date
-	Variation float64 // Magnetic variation
+	Time         Time    // Time Stamp
+	Validity     string  // validity - A-ok, V-invalid
+	Latitude     float64 // Latitude
+	Longitude    float64 // Longitude
+	LatDirection string  // Latitude direction.
+	LonDirection string  // Longitude direction.
+	Speed        float64 // Speed in knots
+	Course       float64 // True course
+	Date         Date    // Date
+	Variation    float64 // Magnetic variation
 }
 
 // newRMC constructor
@@ -33,6 +35,8 @@ func newRMC(s BaseSentence) (RMC, error) {
 		Validity:     p.EnumString(1, "validity", ValidRMC, InvalidRMC),
 		Latitude:     p.LatLong(2, 3, "latitude"),
 		Longitude:    p.LatLong(4, 5, "longitude"),
+		LatDirection: p.EnumString(3, "latitude direction", North, South),
+		LonDirection: p.EnumString(5, "longitude direction", East, West),
 		Speed:        p.Float64(6, "speed"),
 		Course:       p.Float64(7, "course"),
 		Date:         p.Date(8, "date"),
