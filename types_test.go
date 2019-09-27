@@ -18,7 +18,6 @@ func TestParseLatLong(t *testing.T) {
 		{"33\u00B0 12' 34.3423\"", 33.209540, false}, // dms
 		{"3345.1232 N", 33.752054, false},            // gps
 		{"151.234532", 151.234532, false},            // decimal
-		{"200.000", 0, true},                         // out of range
 	}
 	for _, tt := range tests {
 		t.Run(tt.value, func(t *testing.T) {
