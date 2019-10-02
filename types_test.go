@@ -219,3 +219,33 @@ func TestDateString(t *testing.T) {
 		t.Fatalf("got %s expected %s", s, expected)
 	}
 }
+
+func TestLatDir(t *testing.T) {
+	tests := []struct {
+		value    float64
+		expected string
+	}{
+		{50.0, "N"},
+		{-50.0, "S"},
+	}
+	for _, tt := range tests {
+		if s := LatDir(tt.value); s != tt.expected {
+			t.Fatalf("got %s expected %s", s, tt.expected)
+		}
+	}
+}
+
+func TestLonDir(t *testing.T) {
+	tests := []struct {
+		value    float64
+		expected string
+	}{
+		{100.0, "W"},
+		{-100.0, "E"},
+	}
+	for _, tt := range tests {
+		if s := LonDir(tt.value); s != tt.expected {
+			t.Fatalf("got %s expected %s", s, tt.expected)
+		}
+	}
+}

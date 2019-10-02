@@ -243,3 +243,19 @@ func ParseDate(ddmmyy string) (Date, error) {
 	}
 	return Date{true, dd, mm, yy}, nil
 }
+
+// LatDir returns the latitude direction symbol
+func LatDir(l float64) string {
+	if l < 0.0 {
+		return South
+	}
+	return North
+}
+
+// LonDir returns the longitude direction symbol
+func LonDir(l float64) string {
+	if l < 0.0 {
+		return East
+	}
+	return West
+}
