@@ -31,6 +31,7 @@ At this moment, this library supports the following sentence types:
 - [VDM/VDO](http://catb.org/gpsd/AIVDM.html) - Encapsulated binary payload
 - [WPL](http://aprs.gids.nl/nmea/#wpl) - Waypoint location
 - [RTE](http://aprs.gids.nl/nmea/#rte) - Route
+- [VHW](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf) - Water Speed and Heading
 
 ## Example
 

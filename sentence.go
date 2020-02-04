@@ -150,6 +150,8 @@ func Parse(raw string) (Sentence, error) {
 			return newWPL(s)
 		case TypeRTE:
 			return newRTE(s)
+		case TypeVHW:
+			return newVHW(s)
 		}
 	}
 	if strings.HasPrefix(s.Raw, SentenceStartEncapsulated) {
