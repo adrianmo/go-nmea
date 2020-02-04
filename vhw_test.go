@@ -38,9 +38,9 @@ func TestVHW(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				wpl := m.(VHW)
-				wpl.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, wpl)
+				vhw := m.(VHW)
+				vhw.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, vhw)
 			}
 		})
 	}
