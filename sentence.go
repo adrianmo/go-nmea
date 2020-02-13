@@ -75,7 +75,7 @@ func parseSentence(raw string) (BaseSentence, error) {
 		fieldsRaw   = raw[startIndex+1 : sumSepIndex]
 		fields      = strings.Split(fieldsRaw, FieldSep)
 		checksumRaw = strings.ToUpper(raw[sumSepIndex+1:])
-		checksum    = xorChecksum(fieldsRaw)
+		checksum    = Checksum(fieldsRaw)
 	)
 	// Validate the checksum
 	if checksum != checksumRaw {
@@ -96,6 +96,9 @@ func parseSentence(raw string) (BaseSentence, error) {
 
 // parsePrefix takes the first field and splits it into a talker id and data type.
 func parsePrefix(s string) (string, string) {
+	if strings.HasPrefix(s, "PMTK") {
+		return "PMTK", s[4:]
+	}
 	if strings.HasPrefix(s, "P") {
 		return "P", s[1:]
 	}
@@ -105,9 +108,9 @@ func parsePrefix(s string) (string, string) {
 	return s[:2], s[2:]
 }
 
-// xor all the bytes in a string an return it
+// Checksum xor all the bytes in a string an return it
 // as an uppercase hex string
-func xorChecksum(s string) string {
+func Checksum(s string) string {
 	var checksum uint8
 	for i := 0; i < len(s); i++ {
 		checksum ^= s[i]
@@ -122,6 +125,12 @@ func Parse(raw string) (Sentence, error) {
 		return nil, err
 	}
 	if strings.HasPrefix(s.Raw, SentenceStart) {
+		// MTK message types share the same format
+		// so we return the same struct for all types.
+		switch s.Talker {
+		case TypeMTK:
+			return newMTK(s)
+		}
 		switch s.Type {
 		case TypeRMC:
 			return newRMC(s)
@@ -149,6 +158,8 @@ func Parse(raw string) (Sentence, error) {
 			return newWPL(s)
 		case TypeRTE:
 			return newRTE(s)
+		case TypeVHW:
+			return newVHW(s)
 		}
 	}
 	if strings.HasPrefix(s.Raw, SentenceStartEncapsulated) {
