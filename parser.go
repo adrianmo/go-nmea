@@ -178,6 +178,15 @@ func (p *parser) LatLong(i, j int, context string) float64 {
 	if err != nil {
 		p.SetErr(context, err.Error())
 	}
+
+	if (b == North || b == South) && (v < -90.0 || 90.0 < v) {
+		p.SetErr(context, "latitude is not in range (-90, 90)")
+		return 0
+	} else if (b == West || b == East) && (v < -180.0 || 180.0 < v) {
+		p.SetErr(context, "longitude is not in range (-180, 180)")
+		return 0
+	}
+
 	return v
 }
 

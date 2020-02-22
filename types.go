@@ -49,9 +49,6 @@ func ParseLatLong(s string) (float64, error) {
 	} else {
 		return 0, fmt.Errorf("cannot parse [%s], unknown format", s)
 	}
-	if l < -180.0 || 180.0 < l {
-		return 0, errors.New("coordinate is not in range -180, 180")
-	}
 	return l, nil
 }
 
@@ -245,4 +242,20 @@ func ParseDate(ddmmyy string) (Date, error) {
 		return Date{}, errors.New(ddmmyy)
 	}
 	return Date{true, dd, mm, yy}, nil
+}
+
+// LatDir returns the latitude direction symbol
+func LatDir(l float64) string {
+	if l < 0.0 {
+		return South
+	}
+	return North
+}
+
+// LonDir returns the longitude direction symbol
+func LonDir(l float64) string {
+	if l < 0.0 {
+		return East
+	}
+	return West
 }

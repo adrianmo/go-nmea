@@ -259,6 +259,42 @@ var parsertests = []struct {
 			return p.Date(0, "context")
 		},
 	},
+	{
+		name:     "LatLong",
+		fields:   []string{"5000.0000", "N"},
+		expected: 50.0,
+		parse: func(p *parser) interface{} {
+			return p.LatLong(0, 1, "context")
+		},
+	},
+	{
+		name:     "LatLong - latitude out of range",
+		fields:   []string{"9100.0000", "N"},
+		expected: 0.0,
+		hasErr:   true,
+		parse: func(p *parser) interface{} {
+			return p.LatLong(0, 1, "context")
+		},
+	},
+	{
+		name:     "LatLong - longitude out of range",
+		fields:   []string{"18100.0000", "W"},
+		expected: 0.0,
+		hasErr:   true,
+		parse: func(p *parser) interface{} {
+			return p.LatLong(0, 1, "context")
+		},
+	},
+	{
+		name:     "LatLong with existing error",
+		fields:   []string{"5000.0000", "W"},
+		expected: 0.0,
+		hasErr:   true,
+		parse: func(p *parser) interface{} {
+			p.SetErr("context", "value")
+			return p.LatLong(0, 1, "context")
+		},
+	},
 }
 
 func TestParser(t *testing.T) {
