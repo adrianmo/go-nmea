@@ -22,6 +22,20 @@ var gsatests = []struct {
 			PDOP:    3.1,
 			HDOP:    2,
 			VDOP:    2.4,
+			GSID:    "1",
+		},
+	},
+	{
+		name: "good sentence of GNGSA",
+		raw:  "$GNGSA,A,3,01,03,07,17,22,28,30,,,,,,1.8,0.9,1.5,1*3F",
+		msg: GSA{
+			Mode:    "A",
+			FixType: "3",
+			SV:      []string{"01", "03", "07", "17", "22", "28", "30"},
+			PDOP:    1.8,
+			HDOP:    0.9,
+			VDOP:    1.5,
+			GSID:    "1",
 		},
 	},
 	{
