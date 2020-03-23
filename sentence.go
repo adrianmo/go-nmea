@@ -152,6 +152,12 @@ func Parse(raw string) (Sentence, error) {
 			return newRTE(s)
 		case TypeVHW:
 			return newVHW(s)
+		case TypeDPT:
+			return newDPT(s)
+		case TypeDBT:
+			return newDBT(s)
+		case TypeDBS:
+			return newDBS(s)
 		}
 	}
 	if strings.HasPrefix(s.Raw, SentenceStartEncapsulated) {
