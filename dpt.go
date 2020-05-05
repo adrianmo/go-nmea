@@ -22,6 +22,6 @@ func newDPT(s BaseSentence) (DPT, error) {
 		BaseSentence: s,
 		Depth:        p.Float64(0, "depth"),
 		Offset:       p.Float64(1, "offset"),
-		RangeScale:   p.Float64(2, "RangeScale"),
+		RangeScale:   p.Float64(2, "range scale"),
 	}, p.Err()
 }
