@@ -9,8 +9,9 @@ const (
 // https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water
 type DPT struct {
 	BaseSentence
-	Depth  float64
-	Offset float64
+	Depth      float64
+	Offset     float64
+	RangeScale float64
 }
 
 // newDPT constructor
@@ -21,5 +22,6 @@ func newDPT(s BaseSentence) (DPT, error) {
 		BaseSentence: s,
 		Depth:        p.Float64(0, "depth"),
 		Offset:       p.Float64(1, "offset"),
+		RangeScale:   p.Float64(2, "RangeScale"),
 	}, p.Err()
 }

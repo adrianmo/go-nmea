@@ -16,8 +16,18 @@ var dpttests = []struct {
 		name: "good sentence",
 		raw:  "$SDDPT,0.5,0.5,*7B",
 		msg: DPT{
-			Depth:  MustParseDecimal("0.5"),
-			Offset: MustParseDecimal("0.5"),
+			Depth:      MustParseDecimal("0.5"),
+			Offset:     MustParseDecimal("0.5"),
+			RangeScale: MustParseDecimal("0"),
+		},
+	},
+	{
+		name: "good sentence with scale",
+		raw:  "$SDDPT,0.5,0.5,0.1*54",
+		msg: DPT{
+			Depth:      MustParseDecimal("0.5"),
+			Offset:     MustParseDecimal("0.5"),
+			RangeScale: MustParseDecimal("0.1"),
 		},
 	},
 	{
