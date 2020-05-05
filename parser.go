@@ -5,11 +5,16 @@ import (
 	"strconv"
 )
 
-// parser provides a simple way of accessing and parsing
+// Parser provides a simple way of accessing and parsing
 // sentence fields
 type parser struct {
 	BaseSentence
 	err error
+}
+
+// NewParser constructor
+func NewParser(s BaseSentence) *parser {
+	return &parser{BaseSentence: s}
 }
 
 // newParser constructor
