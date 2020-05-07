@@ -137,3 +137,16 @@ func TestWillReturnErrorOnDuplicateRegistration(t *testing.T) {
 	})
 	assert.Error(t, err)
 }
+
+func TestWillPanicOnDuplicateMustRegister(t *testing.T) {
+	MustRegisterParser("AAA", func(s BaseSentence) (Sentence, error) {
+		return BaseSentence{}, nil
+	})
+
+	assert.PanicsWithError(t, "nmea: parser for prefix 'AAA' already exists", func() {
+		MustRegisterParser("AAA", func(s BaseSentence) (Sentence, error) {
+			return BaseSentence{}, nil
+		})
+	})
+
+}
