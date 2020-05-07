@@ -23,7 +23,7 @@ type RTE struct {
 
 // newRTE constructor
 func newRTE(s BaseSentence) (RTE, error) {
-	p := newParser(s)
+	p := NewParser(s)
 	p.AssertType(TypeRTE)
 	return RTE{
 		BaseSentence:              s,

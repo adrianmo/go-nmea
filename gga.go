@@ -36,7 +36,7 @@ type GGA struct {
 
 // newGGA constructor
 func newGGA(s BaseSentence) (GGA, error) {
-	p := newParser(s)
+	p := NewParser(s)
 	p.AssertType(TypeGGA)
 	return GGA{
 		BaseSentence:  s,

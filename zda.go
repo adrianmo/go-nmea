@@ -19,7 +19,7 @@ type ZDA struct {
 
 // newZDA constructor
 func newZDA(s BaseSentence) (ZDA, error) {
-	p := newParser(s)
+	p := NewParser(s)
 	p.AssertType(TypeZDA)
 	return ZDA{
 		BaseSentence:  s,

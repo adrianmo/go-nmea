@@ -25,7 +25,7 @@ type GSVInfo struct {
 
 // newGSV constructor
 func newGSV(s BaseSentence) (GSV, error) {
-	p := newParser(s)
+	p := NewParser(s)
 	p.AssertType(TypeGSV)
 	m := GSV{
 		BaseSentence:    s,

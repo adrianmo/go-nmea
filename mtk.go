@@ -14,7 +14,7 @@ type MTK struct {
 
 // newMTK constructor
 func newMTK(s BaseSentence) (MTK, error) {
-	p := newParser(s)
+	p := NewParser(s)
 	cmd := p.Int64(0, "command")
 	flag := p.Int64(1, "flag")
 	return MTK{

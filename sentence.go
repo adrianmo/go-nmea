@@ -20,8 +20,8 @@ const (
 )
 
 var (
-	customParsers          = map[string]parserCallbackType{}
-	defaultSentenceParsers = map[string]parserCallbackType{
+	customParsers          = map[string]ParserCallback{}
+	defaultSentenceParsers = map[string]ParserCallback{
 		TypeRMC: func(s BaseSentence) (Sentence, error) {
 			return newRMC(s)
 		},
@@ -76,7 +76,8 @@ var (
 	}
 )
 
-type parserCallbackType func(BaseSentence) (Sentence, error)
+// ParserCallback callback used to parse specific sentence variants
+type ParserCallback func(BaseSentence) (Sentence, error)
 
 // Sentence interface for all NMEA sentence
 type Sentence interface {
@@ -170,14 +171,14 @@ func Checksum(s string) string {
 }
 
 // MustRegisterParser register a custom parser or panic
-func MustRegisterParser(t string, parser func(BaseSentence) (Sentence, error)) {
+func MustRegisterParser(t string, parser ParserCallback) {
 	if err := RegisterParser(t, parser); err != nil {
 		panic(err)
 	}
 }
 
 // RegisterParser register a custom parser
-func RegisterParser(t string, parser func(BaseSentence) (Sentence, error)) error {
+func RegisterParser(t string, parser ParserCallback) error {
 	if _, ok := customParsers[t]; ok {
 		return fmt.Errorf("nmea: parser for prefix '%s' already exists", t)
 	}
