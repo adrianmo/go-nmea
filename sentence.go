@@ -64,6 +64,15 @@ var (
 		TypeVHW: func(s BaseSentence) (Sentence, error) {
 			return newVHW(s)
 		},
+		TypeDBT: func(s BaseSentence) (Sentence, error) {
+			return newDBT(s)
+		},
+		TypeDBS: func(s BaseSentence) (Sentence, error) {
+			return newDBS(s)
+		},
+		TypeDPT: func(s BaseSentence) (Sentence, error) {
+			return newDPT(s)
+		},
 	}
 )
 

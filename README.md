@@ -32,6 +32,9 @@ At this moment, this library supports the following sentence types:
 - [WPL](http://aprs.gids.nl/nmea/#wpl) - Waypoint location
 - [RTE](http://aprs.gids.nl/nmea/#rte) - Route
 - [VHW](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf) - Water Speed and Heading
+- [DPT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water) - Depth of Water
+- [DBS](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface) - Depth Below Surface
+- [DBT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer) - Depth below transducer
 
 ## Example
 
