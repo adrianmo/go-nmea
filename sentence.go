@@ -20,8 +20,8 @@ const (
 )
 
 var (
-	customParsers          = map[string]ParserCallback{}
-	defaultSentenceParsers = map[string]ParserCallback{
+	customParsers  = map[string]ParserFunc{}
+	defaultParsers = map[string]ParserFunc{
 		TypeRMC: func(s BaseSentence) (Sentence, error) {
 			return newRMC(s)
 		},
@@ -76,8 +76,8 @@ var (
 	}
 )
 
-// ParserCallback callback used to parse specific sentence variants
-type ParserCallback func(BaseSentence) (Sentence, error)
+// ParserFunc callback used to parse specific sentence variants
+type ParserFunc func(BaseSentence) (Sentence, error)
 
 // Sentence interface for all NMEA sentence
 type Sentence interface {
@@ -171,19 +171,19 @@ func Checksum(s string) string {
 }
 
 // MustRegisterParser register a custom parser or panic
-func MustRegisterParser(t string, parser ParserCallback) {
-	if err := RegisterParser(t, parser); err != nil {
+func MustRegisterParser(sentenceType string, parser ParserFunc) {
+	if err := RegisterParser(sentenceType, parser); err != nil {
 		panic(err)
 	}
 }
 
 // RegisterParser register a custom parser
-func RegisterParser(t string, parser ParserCallback) error {
-	if _, ok := customParsers[t]; ok {
-		return fmt.Errorf("nmea: parser for prefix '%s' already exists", t)
+func RegisterParser(sentenceType string, parser ParserFunc) error {
+	if _, ok := customParsers[sentenceType]; ok {
+		return fmt.Errorf("nmea: parser for sentence type '%q' already exists", sentenceType)
 	}
 
-	customParsers[t] = parser
+	customParsers[sentenceType] = parser
 	return nil
 }
 
@@ -195,8 +195,8 @@ func Parse(raw string) (Sentence, error) {
 	}
 
 	// Custom parser allow overriding of existing parsers
-	if customParserCallback, ok := customParsers[s.Type]; ok {
-		return customParserCallback(s)
+	if parser, ok := customParsers[s.Type]; ok {
+		return parser(s)
 	}
 
 	if strings.HasPrefix(s.Raw, SentenceStart) {
@@ -207,7 +207,7 @@ func Parse(raw string) (Sentence, error) {
 			return newMTK(s)
 		}
 
-		if parserCallback, ok := defaultSentenceParsers[s.Type]; ok {
+		if parserCallback, ok := defaultParsers[s.Type]; ok {
 			return parserCallback(s)
 		}
 	}
