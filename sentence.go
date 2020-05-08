@@ -3,6 +3,7 @@ package nmea
 import (
 	"fmt"
 	"strings"
+	"sync"
 )
 
 const (
@@ -20,8 +21,9 @@ const (
 )
 
 var (
-	customParsers  = map[string]ParserFunc{}
-	defaultParsers = map[string]ParserFunc{
+	customParsersMu = &sync.Mutex{}
+	customParsers   = map[string]ParserFunc{}
+	defaultParsers  = map[string]ParserFunc{
 		TypeRMC: func(s BaseSentence) (Sentence, error) {
 			return newRMC(s)
 		},
@@ -179,6 +181,9 @@ func MustRegisterParser(sentenceType string, parser ParserFunc) {
 
 // RegisterParser register a custom parser
 func RegisterParser(sentenceType string, parser ParserFunc) error {
+	customParsersMu.Lock()
+	defer customParsersMu.Unlock()
+
 	if _, ok := customParsers[sentenceType]; ok {
 		return fmt.Errorf("nmea: parser for sentence type '%q' already exists", sentenceType)
 	}
