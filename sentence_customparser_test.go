@@ -143,7 +143,7 @@ func TestWillPanicOnDuplicateMustRegister(t *testing.T) {
 		return BaseSentence{}, nil
 	})
 
-	assert.PanicsWithError(t, "nmea: parser for prefix 'AAA' already exists", func() {
+	assert.PanicsWithError(t, "nmea: parser for sentence type '\"AAA\"' already exists", func() {
 		MustRegisterParser("AAA", func(s BaseSentence) (Sentence, error) {
 			return BaseSentence{}, nil
 		})
