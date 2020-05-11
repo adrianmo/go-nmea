@@ -16,7 +16,7 @@ type DBS struct {
 
 // newDBS constructor
 func newDBS(s BaseSentence) (DBS, error) {
-	p := newParser(s)
+	p := NewParser(s)
 	p.AssertType(TypeDBS)
 	return DBS{
 		BaseSentence: s,

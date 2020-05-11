@@ -11,13 +11,13 @@ var parsertests = []struct {
 	fields   []string
 	expected interface{}
 	hasErr   bool
-	parse    func(p *parser) interface{}
+	parse    func(p *Parser) interface{}
 }{
 	{
 		name:   "Bad Type",
 		fields: []string{},
 		hasErr: true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			p.AssertType("WRONG_TYPE")
 			return nil
 		},
@@ -26,7 +26,7 @@ var parsertests = []struct {
 		name:     "String",
 		fields:   []string{"foo", "bar"},
 		expected: "bar",
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.String(1, "")
 		},
 	},
@@ -35,7 +35,7 @@ var parsertests = []struct {
 		fields:   []string{"wot"},
 		expected: "",
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.String(5, "thing")
 		},
 	},
@@ -43,7 +43,7 @@ var parsertests = []struct {
 		name:     "ListString",
 		fields:   []string{"wot", "foo", "bar"},
 		expected: []string{"foo", "bar"},
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.ListString(1, "thing")
 		},
 	},
@@ -52,7 +52,7 @@ var parsertests = []struct {
 		fields:   []string{"wot"},
 		expected: []string{},
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.ListString(10, "thing")
 		},
 	},
@@ -60,7 +60,7 @@ var parsertests = []struct {
 		name:     "String with existing error",
 		expected: "",
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			p.SetErr("context", "value")
 			return p.String(123, "blah")
 		},
@@ -69,7 +69,7 @@ var parsertests = []struct {
 		name:     "EnumString",
 		fields:   []string{"a", "b", "c"},
 		expected: "b",
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.EnumString(1, "context", "b", "d")
 		},
 	},
@@ -78,7 +78,7 @@ var parsertests = []struct {
 		fields:   []string{"a", "b", "c"},
 		expected: "",
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.EnumString(1, "context", "x", "y")
 		},
 	},
@@ -87,7 +87,7 @@ var parsertests = []struct {
 		fields:   []string{"a", "b", "c"},
 		expected: "",
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			p.SetErr("context", "value")
 			return p.EnumString(1, "context", "a", "b")
 		},
@@ -96,7 +96,7 @@ var parsertests = []struct {
 		name:     "EnumChars",
 		fields:   []string{"AA", "AB", "BA", "BB"},
 		expected: []string{"A", "B"},
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.EnumChars(1, "context", "A", "B")
 		},
 	},
@@ -105,7 +105,7 @@ var parsertests = []struct {
 		fields:   []string{"a", "AB", "c"},
 		expected: []string{},
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.EnumChars(1, "context", "X", "Y")
 		},
 	},
@@ -114,7 +114,7 @@ var parsertests = []struct {
 		fields:   []string{"a", "AB", "c"},
 		expected: []string{},
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			p.SetErr("context", "value")
 			return p.EnumChars(1, "context", "A", "B")
 		},
@@ -123,7 +123,7 @@ var parsertests = []struct {
 		name:     "Int64",
 		fields:   []string{"123"},
 		expected: int64(123),
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Int64(0, "context")
 		},
 	},
@@ -131,7 +131,7 @@ var parsertests = []struct {
 		name:     "Int64 empty field is zero",
 		fields:   []string{""},
 		expected: int64(0),
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Int64(0, "context")
 		},
 	},
@@ -140,7 +140,7 @@ var parsertests = []struct {
 		fields:   []string{"abc"},
 		expected: int64(0),
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Int64(0, "context")
 		},
 	},
@@ -149,7 +149,7 @@ var parsertests = []struct {
 		fields:   []string{"123"},
 		expected: int64(0),
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			p.SetErr("context", "value")
 			return p.Int64(0, "context")
 		},
@@ -158,7 +158,7 @@ var parsertests = []struct {
 		name:     "Float64",
 		fields:   []string{"123.123"},
 		expected: float64(123.123),
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Float64(0, "context")
 		},
 	},
@@ -166,7 +166,7 @@ var parsertests = []struct {
 		name:     "Float64 empty field is zero",
 		fields:   []string{""},
 		expected: float64(0),
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Float64(0, "context")
 		},
 	},
@@ -175,7 +175,7 @@ var parsertests = []struct {
 		fields:   []string{"abc"},
 		expected: float64(0),
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Float64(0, "context")
 		},
 	},
@@ -184,7 +184,7 @@ var parsertests = []struct {
 		fields:   []string{"123.123"},
 		expected: float64(0),
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			p.SetErr("context", "value")
 			return p.Float64(0, "context")
 		},
@@ -193,7 +193,7 @@ var parsertests = []struct {
 		name:     "Time",
 		fields:   []string{"123456"},
 		expected: Time{true, 12, 34, 56, 0},
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Time(0, "context")
 		},
 	},
@@ -201,7 +201,7 @@ var parsertests = []struct {
 		name:     "Time empty field is zero",
 		fields:   []string{""},
 		expected: Time{},
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Time(0, "context")
 		},
 	},
@@ -210,7 +210,7 @@ var parsertests = []struct {
 		fields:   []string{"123456"},
 		expected: Time{},
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			p.SetErr("context", "value")
 			return p.Time(0, "context")
 		},
@@ -220,7 +220,7 @@ var parsertests = []struct {
 		fields:   []string{"wrong"},
 		expected: Time{},
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Time(0, "context")
 		},
 	},
@@ -228,7 +228,7 @@ var parsertests = []struct {
 		name:     "Date",
 		fields:   []string{"010203"},
 		expected: Date{true, 1, 2, 3},
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Date(0, "context")
 		},
 	},
@@ -236,7 +236,7 @@ var parsertests = []struct {
 		name:     "Date empty field is zero",
 		fields:   []string{""},
 		expected: Date{},
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Date(0, "context")
 		},
 	},
@@ -245,7 +245,7 @@ var parsertests = []struct {
 		fields:   []string{"Hello"},
 		expected: Date{},
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.Date(0, "context")
 		},
 	},
@@ -254,7 +254,7 @@ var parsertests = []struct {
 		fields:   []string{"010203"},
 		expected: Date{},
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			p.SetErr("context", "value")
 			return p.Date(0, "context")
 		},
@@ -263,7 +263,7 @@ var parsertests = []struct {
 		name:     "LatLong",
 		fields:   []string{"5000.0000", "N"},
 		expected: 50.0,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.LatLong(0, 1, "context")
 		},
 	},
@@ -272,7 +272,7 @@ var parsertests = []struct {
 		fields:   []string{"9100.0000", "N"},
 		expected: 0.0,
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.LatLong(0, 1, "context")
 		},
 	},
@@ -281,7 +281,7 @@ var parsertests = []struct {
 		fields:   []string{"18100.0000", "W"},
 		expected: 0.0,
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			return p.LatLong(0, 1, "context")
 		},
 	},
@@ -290,7 +290,7 @@ var parsertests = []struct {
 		fields:   []string{"5000.0000", "W"},
 		expected: 0.0,
 		hasErr:   true,
-		parse: func(p *parser) interface{} {
+		parse: func(p *Parser) interface{} {
 			p.SetErr("context", "value")
 			return p.LatLong(0, 1, "context")
 		},
@@ -300,7 +300,7 @@ var parsertests = []struct {
 func TestParser(t *testing.T) {
 	for _, tt := range parsertests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := newParser(BaseSentence{
+			p := NewParser(BaseSentence{
 				Talker: "talker",
 				Type:   "type",
 				Fields: tt.fields,

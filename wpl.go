@@ -15,7 +15,7 @@ type WPL struct {
 
 // newWPL constructor
 func newWPL(s BaseSentence) (WPL, error) {
-	p := newParser(s)
+	p := NewParser(s)
 	p.AssertType(TypeWPL)
 	return WPL{
 		BaseSentence: s,

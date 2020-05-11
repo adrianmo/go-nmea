@@ -88,6 +88,79 @@ Date: 13/06/94
 Variation: -4.200000
 ```
 
+## Example custom message parsing
+
+If you need to parse a message not supported by the library you can implement your own message parsing.
+The following example implements a parser for the hypothetical XYZ NMEA sentence type.
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/adrianmo/go-nmea"
+)
+
+// A type to hold the parsed record
+type XYZType struct {
+	nmea.BaseSentence
+	Time    nmea.Time
+	Counter int64
+	Label   string
+	Value   float64
+}
+
+func main() {
+	// Do this once it will error if you register the same type mutiple times
+	err := nmea.RegisterParser("XYZ", func(s nmea.BaseSentence) (nmea.Sentence, error) {
+		// This example uses the package builtin parsing helpers
+		// you can implement your own parsing logic also
+		p := nmea.NewParser(s)
+		return XYZType{
+			BaseSentence: s,
+			Time:         p.Time(0, "time"),
+			Label:        p.String(1, "label"),
+			Counter:      p.Int64(2, "counter"),
+			Value:        p.Float64(3, "value"),
+		}, p.Err()
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	sentence := "$00XYZ,220516,A,23,5133.82,W*42"
+	s, err := nmea.Parse(sentence)
+	if err != nil {
+		panic(err)
+	}
+
+	m, ok := s.(XYZType)
+	if !ok {
+		panic("Could not parse type XYZ")
+	}
+
+	fmt.Printf("Raw sentence: %v\n", m)
+	fmt.Printf("Time: %s\n", m.Time)
+	fmt.Printf("Label: %s\n", m.Label)
+	fmt.Printf("Counter: %d\n", m.Counter)
+	fmt.Printf("Value: %f\n", m.Value)
+}
+```
+
+Output:
+
+```
+$ go run main/main.go
+
+Raw sentence: $AAXYZ,220516,A,23,5133.82,W*42
+Time: 22:05:16.0000
+Label: A
+Counter: 23
+Value: 5133.820000
+```
+
 ## Contributions
 
 Please, feel free to implement support for new sentences, fix bugs, refactor code, etc. and send a pull-request to update the library.

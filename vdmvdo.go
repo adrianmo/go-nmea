@@ -22,7 +22,7 @@ type VDMVDO struct {
 
 // newVDMVDO constructor
 func newVDMVDO(s BaseSentence) (VDMVDO, error) {
-	p := newParser(s)
+	p := NewParser(s)
 	m := VDMVDO{
 		BaseSentence:   s,
 		NumFragments:   p.Int64(0, "number of fragments"),

@@ -5,40 +5,40 @@ import (
 	"strconv"
 )
 
-// parser provides a simple way of accessing and parsing
+// Parser provides a simple way of accessing and parsing
 // sentence fields
-type parser struct {
+type Parser struct {
 	BaseSentence
 	err error
 }
 
-// newParser constructor
-func newParser(s BaseSentence) *parser {
-	return &parser{BaseSentence: s}
+// NewParser constructor
+func NewParser(s BaseSentence) *Parser {
+	return &Parser{BaseSentence: s}
 }
 
 // AssertType makes sure the sentence's type matches the provided one.
-func (p *parser) AssertType(typ string) {
+func (p *Parser) AssertType(typ string) {
 	if p.Type != typ {
 		p.SetErr("type", p.Type)
 	}
 }
 
 // Err returns the first error encountered during the parser's usage.
-func (p *parser) Err() error {
+func (p *Parser) Err() error {
 	return p.err
 }
 
 // SetErr assigns an error. Calling this method has no
 // effect if there is already an error.
-func (p *parser) SetErr(context, value string) {
+func (p *Parser) SetErr(context, value string) {
 	if p.err == nil {
 		p.err = fmt.Errorf("nmea: %s invalid %s: %s", p.Prefix(), context, value)
 	}
 }
 
 // String returns the field value at the specified index.
-func (p *parser) String(i int, context string) string {
+func (p *Parser) String(i int, context string) string {
 	if p.err != nil {
 		return ""
 	}
@@ -51,7 +51,7 @@ func (p *parser) String(i int, context string) string {
 
 // ListString returns a list of all fields from the given start index.
 // An error occurs if there is no fields after the given start index.
-func (p *parser) ListString(from int, context string) (list []string) {
+func (p *Parser) ListString(from int, context string) (list []string) {
 	if p.err != nil {
 		return []string{}
 	}
@@ -64,7 +64,7 @@ func (p *parser) ListString(from int, context string) (list []string) {
 
 // EnumString returns the field value at the specified index.
 // An error occurs if the value is not one of the options and not empty.
-func (p *parser) EnumString(i int, context string, options ...string) string {
+func (p *Parser) EnumString(i int, context string, options ...string) string {
 	s := p.String(i, context)
 	if p.err != nil || s == "" {
 		return ""
@@ -81,7 +81,7 @@ func (p *parser) EnumString(i int, context string, options ...string) string {
 // EnumChars returns an array of strings that are matched in the Mode field.
 // It will only match the number of characters that are in the Mode field.
 // If the value is empty, it will return an empty array
-func (p *parser) EnumChars(i int, context string, options ...string) []string {
+func (p *Parser) EnumChars(i int, context string, options ...string) []string {
 	s := p.String(i, context)
 	if p.err != nil || s == "" {
 		return []string{}
@@ -106,7 +106,7 @@ func (p *parser) EnumChars(i int, context string, options ...string) []string {
 
 // Int64 returns the int64 value at the specified index.
 // If the value is an empty string, 0 is returned.
-func (p *parser) Int64(i int, context string) int64 {
+func (p *Parser) Int64(i int, context string) int64 {
 	s := p.String(i, context)
 	if p.err != nil {
 		return 0
@@ -123,7 +123,7 @@ func (p *parser) Int64(i int, context string) int64 {
 
 // Float64 returns the float64 value at the specified index.
 // If the value is an empty string, 0 is returned.
-func (p *parser) Float64(i int, context string) float64 {
+func (p *Parser) Float64(i int, context string) float64 {
 	s := p.String(i, context)
 	if p.err != nil {
 		return 0
@@ -140,7 +140,7 @@ func (p *parser) Float64(i int, context string) float64 {
 
 // Time returns the Time value at the specified index.
 // If the value is empty, the Time is marked as invalid.
-func (p *parser) Time(i int, context string) Time {
+func (p *Parser) Time(i int, context string) Time {
 	s := p.String(i, context)
 	if p.err != nil {
 		return Time{}
@@ -154,7 +154,7 @@ func (p *parser) Time(i int, context string) Time {
 
 // Date returns the Date value at the specified index.
 // If the value is empty, the Date is marked as invalid.
-func (p *parser) Date(i int, context string) Date {
+func (p *Parser) Date(i int, context string) Date {
 	s := p.String(i, context)
 	if p.err != nil {
 		return Date{}
@@ -167,7 +167,7 @@ func (p *parser) Date(i int, context string) Date {
 }
 
 // LatLong returns the coordinate value of the specified fields.
-func (p *parser) LatLong(i, j int, context string) float64 {
+func (p *Parser) LatLong(i, j int, context string) float64 {
 	a := p.String(i, context)
 	b := p.String(j, context)
 	if p.err != nil {
@@ -191,7 +191,7 @@ func (p *parser) LatLong(i, j int, context string) float64 {
 }
 
 // SixBitASCIIArmour decodes the 6-bit ascii armor used for VDM and VDO messages
-func (p *parser) SixBitASCIIArmour(i int, fillBits int, context string) []byte {
+func (p *Parser) SixBitASCIIArmour(i int, fillBits int, context string) []byte {
 	if p.err != nil {
 		return nil
 	}

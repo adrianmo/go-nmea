@@ -3,6 +3,7 @@ package nmea
 import (
 	"fmt"
 	"strings"
+	"sync"
 )
 
 const (
@@ -18,6 +19,14 @@ const (
 	// ChecksumSep is the token to delimit the checksum of a sentence.
 	ChecksumSep = "*"
 )
+
+var (
+	customParsersMu = &sync.Mutex{}
+	customParsers   = map[string]ParserFunc{}
+)
+
+// ParserFunc callback used to parse specific sentence variants
+type ParserFunc func(BaseSentence) (Sentence, error)
 
 // Sentence interface for all NMEA sentence
 type Sentence interface {
@@ -110,12 +119,38 @@ func Checksum(s string) string {
 	return fmt.Sprintf("%02X", checksum)
 }
 
+// MustRegisterParser register a custom parser or panic
+func MustRegisterParser(sentenceType string, parser ParserFunc) {
+	if err := RegisterParser(sentenceType, parser); err != nil {
+		panic(err)
+	}
+}
+
+// RegisterParser register a custom parser
+func RegisterParser(sentenceType string, parser ParserFunc) error {
+	customParsersMu.Lock()
+	defer customParsersMu.Unlock()
+
+	if _, ok := customParsers[sentenceType]; ok {
+		return fmt.Errorf("nmea: parser for sentence type '%q' already exists", sentenceType)
+	}
+
+	customParsers[sentenceType] = parser
+	return nil
+}
+
 // Parse parses the given string into the correct sentence type.
 func Parse(raw string) (Sentence, error) {
 	s, err := parseSentence(raw)
 	if err != nil {
 		return nil, err
 	}
+
+	// Custom parser allow overriding of existing parsers
+	if parser, ok := customParsers[s.Type]; ok {
+		return parser(s)
+	}
+
 	if strings.HasPrefix(s.Raw, SentenceStart) {
 		// MTK message types share the same format
 		// so we return the same struct for all types.
@@ -123,6 +158,7 @@ func Parse(raw string) (Sentence, error) {
 		case TypeMTK:
 			return newMTK(s)
 		}
+
 		switch s.Type {
 		case TypeRMC:
 			return newRMC(s)
