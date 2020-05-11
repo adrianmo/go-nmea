@@ -8,25 +8,20 @@ go:
     - 1.11.x
     - 1.12.x
     - 1.13.x
+    - 1.14.x
     - tip
 
 matrix:
     fast_finish: true
 
 before_install:
-    - go get golang.org/x/tools/cmd/cover
-    - go get golang.org/x/lint/golint
-    - go get github.com/mattn/goveralls
-    - go get github.com/stretchr/testify/assert
-
-install:
-    - go get -d -v ./... && go build -v ./...
+    - go install golang.org/x/lint/golint
+    - go install github.com/mattn/goveralls
 
 script:
     - go vet -x ./...
-    - $HOME/gopath/bin/golint -set_exit_status ./...
-    - go test -v ./...
-    - go test -covermode=count -coverprofile=profile.cov .
+    - golint -set_exit_status ./...
+    - go test -v -race -covermode=atomic -coverprofile=profile.cov ./...
 
 after_script:
-    - $HOME/gopath/bin/goveralls -coverprofile=profile.cov -service=travis-ci
+    - goveralls -coverprofile=profile.cov -service=travis-ci
