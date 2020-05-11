@@ -6,9 +6,9 @@ This is a NMEA library for the Go programming language (Golang).
 
 ## Features
 
-- Parse individual NMEA sentences.
-- Ability to register custom parser for unsupported sentence types.
-- User friendly MIT license
+- Parse individual NMEA 0183 sentences
+- Register custom parser for unsupported sentence types
+- User-friendly MIT license
 
 ## Installing
 
@@ -50,11 +50,11 @@ At this moment, this library supports the following sentence types:
 | [DBS](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface)               | Depth Below Surface                                                 |
 | [DBT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer)            | Depth below transducer                                              |
 
-If you need to parse a message that contains a unsupported sentence type you can implement and register your own message parser and get yourself unblocked immediately. Check the example below to know how to [implement and register a custom message parser](#custom-message-parsing). However, if you think your custom message parser could be benefitial to other users we encourage you to contribute back to the library by submitting a PR and get it included in the list of supported sentences.
+If you need to parse a message that contains an unsupported sentence type you can implement and register your own message parser and get yourself unblocked immediately. Check the example below to know how to [implement and register a custom message parser](#custom-message-parsing). However, if you think your custom message parser could be beneficial to other users we encourage you to contribute back to the library by submitting a PR and get it included in the list of supported sentences.
 
 ## Examples
 
-### Supported message parsing
+### Built-in message parsing
 
 ```go
 package main
