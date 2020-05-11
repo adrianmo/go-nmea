@@ -157,7 +157,7 @@ $ go run main/main.go
 Raw sentence: $AAXYZ,220516,A,23,5133.82,W*42
 Time: 22:05:16.0000
 Label: A
-Vounter: 23
+Counter: 23
 Value: 5133.820000
 ```
 
