@@ -130,7 +130,7 @@ type XYZType struct {
 }
 
 func main() {
-	// Do this once it will error if you register the same type mutiple times
+	// Do this once it will error if you register the same type multiple times
 	err := nmea.RegisterParser("XYZ", func(s nmea.BaseSentence) (nmea.Sentence, error) {
 		// This example uses the package builtin parsing helpers
 		// you can implement your own parsing logic also
