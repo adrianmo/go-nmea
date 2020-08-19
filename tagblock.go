@@ -1,12 +1,10 @@
 package nmea
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var (
@@ -17,8 +15,8 @@ var (
 // TagBlock struct
 type TagBlock struct {
 	Head         string // *
-	Time         int64  // TypeUnixTime unix timestamp, parameter: -c
-	RelativeTime int64  // TypeRelativeTime relative time time, parameter: -r
+	Time         int64  // TypeUnixTime unix timestamp (unit is likely to be s, but might be ms, YMMV), parameter: -c
+	RelativeTime int64  // TypeRelativeTime relative time, parameter: -r
 	Destination  string // TypeDestinationID destination identification 15 char max, parameter: -d
 	Grouping     string // TypeGrouping sentence grouping, parameter: -g
 	LineCount    int64  // TypeLineCount line count, parameter: -n
@@ -29,26 +27,9 @@ type TagBlock struct {
 func parseInt64(raw string) (int64, error) {
 	i, err := strconv.ParseInt(raw[2:], 10, 64)
 	if err != nil {
-		return 0, fmt.Errorf("nmea: tagblock unable to parse uint32 [%s]", raw)
+		return 0, fmt.Errorf("nmea: tagblock unable to parse uint64 [%s]", raw)
 	}
 	return i, nil
-}
-
-// Timestamp can come as milliseconds or seconds
-func validUnixTimestamp(timestamp int64) (int64, error) {
-	if timestamp < 0 {
-		return 0, errors.New("nmea: Tagblock timestamp is not valid must be between 0 and now + 24h")
-	}
-	now := time.Now()
-	unix := now.Unix() + 24*3600
-	if timestamp > unix {
-		if timestamp > unix*1000 {
-			return 0, errors.New("nmea: Tagblock timestamp is not valid")
-		}
-		return timestamp / 1000, nil
-	}
-
-	return timestamp, nil
 }
 
 // parseTagBlock adds support for tagblocks
@@ -89,10 +70,6 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 		switch item[:1] {
 		case "c": // UNIX timestamp
 			tagBlock.Time, err = parseInt64(item)
-			if err != nil {
-				return tagBlock, raw, err
-			}
-			tagBlock.Time, err = validUnixTimestamp(tagBlock.Time)
 			if err != nil {
 				return tagBlock, raw, err
 			}
