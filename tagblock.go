@@ -9,23 +9,6 @@ import (
 	"time"
 )
 
-const (
-	// TypeUnixTime unix timestamp, parameter: -c
-	TypeUnixTime = "c"
-	// TypeDestinationID destination identification 15char max, parameter: -d
-	TypeDestinationID = "d"
-	// TypeGrouping sentence grouping, parameter: -g
-	TypeGrouping = "g"
-	// TypeLineCount linecount, parameter: -n
-	TypeLineCount = "n"
-	// TypeRelativeTime relative time time, paremeter: -r
-	TypeRelativeTime = "r"
-	// TypeSourceID source identification 15char max, paremter: -s
-	TypeSourceID = "s"
-	// TypeTextString valid character string, parameter -t
-	TypeTextString = "t"
-)
-
 var (
 	// tagBlockRegexp matches nmea tag blocks
 	tagBlockRegexp = regexp.MustCompile(`^(.*)\\(\S+)\\(.*)`)
@@ -34,13 +17,13 @@ var (
 // TagBlock struct
 type TagBlock struct {
 	Head         string // *
-	Time         int64  // -c
-	RelativeTime int64  // -r
-	Destination  string // -d 15 char max
-	Grouping     string // -g nummeric string
-	LineCount    int64  // -n int
-	Source       string // -s 15 char max
-	Text         string // -t Variable length text
+	Time         int64  // TypeUnixTime unix timestamp, parameter: -c
+	RelativeTime int64  // TypeRelativeTime relative time time, parameter: -r
+	Destination  string // TypeDestinationID destination identification 15 char max, parameter: -d
+	Grouping     string // TypeGrouping sentence grouping, parameter: -g
+	LineCount    int64  // TypeLineCount line count, parameter: -n
+	Source       string // TypeSourceID source identification 15 char max, parameter: -s
+	Text         string // TypeTextString valid character string, parameter -t
 }
 
 func parseInt64(raw string) (int64, error) {
@@ -104,7 +87,7 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 			continue
 		}
 		switch item[:1] {
-		case TypeUnixTime:
+		case "c": // UNIX timestamp
 			tagBlock.Time, err = parseInt64(item)
 			if err != nil {
 				return tagBlock, raw, err
@@ -113,23 +96,23 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 			if err != nil {
 				return tagBlock, raw, err
 			}
-		case TypeDestinationID:
+		case "d": // Destination ID
 			tagBlock.Destination = item[2:]
-		case TypeGrouping:
+		case "g": // Grouping
 			tagBlock.Grouping = item[2:]
-		case TypeLineCount:
+		case "n": // Line count
 			tagBlock.LineCount, err = parseInt64(item)
 			if err != nil {
 				return tagBlock, raw, err
 			}
-		case TypeRelativeTime:
+		case "r": // Relative time
 			tagBlock.RelativeTime, err = parseInt64(item)
 			if err != nil {
 				return tagBlock, raw, err
 			}
-		case TypeSourceID:
+		case "s": // Source ID
 			tagBlock.Source = item[2:]
-		case TypeTextString:
+		case "t": // Text string
 			tagBlock.Text = item[2:]
 		}
 	}
