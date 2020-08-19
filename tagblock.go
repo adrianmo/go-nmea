@@ -47,7 +47,7 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 
 	sumSepIndex := strings.Index(tags, ChecksumSep)
 	if sumSepIndex == -1 {
-		return tagBlock, "", fmt.Errorf("nmea: tagblock does not contain checksum separator")
+		return TagBlock{}, "", fmt.Errorf("nmea: tagblock does not contain checksum separator")
 	}
 
 	var (
@@ -59,7 +59,7 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 
 	// Validate the checksum
 	if checksum != checksumRaw {
-		return tagBlock, "", fmt.Errorf("nmea: tagblock checksum mismatch [%s != %s]", checksum, checksumRaw)
+		return TagBlock{}, "", fmt.Errorf("nmea: tagblock checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
 
 	items := strings.Split(tags[:sumSepIndex], ",")
@@ -73,7 +73,7 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 		case "c": // UNIX timestamp
 			tagBlock.Time, err = parseInt64(value)
 			if err != nil {
-				return tagBlock, raw, err
+				return TagBlock{}, "", err
 			}
 		case "d": // Destination ID
 			tagBlock.Destination = value
@@ -82,12 +82,12 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 		case "n": // Line count
 			tagBlock.LineCount, err = parseInt64(value)
 			if err != nil {
-				return tagBlock, raw, err
+				return TagBlock{}, "", err
 			}
 		case "r": // Relative time
 			tagBlock.RelativeTime, err = parseInt64(value)
 			if err != nil {
-				return tagBlock, raw, err
+				return TagBlock{}, "", err
 			}
 		case "s": // Source ID
 			tagBlock.Source = value
