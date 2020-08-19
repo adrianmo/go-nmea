@@ -89,7 +89,6 @@ var tagblocktests = []struct {
 			Text:         "helloworld",
 			LineCount:    13,
 		},
-		//err: "nmea: tagblock checksum mismatch [25 != 49]",
 	},
 	{
 
