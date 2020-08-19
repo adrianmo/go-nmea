@@ -25,7 +25,7 @@ type TagBlock struct {
 }
 
 func parseInt64(raw string) (int64, error) {
-	i, err := strconv.ParseInt(raw[2:], 10, 64)
+	i, err := strconv.ParseInt(raw, 10, 64)
 	if err != nil {
 		return 0, fmt.Errorf("nmea: tagblock unable to parse uint64 [%s]", raw)
 	}
@@ -64,33 +64,35 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 
 	items := strings.Split(tags[:sumSepIndex], ",")
 	for _, item := range items {
-		if len(item) == 0 {
+		parts := strings.SplitN(item, ":", 2)
+		if len(parts) != 2 {
 			continue
 		}
-		switch item[:1] {
+		key, value := parts[0], parts[1]
+		switch key {
 		case "c": // UNIX timestamp
-			tagBlock.Time, err = parseInt64(item)
+			tagBlock.Time, err = parseInt64(value)
 			if err != nil {
 				return tagBlock, raw, err
 			}
 		case "d": // Destination ID
-			tagBlock.Destination = item[2:]
+			tagBlock.Destination = value
 		case "g": // Grouping
-			tagBlock.Grouping = item[2:]
+			tagBlock.Grouping = value
 		case "n": // Line count
-			tagBlock.LineCount, err = parseInt64(item)
+			tagBlock.LineCount, err = parseInt64(value)
 			if err != nil {
 				return tagBlock, raw, err
 			}
 		case "r": // Relative time
-			tagBlock.RelativeTime, err = parseInt64(item)
+			tagBlock.RelativeTime, err = parseInt64(value)
 			if err != nil {
 				return tagBlock, raw, err
 			}
 		case "s": // Source ID
-			tagBlock.Source = item[2:]
+			tagBlock.Source = value
 		case "t": // Text string
-			tagBlock.Text = item[2:]
+			tagBlock.Text = value
 		}
 	}
 	return tagBlock, raw, nil

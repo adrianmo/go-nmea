@@ -107,19 +107,19 @@ var tagblocktests = []struct {
 
 		name: "Test invalid timestamp",
 		raw:  "UdPbC?\\s:satelite,c:gjadslkg*30\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
-		err:  "nmea: tagblock unable to parse uint64 [c:gjadslkg]",
+		err:  "nmea: tagblock unable to parse uint64 [gjadslkg]",
 	},
 	{
 
 		name: "Test invalid linecount",
 		raw:  "UdPbC?\\s:satelite,n:gjadslkg*3D\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
-		err:  "nmea: tagblock unable to parse uint64 [n:gjadslkg]",
+		err:  "nmea: tagblock unable to parse uint64 [gjadslkg]",
 	},
 	{
 
 		name: "Test invalid relative time",
 		raw:  "UdPbC?\\s:satelite,r:gjadslkg*21\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
-		err:  "nmea: tagblock unable to parse uint64 [r:gjadslkg]",
+		err:  "nmea: tagblock unable to parse uint64 [gjadslkg]",
 	},
 }
 
