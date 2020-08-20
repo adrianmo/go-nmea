@@ -1,4 +1,4 @@
-module github.com/klyve/go-nmea
+module github.com/adrianmo/go-nmea
 
 go 1.14
 
