@@ -33,7 +33,7 @@ func parseInt64(raw string) (int64, error) {
 }
 
 // parseTagBlock adds support for tagblocks
-// https://rietman.wordpress.com/2016/09/17/nemastudio-now-supports-the-nmea-0183-tag-block/
+// https://gpsd.gitlab.io/gpsd/AIVDM.html#_nmea_tag_blocks
 func parseTagBlock(raw string) (TagBlock, string, error) {
 	matches := tagBlockRegexp.FindStringSubmatch(raw)
 	if matches == nil {
