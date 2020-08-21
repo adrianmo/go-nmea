@@ -79,16 +79,7 @@ var tagblocktests = []struct {
 
 		name: "Test empty tag in tagblock",
 		raw:  "UdPbC?\\s:satelite,,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*68\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
-		msg: TagBlock{
-			Time:         0,
-			RelativeTime: 1553390539,
-			Destination:  "ara",
-			Grouping:     "bulk",
-			Source:       "satelite",
-			Head:         "UdPbC?",
-			Text:         "helloworld",
-			LineCount:    13,
-		},
+		err:  "nmea: tagblock field is malformed (should be <key>:<value>) []",
 	},
 	{
 

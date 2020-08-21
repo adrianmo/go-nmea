@@ -66,7 +66,8 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 	for _, item := range items {
 		parts := strings.SplitN(item, ":", 2)
 		if len(parts) != 2 {
-			continue
+			return TagBlock{}, "",
+				fmt.Errorf("nmea: tagblock field is malformed (should be <key>:<value>) [%s]", item)
 		}
 		key, value := parts[0], parts[1]
 		switch key {
