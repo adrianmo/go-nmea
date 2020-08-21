@@ -2,14 +2,8 @@ package nmea
 
 import (
 	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
-)
-
-var (
-	// tagBlockRegexp matches nmea tag blocks
-	tagBlockRegexp = regexp.MustCompile(`^(.*)\\(\S+)\\(.*)`)
 )
 
 // TagBlock struct
@@ -35,15 +29,16 @@ func parseInt64(raw string) (int64, error) {
 // parseTagBlock adds support for tagblocks
 // https://gpsd.gitlab.io/gpsd/AIVDM.html#_nmea_tag_blocks
 func parseTagBlock(raw string) (TagBlock, string, error) {
-	matches := tagBlockRegexp.FindStringSubmatch(raw)
-	if matches == nil {
+	parts := strings.SplitN(raw, `\`, 3)
+	if len(parts) != 3 {
+		// Not a TAG Block sentence, so don't return error and pass through raw unmodified
 		return TagBlock{}, raw, nil
 	}
 
 	tagBlock := TagBlock{}
-	raw = matches[3]
-	tags := matches[2]
-	tagBlock.Head = matches[1]
+	tagBlock.Head = parts[0]
+	tags := parts[1]
+	raw = parts[2] // Pass through the rest of the sentence without the TAG Block
 
 	sumSepIndex := strings.Index(tags, ChecksumSep)
 	if sumSepIndex == -1 {
