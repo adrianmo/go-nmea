@@ -71,7 +71,6 @@ func parseSentence(raw string) (BaseSentence, error) {
 	if err != nil {
 		return BaseSentence{}, err
 	}
-
 	startIndex := strings.IndexAny(raw, SentenceStart+SentenceStartEncapsulated)
 	if startIndex != 0 {
 		return BaseSentence{}, fmt.Errorf("nmea: sentence does not start with a '$' or '!'")
@@ -92,7 +91,6 @@ func parseSentence(raw string) (BaseSentence, error) {
 			"nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
 	talker, typ := parsePrefix(fields[0])
-
 	return BaseSentence{
 		Talker:   talker,
 		Type:     typ,
