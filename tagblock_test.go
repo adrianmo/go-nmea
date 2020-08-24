@@ -15,7 +15,7 @@ var tagblocktests = []struct {
 	{
 
 		name: "Test NMEA tag block",
-		raw:  "\\s:Satelite_1,c:1553390539*62\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
+		raw:  "s:Satelite_1,c:1553390539*62",
 		msg: TagBlock{
 			Time:   1553390539,
 			Source: "Satelite_1",
@@ -24,7 +24,7 @@ var tagblocktests = []struct {
 	{
 
 		name: "Test NMEA tag block with head",
-		raw:  "\\s:satelite,c:1564827317*25\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "s:satelite,c:1564827317*25",
 		msg: TagBlock{
 			Time:   1564827317,
 			Source: "satelite",
@@ -33,7 +33,7 @@ var tagblocktests = []struct {
 	{
 
 		name: "Test unknown tag",
-		raw:  "\\x:NorSat_1,c:1564827317*42\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "x:NorSat_1,c:1564827317*42",
 		msg: TagBlock{
 			Time:   1564827317,
 			Source: "",
@@ -41,7 +41,7 @@ var tagblocktests = []struct {
 	},
 	{
 		name: "Test unix timestamp",
-		raw:  "\\x:NorSat_1,c:1564827317*42\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "x:NorSat_1,c:1564827317*42",
 		msg: TagBlock{
 			Time:   1564827317,
 			Source: "",
@@ -50,7 +50,7 @@ var tagblocktests = []struct {
 	{
 
 		name: "Test milliseconds timestamp",
-		raw:  "\\x:NorSat_1,c:1564827317000*72\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "x:NorSat_1,c:1564827317000*72",
 		msg: TagBlock{
 			Time:   1564827317000,
 			Source: "",
@@ -59,7 +59,7 @@ var tagblocktests = []struct {
 	{
 
 		name: "Test all input types",
-		raw:  "\\s:satelite,c:1564827317,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*3F\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "s:satelite,c:1564827317,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*3F",
 		msg: TagBlock{
 			Time:         1564827317,
 			RelativeTime: 1553390539,
@@ -73,37 +73,37 @@ var tagblocktests = []struct {
 	{
 
 		name: "Test empty tag in tagblock",
-		raw:  "\\s:satelite,,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*68\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "s:satelite,,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*68",
 		err:  "nmea: tagblock field is malformed (should be <key>:<value>) []",
 	},
 	{
 
 		name: "Test Invalid checksum",
-		raw:  "\\s:satelite,c:1564827317*49\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "s:satelite,c:1564827317*49",
 		err:  "nmea: tagblock checksum mismatch [25 != 49]",
 	},
 	{
 
 		name: "Test no checksum",
-		raw:  "\\s:satelite,c:156482731749\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "s:satelite,c:156482731749",
 		err:  "nmea: tagblock does not contain checksum separator",
 	},
 	{
 
 		name: "Test invalid timestamp",
-		raw:  "\\s:satelite,c:gjadslkg*30\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "s:satelite,c:gjadslkg*30",
 		err:  "nmea: tagblock unable to parse uint64 [gjadslkg]",
 	},
 	{
 
 		name: "Test invalid linecount",
-		raw:  "\\s:satelite,n:gjadslkg*3D\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "s:satelite,n:gjadslkg*3D",
 		err:  "nmea: tagblock unable to parse uint64 [gjadslkg]",
 	},
 	{
 
 		name: "Test invalid relative time",
-		raw:  "\\s:satelite,r:gjadslkg*21\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "s:satelite,r:gjadslkg*21",
 		err:  "nmea: tagblock unable to parse uint64 [gjadslkg]",
 	},
 }
@@ -111,14 +111,13 @@ var tagblocktests = []struct {
 func TestTagBlock(t *testing.T) {
 	for _, tt := range tagblocktests {
 		t.Run(tt.name, func(t *testing.T) {
-			m, err := Parse(tt.raw)
+			m, err := parseTagBlock(tt.raw)
 			if tt.err != "" {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				vdm := m.(VDMVDO)
-				assert.Equal(t, tt.msg, vdm.BaseSentence.TagBlock)
+				assert.Equal(t, tt.msg, m)
 			}
 		})
 	}
