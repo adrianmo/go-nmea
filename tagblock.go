@@ -8,7 +8,6 @@ import (
 
 // TagBlock struct
 type TagBlock struct {
-	Head         string // *
 	Time         int64  // TypeUnixTime unix timestamp (unit is likely to be s, but might be ms, YMMV), parameter: -c
 	RelativeTime int64  // TypeRelativeTime relative time, parameter: -r
 	Destination  string // TypeDestinationID destination identification 15 char max, parameter: -d
@@ -28,40 +27,30 @@ func parseInt64(raw string) (int64, error) {
 
 // parseTagBlock adds support for tagblocks
 // https://gpsd.gitlab.io/gpsd/AIVDM.html#_nmea_tag_blocks
-func parseTagBlock(raw string) (TagBlock, string, error) {
-	parts := strings.SplitN(raw, `\`, 3)
-	if len(parts) != 3 {
-		// Not a TAG Block sentence, so don't return error and pass through raw unmodified
-		return TagBlock{}, raw, nil
-	}
-
-	tagBlock := TagBlock{}
-	tagBlock.Head = parts[0]
-	tags := parts[1]
-	raw = parts[2] // Pass through the rest of the sentence without the TAG Block
-
+func parseTagBlock(tags string) (TagBlock, error) {
 	sumSepIndex := strings.Index(tags, ChecksumSep)
 	if sumSepIndex == -1 {
-		return TagBlock{}, "", fmt.Errorf("nmea: tagblock does not contain checksum separator")
+		return TagBlock{}, fmt.Errorf("nmea: tagblock does not contain checksum separator")
 	}
 
 	var (
 		fieldsRaw   = tags[0:sumSepIndex]
 		checksumRaw = strings.ToUpper(tags[sumSepIndex+1:])
 		checksum    = Checksum(fieldsRaw)
+		tagBlock	TagBlock
 		err         error
 	)
 
 	// Validate the checksum
 	if checksum != checksumRaw {
-		return TagBlock{}, "", fmt.Errorf("nmea: tagblock checksum mismatch [%s != %s]", checksum, checksumRaw)
+		return TagBlock{}, fmt.Errorf("nmea: tagblock checksum mismatch [%s != %s]", checksum, checksumRaw)
 	}
 
 	items := strings.Split(tags[:sumSepIndex], ",")
 	for _, item := range items {
 		parts := strings.SplitN(item, ":", 2)
 		if len(parts) != 2 {
-			return TagBlock{}, "",
+			return TagBlock{},
 				fmt.Errorf("nmea: tagblock field is malformed (should be <key>:<value>) [%s]", item)
 		}
 		key, value := parts[0], parts[1]
@@ -69,7 +58,7 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 		case "c": // UNIX timestamp
 			tagBlock.Time, err = parseInt64(value)
 			if err != nil {
-				return TagBlock{}, "", err
+				return TagBlock{}, err
 			}
 		case "d": // Destination ID
 			tagBlock.Destination = value
@@ -78,12 +67,12 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 		case "n": // Line count
 			tagBlock.LineCount, err = parseInt64(value)
 			if err != nil {
-				return TagBlock{}, "", err
+				return TagBlock{}, err
 			}
 		case "r": // Relative time
 			tagBlock.RelativeTime, err = parseInt64(value)
 			if err != nil {
-				return TagBlock{}, "", err
+				return TagBlock{}, err
 			}
 		case "s": // Source ID
 			tagBlock.Source = value
@@ -91,5 +80,5 @@ func parseTagBlock(raw string) (TagBlock, string, error) {
 			tagBlock.Text = value
 		}
 	}
-	return tagBlock, raw, nil
+	return tagBlock, nil
 }

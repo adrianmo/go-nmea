@@ -67,10 +67,21 @@ func (s BaseSentence) String() string { return s.Raw }
 // parseSentence parses a raw message into it's fields
 func parseSentence(raw string) (BaseSentence, error) {
 	raw = strings.TrimSpace(raw)
-	tagBlock, raw, err := parseTagBlock(raw)
-	if err != nil {
-		return BaseSentence{}, err
+	tagBlockParts := strings.SplitN(raw, `\`, 3)
+
+	var (
+		tagBlock TagBlock
+		err			error
+	)
+	if len(tagBlockParts) == 3 {
+		tags := tagBlockParts[1]
+		raw = tagBlockParts[2]
+		tagBlock, err = parseTagBlock(tags)
+		if err != nil {
+			return BaseSentence{}, err
+		}
 	}
+
 	startIndex := strings.IndexAny(raw, SentenceStart+SentenceStartEncapsulated)
 	if startIndex != 0 {
 		return BaseSentence{}, fmt.Errorf("nmea: sentence does not start with a '$' or '!'")

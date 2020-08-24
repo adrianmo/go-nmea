@@ -24,53 +24,48 @@ var tagblocktests = []struct {
 	{
 
 		name: "Test NMEA tag block with head",
-		raw:  "UdPbC?\\s:satelite,c:1564827317*25\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\s:satelite,c:1564827317*25\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		msg: TagBlock{
 			Time:   1564827317,
 			Source: "satelite",
-			Head:   "UdPbC?",
 		},
 	},
 	{
 
 		name: "Test unknown tag",
-		raw:  "UdPbC?\\x:NorSat_1,c:1564827317*42\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\x:NorSat_1,c:1564827317*42\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		msg: TagBlock{
 			Time:   1564827317,
 			Source: "",
-			Head:   "UdPbC?",
 		},
 	},
 	{
 		name: "Test unix timestamp",
-		raw:  "UdPbC?\\x:NorSat_1,c:1564827317*42\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\x:NorSat_1,c:1564827317*42\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		msg: TagBlock{
 			Time:   1564827317,
 			Source: "",
-			Head:   "UdPbC?",
 		},
 	},
 	{
 
 		name: "Test milliseconds timestamp",
-		raw:  "UdPbC?\\x:NorSat_1,c:1564827317000*72\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\x:NorSat_1,c:1564827317000*72\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		msg: TagBlock{
 			Time:   1564827317000,
 			Source: "",
-			Head:   "UdPbC?",
 		},
 	},
 	{
 
 		name: "Test all input types",
-		raw:  "UdPbC?\\s:satelite,c:1564827317,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*3F\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\s:satelite,c:1564827317,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*3F\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		msg: TagBlock{
 			Time:         1564827317,
 			RelativeTime: 1553390539,
 			Destination:  "ara",
 			Grouping:     "bulk",
 			Source:       "satelite",
-			Head:         "UdPbC?",
 			Text:         "helloworld",
 			LineCount:    13,
 		},
@@ -78,37 +73,37 @@ var tagblocktests = []struct {
 	{
 
 		name: "Test empty tag in tagblock",
-		raw:  "UdPbC?\\s:satelite,,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*68\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\s:satelite,,r:1553390539,d:ara,g:bulk,n:13,t:helloworld*68\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		err:  "nmea: tagblock field is malformed (should be <key>:<value>) []",
 	},
 	{
 
 		name: "Test Invalid checksum",
-		raw:  "UdPbC?\\s:satelite,c:1564827317*49\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\s:satelite,c:1564827317*49\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		err:  "nmea: tagblock checksum mismatch [25 != 49]",
 	},
 	{
 
 		name: "Test no checksum",
-		raw:  "UdPbC?\\s:satelite,c:156482731749\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\s:satelite,c:156482731749\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		err:  "nmea: tagblock does not contain checksum separator",
 	},
 	{
 
 		name: "Test invalid timestamp",
-		raw:  "UdPbC?\\s:satelite,c:gjadslkg*30\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\s:satelite,c:gjadslkg*30\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		err:  "nmea: tagblock unable to parse uint64 [gjadslkg]",
 	},
 	{
 
 		name: "Test invalid linecount",
-		raw:  "UdPbC?\\s:satelite,n:gjadslkg*3D\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\s:satelite,n:gjadslkg*3D\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		err:  "nmea: tagblock unable to parse uint64 [gjadslkg]",
 	},
 	{
 
 		name: "Test invalid relative time",
-		raw:  "UdPbC?\\s:satelite,r:gjadslkg*21\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
+		raw:  "\\s:satelite,r:gjadslkg*21\\!AIVDM,1,1,,A,19NSRaP02A0fo91kwnaMKbjR08:J,0*15",
 		err:  "nmea: tagblock unable to parse uint64 [gjadslkg]",
 	},
 }
