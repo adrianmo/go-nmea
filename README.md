@@ -7,6 +7,7 @@ This is a NMEA library for the Go programming language (Golang).
 ## Features
 
 - Parse individual NMEA 0183 sentences
+- Support for sentences with NMEA 4.10 "TAG Blocks"
 - Register custom parser for unsupported sentence types
 - User-friendly MIT license
 
@@ -104,6 +105,41 @@ Speed: 173.800000
 Course: 231.800000
 Date: 13/06/94
 Variation: -4.200000
+```
+
+### TAG Blocks
+
+NMEA 4.10 TAG Block values can be accessed via the message's `TagBlock` struct:
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"time"
+	"github.com/adrianmo/go-nmea"
+)
+
+func main() {
+	sentence := "\\s:Satelite_1,c:1553390539*62\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52"
+	s, err := nmea.Parse(sentence)
+	if err != nil {
+		log.Fatal(err)
+	}
+	parsed := s.(nmea.VDMVDO)
+	fmt.Printf("TAG Block timestamp: %v\n", time.Unix(parsed.TagBlock.Time, 0))
+	fmt.Printf("TAG Block source:    %v\n", parsed.TagBlock.Source)
+}
+```
+
+Output (locale/time zone dependent):
+
+```
+$  go run main/main.go
+ 
+TAG Block timestamp: 2019-03-24 14:22:19 +1300 NZDT
+TAG Block source:    Satelite_1
 ```
 
 ### Custom message parsing
