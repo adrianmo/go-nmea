@@ -1,0 +1,35 @@
+name: CI
+
+on: [push, pull_request, workflow_run]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ["1.16", "1.15", "1.14", "1.13"]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Install dependencies
+        run: |
+          go install golang.org/x/lint/golint
+          go install github.com/mattn/goveralls
+
+      - name: Lint
+        run: |
+          go vet ./...
+          golint -set_exit_status ./...
+
+      - name: Test
+        run: |
+          go test -v -race -covermode=atomic -coverprofile=profile.cov ./...
+
+      - name: Coverage
+        run: |
+          goveralls -coverprofile=profile.cov -service=travis-ci
