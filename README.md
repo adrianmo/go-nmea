@@ -1,6 +1,6 @@
 # go-nmea
 
-[![Build Status](https://travis-ci.com/adrianmo/go-nmea.svg?branch=master)](https://travis-ci.com/adrianmo/go-nmea) [![Go Report Card](https://goreportcard.com/badge/github.com/adrianmo/go-nmea)](https://goreportcard.com/report/github.com/adrianmo/go-nmea) [![Coverage Status](https://coveralls.io/repos/adrianmo/go-nmea/badge.svg?branch=master&service=github)](https://coveralls.io/github/adrianmo/go-nmea?branch=master) [![GoDoc](https://godoc.org/github.com/adrianmo/go-nmea?status.svg)](https://godoc.org/github.com/adrianmo/go-nmea)
+[![Build Status](https://travis-ci.com/adrianmo/go-nmea.svg?branch=master)](https://travis-ci.com/adrianmo/go-nmea) [![Go Report Card](https://goreportcard.com/badge/github.com/storskegg/go-nmea)](https://goreportcard.com/report/github.com/storskegg/go-nmea) [![Coverage Status](https://coveralls.io/repos/adrianmo/go-nmea/badge.svg?branch=master&service=github)](https://coveralls.io/github/adrianmo/go-nmea?branch=master) [![GoDoc](https://godoc.org/github.com/storskegg/go-nmea?status.svg)](https://godoc.org/github.com/storskegg/go-nmea)
 
 This is a NMEA library for the Go programming language (Golang).
 
@@ -16,14 +16,14 @@ This is a NMEA library for the Go programming language (Golang).
 To install go-nmea use `go get`:
 
 ```
-go get github.com/adrianmo/go-nmea
+go get github.com/storskegg/go-nmea
 ```
 
-This will then make the `github.com/adrianmo/go-nmea` package available to you.
+This will then make the `github.com/storskegg/go-nmea` package available to you.
 
 ### Staying up to date
 
-To update go-nmea to the latest version, use `go get -u github.com/adrianmo/go-nmea`.
+To update go-nmea to the latest version, use `go get -u github.com/storskegg/go-nmea`.
 
 ## Supported sentences
 
@@ -63,7 +63,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"github.com/adrianmo/go-nmea"
+	"github.com/storskegg/go-nmea"
 )
 
 func main() {
@@ -118,7 +118,7 @@ import (
 	"fmt"
 	"log"
 	"time"
-	"github.com/adrianmo/go-nmea"
+	"github.com/storskegg/go-nmea"
 )
 
 func main() {
@@ -153,7 +153,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/adrianmo/go-nmea"
+	"github.com/storskegg/go-nmea"
 )
 
 // A type to hold the parsed record
