@@ -58,11 +58,11 @@ var sentencetests = []struct {
 		},
 	},
 	{
-		name: "valid NMEA 4.10 TAG Block",
-		raw:  "\\s:Satelite_1,c:1553390539*62\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
+		name:     "valid NMEA 4.10 TAG Block",
+		raw:      "\\s:Satelite_1,c:1553390539*62\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
 		datatype: "VDM",
 		talkerid: "AI",
-		prefix: "AIVDM",
+		prefix:   "AIVDM",
 		sent: BaseSentence{
 			Talker:   "AI",
 			Type:     "VDM",
@@ -108,17 +108,17 @@ var sentencetests = []struct {
 	{
 		name: "missing TAG Block start delimiter",
 		raw:  "s:Satelite_1,c:1553390539*62\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
-		err: "nmea: sentence does not start with a '$' or '!'",
+		err:  "nmea: sentence does not start with a '$' or '!'",
 	},
 	{
 		name: "missing TAG Block end delimiter",
 		raw:  "\\s:Satelite_1,c:1553390539*62!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
-		err: "nmea: sentence does not start with a '$' or '!'",
+		err:  "nmea: sentence does not start with a '$' or '!'",
 	},
 	{
 		name: "invalid TAG Block contents",
 		raw:  "\\\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
-		err: "nmea: tagblock does not contain checksum separator",
+		err:  "nmea: tagblock does not contain checksum separator",
 	},
 }
 
@@ -151,6 +151,12 @@ var prefixtests = []struct {
 		prefix: "GPRMC",
 		talker: "GP",
 		typ:    "RMC",
+	},
+	{
+		name:   "GNSS prefix",
+		prefix: "GNGSA",
+		talker: "GN",
+		typ:    "GSA",
 	},
 	{
 		name:   "missing type",

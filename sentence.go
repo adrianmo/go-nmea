@@ -120,6 +120,9 @@ func parsePrefix(s string) (string, string) {
 	if strings.HasPrefix(s, "P") {
 		return "P", s[1:]
 	}
+	if strings.HasPrefix(s, "N") {
+		return "N", s[1:]
+	}
 	if len(s) < 2 {
 		return s, ""
 	}
