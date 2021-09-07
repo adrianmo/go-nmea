@@ -1,8 +1,13 @@
 name: ci
+
 on:
   push:
+    branches:
+      - master
   pull_request:
-  workflow_run:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   build:
