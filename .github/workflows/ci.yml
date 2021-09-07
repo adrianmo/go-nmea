@@ -1,4 +1,4 @@
-name: ci
+name: CI
 
 on:
   push:
@@ -13,8 +13,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        go: ["1.16", "1.15", "1.14", "1.13"]
+        go: ["1.17", "1.16", "1.15", "1.14"]
     steps:
       - uses: actions/checkout@v2
 
@@ -25,8 +26,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          go install golang.org/x/lint/golint
-          go install github.com/mattn/goveralls
+          go get -u golang.org/x/lint/golint@latest
+          go get -u github.com/mattn/goveralls@v0.0.9
 
       - name: Lint
         run: |
@@ -39,4 +40,6 @@ jobs:
 
       - name: Coverage
         run: |
-          goveralls -coverprofile=profile.cov -service=travis-ci
+          goveralls -coverprofile=profile.cov -service=github -parallel -flagname="go-${{ matrix.go }}"
+        env:
+          COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
