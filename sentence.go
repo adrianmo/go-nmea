@@ -71,7 +71,7 @@ func parseSentence(raw string) (BaseSentence, error) {
 
 	var (
 		tagBlock TagBlock
-		err			error
+		err      error
 	)
 	if len(tagBlockParts) == 3 {
 		tags := tagBlockParts[1]
@@ -211,6 +211,12 @@ func Parse(raw string) (Sentence, error) {
 			return newDBT(s)
 		case TypeDBS:
 			return newDBS(s)
+		case TypeMDA:
+			return newMDA(s)
+		case TypeMWD:
+			return newMWD(s)
+		case TypeMWV:
+			return newMWV(s)
 		}
 	}
 	if strings.HasPrefix(s.Raw, SentenceStartEncapsulated) {
