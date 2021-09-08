@@ -34,17 +34,26 @@ Fields
 */
 
 const (
-	TypeMDA         = "MDA"
-	InchMDA         = "I"
-	BarsMDA         = "B"
-	DegreesCMDA     = "C"
-	TrueMDA         = "T"
-	MagneticMDA     = "M"
-	KnotsMDA        = "N"
+	// TypeMDA type for MDA sentences
+	TypeMDA = "MDA"
+	// InchMDA for valid pressure in Inches of mercury
+	InchMDA = "I"
+	// BarsMDA for valid pressure in Bars
+	BarsMDA = "B"
+	// DegreesCMDA for valid data in degrees C
+	DegreesCMDA = "C"
+	// TrueMDA for valid data in True direction
+	TrueMDA = "T"
+	// MagneticMDA for valid data in Magnetic direction
+	MagneticMDA = "M"
+	// KnotsMDA for valid data in Knots
+	KnotsMDA = "N"
+	// MetersSecondMDA for valid data in Meters per Second
 	MetersSecondMDA = "M"
-	EmptyMDA        = ""
 )
 
+// MDA is the Meteorological Composite
+// Data of air pressure, air and water temperatures and wind speed and direction
 type MDA struct {
 	BaseSentence
 	PressureInch          float64
@@ -75,24 +84,24 @@ func newMDA(s BaseSentence) (MDA, error) {
 	return MDA{
 		BaseSentence:          s,
 		PressureInch:          p.Float64(0, "pressure in inch"),
-		InchesValid:           p.EnumString(1, "inches valid", InchMDA, EmptyMDA) == InchMDA,
+		InchesValid:           p.EnumString(1, "inches valid", InchMDA) == InchMDA,
 		PressureBar:           p.Float64(2, "pressure in bar"),
-		BarsValid:             p.EnumString(3, "bars valid", BarsMDA, EmptyMDA) == BarsMDA,
+		BarsValid:             p.EnumString(3, "bars valid", BarsMDA) == BarsMDA,
 		AirTemp:               p.Float64(4, "air temp"),
-		AirTempValid:          p.EnumString(5, "air temp valid", DegreesCMDA, EmptyMDA) == DegreesCMDA,
+		AirTempValid:          p.EnumString(5, "air temp valid", DegreesCMDA) == DegreesCMDA,
 		WaterTemp:             p.Float64(6, "water temp"),
-		WaterTempValid:        p.EnumString(7, "water temp valid", DegreesCMDA, EmptyMDA) == DegreesCMDA,
+		WaterTempValid:        p.EnumString(7, "water temp valid", DegreesCMDA) == DegreesCMDA,
 		RelativeHum:           p.Float64(8, "relative humidity"),
 		AbsoluteHum:           p.Float64(9, "absolute humidity"),
 		DewPoint:              p.Float64(10, "dewpoint"),
-		DewPointValid:         p.EnumString(11, "dewpoint valid", DegreesCMDA, EmptyMDA) == DegreesCMDA,
+		DewPointValid:         p.EnumString(11, "dewpoint valid", DegreesCMDA) == DegreesCMDA,
 		WindDirectionTrue:     p.Float64(12, "wind direction true"),
-		TrueValid:             p.EnumString(13, "wind direction true valid", TrueMDA, EmptyMDA) == TrueMDA,
+		TrueValid:             p.EnumString(13, "wind direction true valid", TrueMDA) == TrueMDA,
 		WindDirectionMagnetic: p.Float64(14, "wind direction magnetic"),
-		MagneticValid:         p.EnumString(15, "wind direction magnetic valid", MagneticMDA, EmptyMDA) == MagneticMDA,
+		MagneticValid:         p.EnumString(15, "wind direction magnetic valid", MagneticMDA) == MagneticMDA,
 		WindSpeedKnots:        p.Float64(16, "windspeed knots"),
-		KnotsValid:            p.EnumString(17, "windspeed knots valid", KnotsMDA, EmptyMDA) == KnotsMDA,
+		KnotsValid:            p.EnumString(17, "windspeed knots valid", KnotsMDA) == KnotsMDA,
 		WindSpeedMeters:       p.Float64(18, "windspeed m/s"),
-		MetersValid:           p.EnumString(19, "windspeed m/s valid", MetersSecondMDA, EmptyMDA) == MetersSecondMDA,
+		MetersValid:           p.EnumString(19, "windspeed m/s valid", MetersSecondMDA) == MetersSecondMDA,
 	}, p.Err()
 }

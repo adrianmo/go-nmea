@@ -20,14 +20,19 @@ Fields
 */
 
 const (
-	TypeMWD         = "MWD"
-	TrueMWD         = "T"
-	MagneticMWD     = "M"
-	KnotsMWD        = "N"
+	// TypeMWD type for MWD sentences
+	TypeMWD = "MWD"
+	// TrueMWD for valid True Direction
+	TrueMWD = "T"
+	// MagneticMWD for valid Magnetic direction
+	MagneticMWD = "M"
+	// KnotsMWD for valid Knots
+	KnotsMWD = "N"
+	// MetersSecondMWD for valid Meters per Second
 	MetersSecondMWD = "M"
-	EmptyMWD        = ""
 )
 
+// MWD Wind Direction and Speed, with respect to north.
 type MWD struct {
 	BaseSentence
 	WindDirectionTrue     float64
@@ -46,12 +51,12 @@ func newMWD(s BaseSentence) (MWD, error) {
 	return MWD{
 		BaseSentence:          s,
 		WindDirectionTrue:     p.Float64(0, "true wind direction"),
-		TrueValid:             p.EnumString(1, "true wind valid", TrueMWD, EmptyMWD) == TrueMWD,
+		TrueValid:             p.EnumString(1, "true wind valid", TrueMWD) == TrueMWD,
 		WindDirectionMagnetic: p.Float64(2, "magnetic wind direction"),
-		MagneticValid:         p.EnumString(3, "magnetic direction valid", MagneticMWD, EmptyMWD) == MagneticMWD,
+		MagneticValid:         p.EnumString(3, "magnetic direction valid", MagneticMWD) == MagneticMWD,
 		WindSpeedKnots:        p.Float64(4, "windspeed knots"),
-		KnotsValid:            p.EnumString(5, "windspeed knots valid", KnotsMWD, EmptyMWD) == KnotsMWD,
+		KnotsValid:            p.EnumString(5, "windspeed knots valid", KnotsMWD) == KnotsMWD,
 		WindSpeedMeters:       p.Float64(6, "windspeed m/s"),
-		MetersValid:           p.EnumString(7, "windspeed m/s valid", MetersSecondMWD, EmptyMWD) == MetersSecondMWD,
+		MetersValid:           p.EnumString(7, "windspeed m/s valid", MetersSecondMWD) == MetersSecondMWD,
 	}, p.Err()
 }

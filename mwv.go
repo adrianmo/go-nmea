@@ -27,17 +27,27 @@ Fields
 */
 
 const (
-	TypeMWV        = "MWV"
-	RelativeMWV    = "R" // Relative
-	TheoreticalMWV = "T" // Theoretical
-	UnitKMHMWV     = "K" // KM/H
-	UnitMSMWV      = "M" // M/S
-	UnitKnotsMWV   = "N" // knots
-	UnitSMilesHMWV = "S" // Statue miles/H
-	ValidMWV       = "A"
-	InvalidMWV     = "V"
+	// TypeMWV type for MWV sentences
+	TypeMWV = "MWV"
+	// RelativeMWV for Valid Relative angle data
+	RelativeMWV = "R"
+	// TheoreticalMWV for valid Theoretical angle data
+	TheoreticalMWV = "T"
+	// UnitKMHMWV unit for Kilometer per hour (KM/H)
+	UnitKMHMWV = "K" // KM/H
+	// UnitMSMWV unit for Meters per second (M/S)
+	UnitMSMWV = "M" // M/S
+	// UnitKnotsMWV unit for knots
+	UnitKnotsMWV = "N" // knots
+	// UnitSMilesHMWV unit for Miles per hour (M/H)
+	UnitSMilesHMWV = "S"
+	// ValidMWV data is valid
+	ValidMWV = "A"
+	// InvalidMWV data is invalid
+	InvalidMWV = "V"
 )
 
+// MWV is the Wind Speed and Angle, in relation to the vessel’s bow/centerline.
 type MWV struct {
 	BaseSentence
 	WindAngle     float64
