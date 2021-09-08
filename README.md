@@ -1,6 +1,6 @@
 # go-nmea
 
-[![Build Status](https://travis-ci.com/adrianmo/go-nmea.svg?branch=master)](https://travis-ci.com/adrianmo/go-nmea) [![Go Report Card](https://goreportcard.com/badge/github.com/adrianmo/go-nmea)](https://goreportcard.com/report/github.com/adrianmo/go-nmea) [![Coverage Status](https://coveralls.io/repos/adrianmo/go-nmea/badge.svg?branch=master&service=github)](https://coveralls.io/github/adrianmo/go-nmea?branch=master) [![GoDoc](https://godoc.org/github.com/adrianmo/go-nmea?status.svg)](https://godoc.org/github.com/adrianmo/go-nmea)
+[![CI](https://github.com/adrianmo/go-nmea/actions/workflows/ci.yml/badge.svg)](https://github.com/adrianmo/go-nmea/actions/workflows/ci.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/adrianmo/go-nmea)](https://goreportcard.com/report/github.com/adrianmo/go-nmea) [![Coverage Status](https://coveralls.io/repos/adrianmo/go-nmea/badge.svg?branch=master&service=github)](https://coveralls.io/github/adrianmo/go-nmea?branch=master) [![GoDoc](https://godoc.org/github.com/adrianmo/go-nmea?status.svg)](https://godoc.org/github.com/adrianmo/go-nmea)
 
 This is a NMEA library for the Go programming language (Golang).
 
@@ -137,7 +137,7 @@ Output (locale/time zone dependent):
 
 ```
 $  go run main/main.go
- 
+
 TAG Block timestamp: 2019-03-24 14:22:19 +1300 NZDT
 TAG Block source:    Satelite_1
 ```
