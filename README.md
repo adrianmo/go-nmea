@@ -50,6 +50,9 @@ At this moment, this library supports the following sentence types:
 | [DPT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water)                    | Depth of Water                                                      |
 | [DBS](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface)               | Depth Below Surface                                                 |
 | [DBT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer)            | Depth below transducer                                              |
+| [MDA](#)                                                                            | Meteorological Composite                                            |
+| [MWD](#)                                                                            | Wind Direction and Speed                                            |
+| [MWV](#)                                                                            | Wind Speed and Angle                                                |
 
 If you need to parse a message that contains an unsupported sentence type you can implement and register your own message parser and get yourself unblocked immediately. Check the example below to know how to [implement and register a custom message parser](#custom-message-parsing). However, if you think your custom message parser could be beneficial to other users we encourage you to contribute back to the library by submitting a PR and get it included in the list of supported sentences.
 
