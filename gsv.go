@@ -34,7 +34,7 @@ func newGSV(s BaseSentence) (GSV, error) {
 		NumberSVsInView: p.Int64(2, "number of SVs in view"),
 	}
 	for i := 0; i < 4; i++ {
-		if 5*i+4 > len(m.Fields) {
+		if 6+i*4 >= len(m.Fields) {
 			break
 		}
 		m.Info = append(m.Info, GSVInfo{
