@@ -42,6 +42,16 @@ var gsvtests = []struct {
 		},
 	},
 	{
+		name: "sentence with no satellite in view",
+		raw:  "$GBGSV,1,1,00,0*77",
+		msg: GSV{
+			TotalMessages:   1,
+			MessageNumber:   1,
+			NumberSVsInView: 0,
+			Info:            nil,
+		},
+	},
+	{
 		name: "invalid number of svs",
 		raw:  "$GLGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*77",
 		err:  "nmea: GLGSV invalid number of SVs in view: 11.2",
