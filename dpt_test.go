@@ -31,6 +31,15 @@ var dpttests = []struct {
 		},
 	},
 	{
+		name: "good sentence with 2 fields",
+		raw:  "$INDPT,2.3,0.0*46",
+		msg: DPT{
+			Depth:      MustParseDecimal("2.3"),
+			Offset:     MustParseDecimal("0.0"),
+			RangeScale: MustParseDecimal("0"),
+		},
+	},
+	{
 		name: "bad validity",
 		raw:  "$SDDPT,0.5,0.5,*AA",
 		err:  "nmea: sentence checksum mismatch [7B != AA]",
