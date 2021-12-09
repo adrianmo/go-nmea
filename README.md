@@ -193,16 +193,16 @@ func main() {
 		panic(err)
 	}
 
-	m, ok := s.(XYZType)
-	if !ok {
-		panic("Could not parse type XYZ")
+	switch m := s.(type) {
+	case XYZType:
+		fmt.Printf("Raw sentence: %v\n", m)
+		fmt.Printf("Time: %s\n", m.Time)
+		fmt.Printf("Label: %s\n", m.Label)
+		fmt.Printf("Counter: %d\n", m.Counter)
+		fmt.Printf("Value: %f\n", m.Value)
+	default:
+		panic("Could not parse XYZ sentence")
 	}
-
-	fmt.Printf("Raw sentence: %v\n", m)
-	fmt.Printf("Time: %s\n", m.Time)
-	fmt.Printf("Label: %s\n", m.Label)
-	fmt.Printf("Counter: %d\n", m.Counter)
-	fmt.Printf("Value: %f\n", m.Value)
 }
 ```
 
