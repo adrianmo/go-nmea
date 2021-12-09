@@ -1,6 +1,7 @@
 package nmea
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -58,11 +59,11 @@ var sentencetests = []struct {
 		},
 	},
 	{
-		name: "valid NMEA 4.10 TAG Block",
-		raw:  "\\s:Satelite_1,c:1553390539*62\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
+		name:     "valid NMEA 4.10 TAG Block",
+		raw:      "\\s:Satelite_1,c:1553390539*62\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
 		datatype: "VDM",
 		talkerid: "AI",
-		prefix: "AIVDM",
+		prefix:   "AIVDM",
 		sent: BaseSentence{
 			Talker:   "AI",
 			Type:     "VDM",
@@ -108,17 +109,17 @@ var sentencetests = []struct {
 	{
 		name: "missing TAG Block start delimiter",
 		raw:  "s:Satelite_1,c:1553390539*62\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
-		err: "nmea: sentence does not start with a '$' or '!'",
+		err:  "nmea: sentence does not start with a '$' or '!'",
 	},
 	{
 		name: "missing TAG Block end delimiter",
 		raw:  "\\s:Satelite_1,c:1553390539*62!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
-		err: "nmea: sentence does not start with a '$' or '!'",
+		err:  "nmea: sentence does not start with a '$' or '!'",
 	},
 	{
 		name: "invalid TAG Block contents",
 		raw:  "\\\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
-		err: "nmea: tagblock does not contain checksum separator",
+		err:  "nmea: tagblock does not contain checksum separator",
 	},
 }
 
@@ -191,23 +192,23 @@ func TestPrefix(t *testing.T) {
 var parsetests = []struct {
 	name string
 	raw  string
-	err  string
+	err  error
 	msg  interface{}
 }{
 	{
 		name: "bad sentence",
 		raw:  "SDFSD,2340dfmswd",
-		err:  "nmea: sentence does not start with a '$' or '!'",
+		err:  errors.New("nmea: sentence does not start with a '$' or '!'"),
 	},
 	{
 		name: "bad sentence type",
 		raw:  "$INVALID,123,123,*7D",
-		err:  "nmea: sentence prefix 'INVALID' not supported",
+		err:  &NotSupportedError{Prefix: "INVALID"},
 	},
 	{
 		name: "bad encapsulated sentence type",
 		raw:  "!INVALID,1,2,*7E",
-		err:  "nmea: sentence prefix 'INVALID' not supported",
+		err:  &NotSupportedError{Prefix: "INVALID"},
 	},
 }
 
@@ -215,8 +216,8 @@ func TestParse(t *testing.T) {
 	for _, tt := range parsetests {
 		t.Run(tt.name, func(t *testing.T) {
 			m, err := Parse(tt.raw)
-			if tt.err != "" {
-				assert.EqualError(t, err, tt.err)
+			if tt.err != nil {
+				assert.Equal(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.msg, m)
