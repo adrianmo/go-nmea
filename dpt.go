@@ -18,10 +18,13 @@ type DPT struct {
 func newDPT(s BaseSentence) (DPT, error) {
 	p := NewParser(s)
 	p.AssertType(TypeDPT)
-	return DPT{
+	dpt := DPT{
 		BaseSentence: s,
 		Depth:        p.Float64(0, "depth"),
 		Offset:       p.Float64(1, "offset"),
-		RangeScale:   p.Float64(2, "range scale"),
-	}, p.Err()
+	}
+	if len(p.Fields) > 2 {
+		dpt.RangeScale = p.Float64(2, "range scale")
+	}
+	return dpt, p.Err()
 }
