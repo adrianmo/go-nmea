@@ -201,18 +201,32 @@ func Parse(raw string) (Sentence, error) {
 			return newZDA(s)
 		case TypePGRME:
 			return newPGRME(s)
+		case TypePHTRO:
+			return newPHTRO(s)
+		case TypePRDID:
+			return newPRDID(s)
+		case TypePSONCMS:
+			return newPSONCMS(s)
 		case TypeGSV:
 			return newGSV(s)
+		case TypeHDG:
+			return newHDG(s)
 		case TypeHDT:
 			return newHDT(s)
+		case TypeHDM:
+			return newHDM(s)
 		case TypeGNS:
 			return newGNS(s)
 		case TypeTHS:
 			return newTHS(s)
+		case TypeTXT:
+			return newTXT(s)
 		case TypeWPL:
 			return newWPL(s)
 		case TypeRTE:
 			return newRTE(s)
+		case TypeROT:
+			return newROT(s)
 		case TypeVHW:
 			return newVHW(s)
 		case TypeDPT:
@@ -223,6 +237,8 @@ func Parse(raw string) (Sentence, error) {
 			return newDBS(s)
 		case TypeMDA:
 			return newMDA(s)
+		case TypeMTW:
+			return newMTW(s)
 		case TypeMWD:
 			return newMWD(s)
 		case TypeMWV:

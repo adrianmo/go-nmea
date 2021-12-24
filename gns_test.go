@@ -26,6 +26,7 @@ var gnstests = []struct {
 			Separation: 11.24,
 			Age:        0,
 			Station:    0,
+			NavStatus:  "",
 		},
 	},
 	{
@@ -42,10 +43,11 @@ var gnstests = []struct {
 			Separation: 48.0,
 			Age:        0,
 			Station:    0,
+			NavStatus:  "",
 		},
 	},
 	{
-		name: "good sentence B",
+		name: "good sentence C",
 		raw:  "$GNGNS,094821.0,4849.931307,N,00216.053323,E,AAN,14,0.6,161.5,48.0,,*23",
 		msg: GNS{
 			Time:       Time{true, 9, 48, 21, 0},
@@ -58,6 +60,24 @@ var gnstests = []struct {
 			Separation: 48.0,
 			Age:        0,
 			Station:    0,
+			NavStatus:  "",
+		},
+	},
+	{
+		name: "good sentence D with nav status",
+		raw:  "$GPGNS,224749.00,3333.4268304,N,11153.3538273,W,D,19,0.6,406.110,-26.294,6.0,0138,S*6A",
+		msg: GNS{
+			Time:       Time{Valid: true, Hour: 22, Minute: 47, Second: 49, Millisecond: 0},
+			Latitude:   33.55711384000001,
+			Longitude:  -111.88923045499999,
+			Mode:       []string{"D"},
+			SVs:        19,
+			HDOP:       0.6,
+			Altitude:   406.11,
+			Separation: -26.294,
+			Age:        6,
+			Station:    138,
+			NavStatus:  "S",
 		},
 	},
 	{

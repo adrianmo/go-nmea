@@ -29,32 +29,47 @@ To update go-nmea to the latest version, use `go get -u github.com/adrianmo/go-n
 
 At this moment, this library supports the following sentence types:
 
-| Sentence type                                                                       | Description                                                         |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| [RMC](http://aprs.gids.nl/nmea/#rmc)                                                | Recommended Minimum Specific GPS/Transit data                       |
-| [PMTK](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf)                         | Messages for setting and reading commands for MediaTek gps modules. |
-| [GGA](http://aprs.gids.nl/nmea/#gga)                                                | GPS Positioning System Fix Data                                     |
-| [GSA](http://aprs.gids.nl/nmea/#gsa)                                                | GPS DOP and active satellites                                       |
-| [GSV](http://aprs.gids.nl/nmea/#gsv)                                                | GPS Satellites in view                                              |
-| [GLL](http://aprs.gids.nl/nmea/#gll)                                                | Geographic Position, Latitude / Longitude and time                  |
-| [VTG](http://aprs.gids.nl/nmea/#vtg)                                                | Track Made Good and Ground Speed                                    |
-| [ZDA](http://aprs.gids.nl/nmea/#zda)                                                | Date & time data                                                    |
-| [HDT](http://aprs.gids.nl/nmea/#hdt)                                                | Actual vessel heading in degrees True                               |
-| [GNS](https://www.trimble.com/oem_receiverhelp/v4.44/en/NMEA-0183messages_GNS.html) | Combined GPS fix for GPS, Glonass, Galileo, and BeiDou              |
-| [PGRME](http://aprs.gids.nl/nmea/#rme)                                              | Estimated Position Error (Garmin proprietary sentence)              |
-| [THS](http://www.nuovamarea.net/pytheas_9.html)                                     | Actual vessel heading in degrees True and status                    |
-| [VDM/VDO](http://catb.org/gpsd/AIVDM.html)                                          | Encapsulated binary payload                                         |
-| [WPL](http://aprs.gids.nl/nmea/#wpl)                                                | Waypoint location                                                   |
-| [RTE](http://aprs.gids.nl/nmea/#rte)                                                | Route                                                               |
-| [VHW](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                               | Water Speed and Heading                                             |
-| [DPT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water)                    | Depth of Water                                                      |
-| [DBS](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface)               | Depth Below Surface                                                 |
-| [DBT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer)            | Depth below transducer                                              |
-| [MDA](#)                                                                            | Meteorological Composite                                            |
-| [MWD](#)                                                                            | Wind Direction and Speed                                            |
-| [MWV](#)                                                                            | Wind Speed and Angle                                                |
+| Sentence type                                                                 | Description                                               |
+|-------------------------------------------------------------------------------|-----------------------------------------------------------|
+| [RMC](http://aprs.gids.nl/nmea/#rmc)                                          | Recommended Minimum Specific GPS/Transit data             |
+| [GGA](http://aprs.gids.nl/nmea/#gga)                                          | GPS Positioning System Fix Data                           |
+| [GSA](http://aprs.gids.nl/nmea/#gsa)                                          | GPS DOP and active satellites                             |
+| [GSV](http://aprs.gids.nl/nmea/#gsv)                                          | GPS Satellites in view                                    |
+| [GLL](http://aprs.gids.nl/nmea/#gll)                                          | Geographic Position, Latitude / Longitude and time        |
+| [VTG](http://aprs.gids.nl/nmea/#vtg)                                          | Track Made Good and Ground Speed                          |
+| [ZDA](http://aprs.gids.nl/nmea/#zda)                                          | Date & time data                                          |
+| [HDT](http://aprs.gids.nl/nmea/#hdt)                                          | Actual vessel heading in degrees True                     |
+| [HDG](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdg_heading_deviation_variation) | Heading, Deviation & Variation                            |
+| [HDM](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdm_heading_magnetic)            | Heading - Magnetic                                        |
+| [GNS](https://gpsd.gitlab.io/gpsd/NMEA.html#_gns_fix_data)                    | Combined GPS fix for GPS, Glonass, Galileo, and BeiDou    |
+| [VDM/VDO](https://gpsd.gitlab.io/gpsd/AIVDM.html)                             | Encapsulated binary payload (commonly used with AIS data) |
+| [WPL](http://aprs.gids.nl/nmea/#wpl)                                          | Waypoint location                                         |
+| [RTE](http://aprs.gids.nl/nmea/#rte)                                          | Route                                                     |
+| [ROT](https://gpsd.gitlab.io/gpsd/NMEA.html#_rot_rate_of_turn)                | Rate of turn                                              |
+| [VHW](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                         | Water Speed and Heading                                   |
+| [DPT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water)              | Depth of Water                                            |
+| [DBS](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface)         | Depth Below Surface                                       |
+| [DBT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer)      | Depth below transducer                                    |
+| [MDA](https://gpsd.gitlab.io/gpsd/NMEA.html#_mda_meteorological_composite)    | Meteorological Composite                                  |
+| [MWD](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                         | Wind Direction and Speed                                  |
+| [MWV](https://gpsd.gitlab.io/gpsd/NMEA.html#_mwv_wind_speed_and_angle)        | Wind Speed and Angle                                      |
+| [MTW](https://gpsd.gitlab.io/gpsd/NMEA.html#_mtw_mean_temperature_of_water)   | Mean Temperature of Water                                 |
+| [THS](http://www.nuovamarea.net/pytheas_9.html)                               | Actual vessel heading in degrees True and status          |
+| [TXT](https://www.nmea.org/Assets/20160520%20txt%20amendment.pdf)             | Sentence is for the transmission of text messages         |
 
-If you need to parse a message that contains an unsupported sentence type you can implement and register your own message parser and get yourself unblocked immediately. Check the example below to know how to [implement and register a custom message parser](#custom-message-parsing). However, if you think your custom message parser could be beneficial to other users we encourage you to contribute back to the library by submitting a PR and get it included in the list of supported sentences.
+| Proprietary sentence type                                   | Description                                                                                     |
+|-------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| [PMTK](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf) | Messages for setting and reading commands for MediaTek gps modules.                             |
+| [PGRME](http://aprs.gids.nl/nmea/#rme)                      | Estimated Position Error (Garmin proprietary sentence)                                          |
+| [PSONCMS](#)                                                | Quaternion, acceleration, rate of turn, magnetic field, sensor temperature (Xsens IMU/VRU/AHRS) |
+| [PRDID](#)                                                  | Vessel pitch, roll and heading (Xsens IMU/VRU/AHRS)                                             |
+| [PHTRO](#)                                                  | Vessel pitch and roll (Xsens IMU/VRU/AHRS)                                                      |
+
+If you need to parse a message that contains an unsupported sentence type you can implement and register your own
+message parser and get yourself unblocked immediately. Check the example below to know how
+to [implement and register a custom message parser](#custom-message-parsing). However, if you think your custom message
+parser could be beneficial to other users we encourage you to contribute back to the library by submitting a PR and get
+it included in the list of supported sentences.
 
 ## Examples
 
@@ -147,8 +162,8 @@ TAG Block source:    Satelite_1
 
 ### Custom message parsing
 
-If you need to parse a message not supported by the library you can implement your own message parsing.
-The following example implements a parser for the hypothetical XYZ NMEA sentence type.
+If you need to parse a message not supported by the library you can implement your own message parsing. The following
+example implements a parser for the hypothetical XYZ NMEA sentence type.
 
 ```go
 package main
@@ -220,7 +235,8 @@ Value: 5133.820000
 
 ## Contributing
 
-Please feel free to submit issues or fork the repository and send pull requests to update the library and fix bugs, implement support for new sentence types, refactor code, etc.
+Please feel free to submit issues or fork the repository and send pull requests to update the library and fix bugs,
+implement support for new sentence types, refactor code, etc.
 
 ## License
 

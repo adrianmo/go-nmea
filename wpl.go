@@ -6,6 +6,11 @@ const (
 )
 
 // WPL contains information about a waypoint location
+// http://aprs.gids.nl/nmea/#wpl
+// https://gpsd.gitlab.io/gpsd/NMEA.html#_wpl_waypoint_location
+//
+// Format: $--WPL,llll.ll,a,yyyyy.yy,a,c--c*hh<CR><LF>
+// Example:  $IIWPL,5503.4530,N,01037.2742,E,411*6F
 type WPL struct {
 	BaseSentence
 	Latitude  float64 // Latitude

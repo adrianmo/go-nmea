@@ -12,6 +12,50 @@ import (
 	"unicode"
 )
 
+// FAAMode is type for FAA mode indicator (NMEA 2.3 and later).
+// In NMEA 2.3, several sentences (APB, BWC, BWR, GLL, RMA, RMB, RMC, VTG, WCV, and XTE) got a new last field carrying
+// the signal integrity information needed by the FAA.
+// Source: https://www.xj3.nl/dokuwiki/doku.php?id=nmea
+// Note: there can be other values (proprietary).
+const (
+	// FAAModeAutonomous is Autonomous mode
+	FAAModeAutonomous = "A"
+	// FAAModeDifferential is Differential Mode
+	FAAModeDifferential = "D"
+	// FAAModeEstimated is Estimated (dead-reckoning) mode
+	FAAModeEstimated = "E"
+	// FAAModeRTKFloat is RTK Float mode
+	FAAModeRTKFloat = "F"
+	// FAAModeManualInput is Manual Input Mode
+	FAAModeManualInput = "M"
+	// FAAModeDataNotValid is Data Not Valid
+	FAAModeDataNotValid = "N"
+	// FAAModePrecise is Precise (NMEA4.00+)
+	FAAModePrecise = "P"
+	// FAAModeRTKInteger is RTK Integer mode
+	FAAModeRTKInteger = "R"
+	// FAAModeSimulated is Simulated Mode
+	FAAModeSimulated = "S"
+)
+
+// Navigation Status (NMEA 4.1 and later)
+const (
+	// NavStatusAutonomous is Autonomous mode
+	NavStatusAutonomous = "A"
+	// NavStatusDifferential is Differential Mode
+	NavStatusDifferential = "D"
+	// NavStatusEstimated is Estimated (dead-reckoning) mode
+	NavStatusEstimated = "E"
+	// NavStatusManualInput is Manual Input Mode
+	NavStatusManualInput = "M"
+	// NavStatusSimulated is Simulated Mode
+	NavStatusSimulated = "S"
+	// NavStatusDataNotValid is Data Not Valid
+	NavStatusDataNotValid = "N"
+	// NavStatusDataValid is valid
+	NavStatusDataValid = "V"
+)
+
 const (
 	// Degrees value
 	Degrees = '\u00B0'

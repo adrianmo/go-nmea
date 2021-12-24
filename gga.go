@@ -20,6 +20,11 @@ const (
 )
 
 // GGA is the Time, position, and fix related data of the receiver.
+// http://aprs.gids.nl/nmea/#gga
+// https://gpsd.gitlab.io/gpsd/NMEA.html#_gga_global_positioning_system_fix_data
+//
+// Format: $--GGA,hhmmss.ss,ddmm.mm,a,ddmm.mm,a,x,xx,x.x,x.x,M,x.x,M,x.x,xxxx*hh<CR><LF>
+// Example: $GNGGA,203415.000,6325.6138,N,01021.4290,E,1,8,2.42,72.5,M,41.5,M,,*7C
 type GGA struct {
 	BaseSentence
 	Time          Time    // Time of fix.

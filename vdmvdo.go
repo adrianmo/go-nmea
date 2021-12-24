@@ -8,9 +8,10 @@ const (
 	TypeVDO = "VDO"
 )
 
-// VDMVDO is a format used to encapsulate generic binary payloads. It is most commonly used
-// with AIS data.
-// http://catb.org/gpsd/AIVDM.html
+// VDMVDO is sentence ($--VDM or $--VDO) used to encapsulate generic binary payloads. It is most commonly used with AIS data.
+// https://gpsd.gitlab.io/gpsd/AIVDM.html
+//
+// Example: !AIVDM,1,1,,B,177KQJ5000G?tO`K>RA1wUbN0TKH,0*5C
 type VDMVDO struct {
 	BaseSentence
 	NumFragments   int64

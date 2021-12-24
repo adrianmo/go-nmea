@@ -54,6 +54,11 @@ const (
 
 // MDA is the Meteorological Composite
 // Data of air pressure, air and water temperatures and wind speed and direction
+// https://gpsd.gitlab.io/gpsd/NMEA.html#_mda_meteorological_composite
+// https://opencpn.org/wiki/dokuwiki/doku.php?id=opencpn:opencpn_user_manual:advanced_features:nmea_sentences#mda
+//
+// Format: $--MDA,n.nn,I,n.nnn,B,n.n,C,n.C,n.n,n,n.n,C,n.n,T,n.n,M,n.n,N,n.n,M*hh<CR><LF>
+// Example: $WIMDA,3.02,I,1.01,B,23.4,C,,,40.2,,12.1,C,19.3,T,20.1,M,13.1,N,1.1,M*62
 type MDA struct {
 	BaseSentence
 	PressureInch          float64

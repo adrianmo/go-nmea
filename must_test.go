@@ -29,15 +29,6 @@ func MustParseDMS(s string) float64 {
 	return l
 }
 
-// ParseDecimal parses a decimal format coordinate and panics on error.
-func MustParseDecimal(s string) float64 {
-	l, err := ParseDecimal(s)
-	if err != nil {
-		panic(err)
-	}
-	return l
-}
-
 // MustParseTime parses wall clock and panics on failure
 func MustParseTime(s string) Time {
 	t, err := ParseTime(s)

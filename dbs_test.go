@@ -16,9 +16,18 @@ var dbstests = []struct {
 		name: "good sentence",
 		raw:  "$23DBS,01.9,f,0.58,M,00.3,F*21",
 		msg: DBS{
-			DepthFeet:    MustParseDecimal("1.9"),
-			DepthMeters:  MustParseDecimal("0.58"),
-			DepthFathoms: MustParseDecimal("0.3"),
+			DepthFeet:    1.9,
+			DepthMeters:  0.58,
+			DepthFathoms: 0.3,
+		},
+	},
+	{
+		name: "good sentence 2",
+		raw:  "$SDDBS,,,0187.5,M,,*1A", // Simrad ITI Trawl System
+		msg: DBS{
+			DepthFeet:    0,
+			DepthMeters:  187.5,
+			DepthFathoms: 0,
 		},
 	},
 	{

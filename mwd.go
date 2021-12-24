@@ -33,6 +33,11 @@ const (
 )
 
 // MWD Wind Direction and Speed, with respect to north.
+// https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf
+// http://gillinstruments.com/data/manuals/OMC-140_Operator_Manual_v1.04_131117.pdf
+//
+// Format: $--MWD,x.x,T,x.x,M,x.x,N,x.x,M*hh<CR><LF>
+// Example: $WIMWD,10.1,T,10.1,M,12,N,40,M*5D
 type MWD struct {
 	BaseSentence
 	WindDirectionTrue     float64

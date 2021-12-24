@@ -7,6 +7,10 @@ const (
 
 // ZDA represents date & time data.
 // http://aprs.gids.nl/nmea/#zda
+// https://gpsd.gitlab.io/gpsd/NMEA.html#_zda_time_date_utc_day_month_year_and_local_time_zone
+//
+// Format: $--ZDA,hhmmss.ss,xx,xx,xxxx,xx,xx*hh<CR><LF>
+// Example: $GPZDA,172809.456,12,07,1996,00,00*57
 type ZDA struct {
 	BaseSentence
 	Time          Time

@@ -52,6 +52,22 @@ var gsvtests = []struct {
 		},
 	},
 	{
+		name: "good sentence with system id",
+		raw:  "$GAGSV,3,1,09,02,00,179,,04,09,321,,07,11,134,11,11,10,227,,7*7F",
+		msg: GSV{
+			TotalMessages:   3,
+			MessageNumber:   1,
+			NumberSVsInView: 9,
+			Info: []GSVInfo{
+				{SVPRNNumber: 2, Elevation: 0, Azimuth: 179, SNR: 0},
+				{SVPRNNumber: 4, Elevation: 9, Azimuth: 321, SNR: 0},
+				{SVPRNNumber: 7, Elevation: 11, Azimuth: 134, SNR: 11},
+				{SVPRNNumber: 11, Elevation: 10, Azimuth: 227, SNR: 0},
+			},
+			SystemID: 7,
+		},
+	},
+	{
 		name: "invalid number of svs",
 		raw:  "$GLGSV,3,1,11.2,03,03,111,00,04,15,270,00,06,01,010,12,13,06,292,00*77",
 		err:  "nmea: GLGSV invalid number of SVs in view: 11.2",

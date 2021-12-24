@@ -9,6 +9,10 @@ const (
 
 // PGRME is Estimated Position Error (Garmin proprietary sentence)
 // http://aprs.gids.nl/nmea/#rme
+// https://gpsd.gitlab.io/gpsd/NMEA.html#_pgrme_garmin_estimated_error
+//
+// Format: $PGRME,hhh,M,vvv,M,ttt,M*hh<CR><LF>
+// Example: $PGRME,3.3,M,4.9,M,6.0,M*25
 type PGRME struct {
 	BaseSentence
 	Horizontal float64 // Estimated horizontal position error (HPE) in metres

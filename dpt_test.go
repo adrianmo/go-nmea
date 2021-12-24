@@ -16,27 +16,27 @@ var dpttests = []struct {
 		name: "good sentence",
 		raw:  "$SDDPT,0.5,0.5,*7B",
 		msg: DPT{
-			Depth:      MustParseDecimal("0.5"),
-			Offset:     MustParseDecimal("0.5"),
-			RangeScale: MustParseDecimal("0"),
+			Depth:      0.5,
+			Offset:     0.5,
+			RangeScale: 0,
 		},
 	},
 	{
 		name: "good sentence with scale",
 		raw:  "$SDDPT,0.5,0.5,0.1*54",
 		msg: DPT{
-			Depth:      MustParseDecimal("0.5"),
-			Offset:     MustParseDecimal("0.5"),
-			RangeScale: MustParseDecimal("0.1"),
+			Depth:      0.5,
+			Offset:     0.5,
+			RangeScale: 0.1,
 		},
 	},
 	{
 		name: "good sentence with 2 fields",
 		raw:  "$INDPT,2.3,0.0*46",
 		msg: DPT{
-			Depth:      MustParseDecimal("2.3"),
-			Offset:     MustParseDecimal("0.0"),
-			RangeScale: MustParseDecimal("0"),
+			Depth:      2.3,
+			Offset:     0,
+			RangeScale: 0,
 		},
 	},
 	{

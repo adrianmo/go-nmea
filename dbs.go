@@ -7,6 +7,9 @@ const (
 
 // DBS - Depth Below Surface
 // https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface
+//
+// Format: $--DBS,x.x,f,x.x,M,x.x,F*hh<CR><LF>
+// Example: $23DBS,01.9,f,0.58,M,00.3,F*21
 type DBS struct {
 	BaseSentence
 	DepthFeet    float64
