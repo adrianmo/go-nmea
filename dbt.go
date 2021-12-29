@@ -7,6 +7,9 @@ const (
 
 // DBT - Depth below transducer
 // https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer
+//
+// Format: $--DBT,x.x,f,x.x,M,x.x,F*hh<CR><LF>
+// Example: $IIDBT,032.93,f,010.04,M,005.42,F*2C
 type DBT struct {
 	BaseSentence
 	DepthFeet    float64

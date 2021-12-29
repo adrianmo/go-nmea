@@ -26,6 +26,24 @@ var glltests = []struct {
 				Millisecond: 0,
 			},
 			Validity: "A",
+			FFAMode:  FAAModeAutonomous,
+		},
+	},
+	{
+		name: "good sentence without FAA mode",
+		raw:  "$IIGLL,5924.462,N,01030.048,E,062216,A*38",
+		msg: GLL{
+			Latitude:  MustParseLatLong("5924.462 N"),
+			Longitude: MustParseLatLong("01030.048 E"),
+			Time: Time{
+				Valid:       true,
+				Hour:        6,
+				Minute:      22,
+				Second:      16,
+				Millisecond: 0,
+			},
+			Validity: "A",
+			FFAMode:  "",
 		},
 	},
 	{

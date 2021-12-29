@@ -7,11 +7,15 @@ const (
 
 // DPT - Depth of Water
 // https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water
+//
+// Format: $--DPT,x.x,x.x,x.x*hh<CR><LF>
+// Example: $SDDPT,0.5,0.5,*7B
+//          $INDPT,2.3,0.0*46
 type DPT struct {
 	BaseSentence
-	Depth      float64
-	Offset     float64
-	RangeScale float64
+	Depth      float64 // Water depth relative to transducer, meters
+	Offset     float64 // offset from transducer
+	RangeScale float64 // OPTIONAL, Maximum range scale in use (NMEA 3.0 and above)
 }
 
 // newDPT constructor

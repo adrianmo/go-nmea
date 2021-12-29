@@ -48,6 +48,10 @@ const (
 )
 
 // MWV is the Wind Speed and Angle, in relation to the vessel’s bow/centerline.
+// https://gpsd.gitlab.io/gpsd/NMEA.html#_mwv_wind_speed_and_angle
+//
+// Format: $--MWV,x.x,a,x.x,a*hh<CR><LF>
+// Example: $WIMWV,12.1,T,10.1,N,A*27
 type MWV struct {
 	BaseSentence
 	WindAngle     float64

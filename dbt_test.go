@@ -16,9 +16,9 @@ var dbttests = []struct {
 		name: "good sentence",
 		raw:  "$IIDBT,032.93,f,010.04,M,005.42,F*2C",
 		msg: DBT{
-			DepthFeet:    MustParseDecimal("32.93"),
-			DepthMeters:  MustParseDecimal("10.04"),
-			DepthFathoms: MustParseDecimal("5.42"),
+			DepthFeet:    32.93,
+			DepthMeters:  10.04,
+			DepthFathoms: 5.42,
 		},
 	},
 	{

@@ -12,6 +12,11 @@ const (
 )
 
 // RTE is a route of waypoints
+// http://aprs.gids.nl/nmea/#rte
+// https://gpsd.gitlab.io/gpsd/NMEA.html#_rte_routes
+//
+// Format: $--RTE,x.x,x.x,a,c--c,c--c, ..... c--c*hh<CR><LF>
+// Example: $GPRTE,2,1,c,0,PBRCPK,PBRTO,PTELGR,PPLAND,PYAMBU,PPFAIR,PWARRN,PMORTL,PLISMR*73
 type RTE struct {
 	BaseSentence
 	NumberOfSentences         int64    // Number of sentences in sequence

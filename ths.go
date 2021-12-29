@@ -17,6 +17,10 @@ const (
 
 // THS is the Actual vessel heading in degrees True with status.
 // http://www.nuovamarea.net/pytheas_9.html
+// http://manuals.spectracom.com/VSP/Content/VSP/NMEA_THSmess.htm
+//
+// Format: $--THS,xxx.xx,c*hh<CR><LF>
+// Example: $GPTHS,338.01,A*36
 type THS struct {
 	BaseSentence
 	Heading float64 // Heading in degrees

@@ -6,6 +6,10 @@ const (
 )
 
 // VHW contains information about water speed and heading
+// https://gpsd.gitlab.io/gpsd/NMEA.html#_vhw_water_speed_and_heading
+//
+// Format: $--VHW,x.x,T,x.x,M,x.x,N,x.x,K*hh<CR><LF>
+// Example: $VWVHW,45.0,T,43.0,M,3.5,N,6.4,K*56
 type VHW struct {
 	BaseSentence
 	TrueHeading            float64

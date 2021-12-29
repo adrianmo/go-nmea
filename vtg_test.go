@@ -20,6 +20,18 @@ var vtgtests = []struct {
 			MagneticTrack:    67.5,
 			GroundSpeedKnots: 30.45,
 			GroundSpeedKPH:   56.4,
+			FFAMode:          "",
+		},
+	},
+	{
+		name: "good sentence with FAA mode",
+		raw:  "$GPVTG,220.86,T,,M,2.550,N,4.724,K,A*34",
+		msg: VTG{
+			TrueTrack:        220.86,
+			MagneticTrack:    0,
+			GroundSpeedKnots: 2.55,
+			GroundSpeedKPH:   4.724,
+			FFAMode:          "A",
 		},
 	},
 	{
