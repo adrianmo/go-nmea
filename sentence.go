@@ -189,6 +189,32 @@ func Parse(raw string) (Sentence, error) {
 		switch s.Type {
 		case TypeRMC:
 			return newRMC(s)
+		case TypeAAM:
+			return newAAM(s)
+		case TypeALA:
+			return newALA(s)
+		case TypeAPB:
+			return newAPB(s)
+		case TypeBEC:
+			return newBEC(s)
+		case TypeBOD:
+			return newBOD(s)
+		case TypeBWC:
+			return newBWC(s)
+		case TypeBWR:
+			return newBWR(s)
+		case TypeBWW:
+			return newBWW(s)
+		case TypeDOR:
+			return newDOR(s)
+		case TypeDSE:
+			return newDSE(s)
+		case TypeDSC:
+			return newDSC(s)
+		case TypeEVE:
+			return newEVE(s)
+		case TypeFIR:
+			return newFIR(s)
 		case TypeGGA:
 			return newGGA(s)
 		case TypeGSA:
@@ -215,6 +241,8 @@ func Parse(raw string) (Sentence, error) {
 			return newHDT(s)
 		case TypeHDM:
 			return newHDM(s)
+		case TypeHSC:
+			return newHSC(s)
 		case TypeGNS:
 			return newGNS(s)
 		case TypeTHS:
@@ -223,26 +251,50 @@ func Parse(raw string) (Sentence, error) {
 			return newTXT(s)
 		case TypeWPL:
 			return newWPL(s)
+		case TypeRMB:
+			return newRMB(s)
+		case TypeRPM:
+			return newRPM(s)
+		case TypeRSA:
+			return newRSA(s)
 		case TypeRTE:
 			return newRTE(s)
 		case TypeROT:
 			return newROT(s)
+		case TypeVDR:
+			return newVDR(s)
 		case TypeVHW:
 			return newVHW(s)
+		case TypeVPW:
+			return newVPW(s)
+		case TypeVLW:
+			return newVLW(s)
+		case TypeVWR:
+			return newVWR(s)
+		case TypeVWT:
+			return newVWT(s)
 		case TypeDPT:
 			return newDPT(s)
 		case TypeDBT:
 			return newDBT(s)
+		case TypeDBK:
+			return newDBK(s)
 		case TypeDBS:
 			return newDBS(s)
 		case TypeMDA:
 			return newMDA(s)
+		case TypeMTA:
+			return newMTA(s)
 		case TypeMTW:
 			return newMTW(s)
 		case TypeMWD:
 			return newMWD(s)
 		case TypeMWV:
 			return newMWV(s)
+		case TypeXDR:
+			return newXDR(s)
+		case TypeXTE:
+			return newXTE(s)
 		}
 	}
 	if strings.HasPrefix(s.Raw, SentenceStartEncapsulated) {

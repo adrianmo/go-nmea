@@ -12,6 +12,91 @@ import (
 	"unicode"
 )
 
+const (
+	// StatusValid indicated status having valid value
+	StatusValid = "A"
+	// StatusInvalid indicated status having invalid value
+	StatusInvalid = "V"
+)
+
+const (
+	// UnitAmpere is unit for current in Amperes
+	UnitAmpere = "A"
+	// UnitBars is unit for pressure in Bars
+	UnitBars = "B"
+	// UnitBinary is unit for binary data
+	UnitBinary = "B"
+	// UnitCelsius is unit for temperature in Celsius
+	UnitCelsius = TemperatureCelsius
+	// UnitFahrenheit is unit for temperature in Fahrenheit
+	UnitFahrenheit = TemperatureFahrenheit
+	// UnitDegrees is unit for angular displacement in Degrees
+	UnitDegrees = "D"
+	// UnitHertz is unit for frequency in Hertz
+	UnitHertz = "H"
+	// UnitLitresPerSecond is unit for volumetric flow in Litres per second
+	UnitLitresPerSecond = "I"
+	// UnitKelvin is unit of temperature in Kelvin
+	UnitKelvin = TemperatureKelvin
+	// UnitKilogramPerCubicMetre is unit of density in kilogram per cubic metre
+	UnitKilogramPerCubicMetre = "K"
+	// UnitMeters is unit of distance in Meters
+	UnitMeters = DistanceUnitMetre
+	// UnitCubicMeters is unit of volume in cubic meters
+	UnitCubicMeters = "M"
+	// UnitRevolutionsPerMinute is unit of rotational speed or the frequency of rotation around a fixed axis in revolutions per minute (RPM)
+	UnitRevolutionsPerMinute = "R"
+	// UnitPercent is percent of full range
+	UnitPercent = "P"
+	// UnitPascal is unit of pressure in Pascals
+	UnitPascal = "P"
+	// UnitPartsPerThousand is in parts-per notation set of pseudo-unit to describe small values of miscellaneous dimensionless quantities, e.g. mole fraction or mass fraction.
+	UnitPartsPerThousand = "S"
+	// UnitVolts is unit of voltage in Volts
+	UnitVolts = "V"
+)
+
+const (
+	// SpeedKnots is a unit of speed equal to one nautical mile per hour, exactly 1.852 km/h (approximately 1.151 mph or 0.514 m/s)
+	SpeedKnots = "N"
+	// SpeedMeterPerSecond is unit of speed of 1 meter per second
+	SpeedMeterPerSecond = "M"
+	// SpeedKilometerPerHour is unit of speed of 1 kilometer per hour
+	SpeedKilometerPerHour = "K"
+)
+
+const (
+	// TemperatureCelsius is unit of temperature measured in celsius. °C = (°F − 32) / 1,8
+	TemperatureCelsius = "C"
+	// TemperatureFahrenheit is unit of temperature measured in fahrenheits. °F = °C * 1,8 + 32
+	TemperatureFahrenheit = "F"
+	// TemperatureKelvin is unit of temperature measured in kelvins. K = °C + 273,15
+	TemperatureKelvin = "K"
+)
+
+// In navigation, the heading of a vessel or object is the compass direction in which the craft's bow or nose is pointed.
+// Note that the heading may not necessarily be the direction that the vehicle actually travels, which is known as
+// its course or track.
+// https://en.wikipedia.org/wiki/Heading_(navigation)
+const (
+	// HeadingMagnetic - Magnetic heading is your direction relative to magnetic north, read from your magnetic compass.
+	// Magnetic north is the point on the Earth's surface where its magnetic field points directly downwards.
+	HeadingMagnetic = "M"
+	// HeadingTrue - True heading is your direction relative to true north, or the geographic north pole.
+	// True north is the northern axis of rotation of the Earth. It is the point where the lines of longitude converge
+	// on maps.
+	HeadingTrue = "T"
+)
+
+// In nautical navigation the absolute bearing is the clockwise angle between north and an object observed from the vessel.
+// https://en.wikipedia.org/wiki/Bearing_(angle)
+const (
+	// BearingMagnetic is the clockwise angle between Earth's magnetic north and an object observed from the vessel.
+	BearingMagnetic = "M"
+	// BearingTrue  is the clockwise angle between Earth's true (geographical) north and an object observed from the vessel.
+	BearingTrue = "T"
+)
+
 // FAAMode is type for FAA mode indicator (NMEA 2.3 and later).
 // In NMEA 2.3, several sentences (APB, BWC, BWR, GLL, RMA, RMB, RMC, VTG, WCV, and XTE) got a new last field carrying
 // the signal integrity information needed by the FAA.
@@ -57,6 +142,21 @@ const (
 )
 
 const (
+	// DistanceUnitKilometre is unit for distance in kilometres (1km = 1000m)
+	DistanceUnitKilometre = "K"
+	// DistanceUnitNauticalMile is unit for distance in nautical miles (1nmi = 1852m)
+	DistanceUnitNauticalMile = "N"
+	// DistanceUnitStatuteMile is unit for distance in statute miles (1smi = 5,280 feet = 1609.344m)
+	DistanceUnitStatuteMile = "S"
+	// DistanceUnitMetre is unit for distance in metres
+	DistanceUnitMetre = "M"
+	// DistanceUnitFeet is unit for distance in feets (1f = 0.3048m)
+	DistanceUnitFeet = "f"
+	// DistanceUnitFathom is unit for distance in fathoms (1fm = 6ft = 1,8288m)
+	DistanceUnitFathom = "F"
+)
+
+const (
 	// Degrees value
 	Degrees = '\u00B0'
 	// Minutes value
@@ -73,6 +173,10 @@ const (
 	East = "E"
 	// West value
 	West = "W"
+	// Left value
+	Left = "L"
+	// Right value
+	Right = "R"
 )
 
 // ParseLatLong parses the supplied string into the LatLong.
