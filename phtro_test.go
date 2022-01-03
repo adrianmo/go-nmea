@@ -51,9 +51,9 @@ func TestPHTRO(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(PHTRO)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				phtro := m.(PHTRO)
+				phtro.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, phtro)
 			}
 		})
 	}

@@ -39,9 +39,9 @@ func TestROT(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(ROT)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				rot := m.(ROT)
+				rot.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, rot)
 			}
 		})
 	}

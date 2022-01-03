@@ -29,41 +29,66 @@ To update go-nmea to the latest version, use `go get -u github.com/adrianmo/go-n
 
 At this moment, this library supports the following sentence types:
 
-| Sentence type                                                                 | Description                                               |
-|-------------------------------------------------------------------------------|-----------------------------------------------------------|
-| [RMC](http://aprs.gids.nl/nmea/#rmc)                                          | Recommended Minimum Specific GPS/Transit data             |
-| [GGA](http://aprs.gids.nl/nmea/#gga)                                          | GPS Positioning System Fix Data                           |
-| [GSA](http://aprs.gids.nl/nmea/#gsa)                                          | GPS DOP and active satellites                             |
-| [GSV](http://aprs.gids.nl/nmea/#gsv)                                          | GPS Satellites in view                                    |
-| [GLL](http://aprs.gids.nl/nmea/#gll)                                          | Geographic Position, Latitude / Longitude and time        |
-| [VTG](http://aprs.gids.nl/nmea/#vtg)                                          | Track Made Good and Ground Speed                          |
-| [ZDA](http://aprs.gids.nl/nmea/#zda)                                          | Date & time data                                          |
-| [HDT](http://aprs.gids.nl/nmea/#hdt)                                          | Actual vessel heading in degrees True                     |
-| [HDG](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdg_heading_deviation_variation) | Heading, Deviation & Variation                            |
-| [HDM](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdm_heading_magnetic)            | Heading - Magnetic                                        |
-| [GNS](https://gpsd.gitlab.io/gpsd/NMEA.html#_gns_fix_data)                    | Combined GPS fix for GPS, Glonass, Galileo, and BeiDou    |
-| [VDM/VDO](https://gpsd.gitlab.io/gpsd/AIVDM.html)                             | Encapsulated binary payload (commonly used with AIS data) |
-| [WPL](http://aprs.gids.nl/nmea/#wpl)                                          | Waypoint location                                         |
-| [RTE](http://aprs.gids.nl/nmea/#rte)                                          | Route                                                     |
-| [ROT](https://gpsd.gitlab.io/gpsd/NMEA.html#_rot_rate_of_turn)                | Rate of turn                                              |
-| [VHW](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                         | Water Speed and Heading                                   |
-| [DPT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water)              | Depth of Water                                            |
-| [DBS](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface)         | Depth Below Surface                                       |
-| [DBT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer)      | Depth below transducer                                    |
-| [MDA](https://gpsd.gitlab.io/gpsd/NMEA.html#_mda_meteorological_composite)    | Meteorological Composite                                  |
-| [MWD](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                         | Wind Direction and Speed                                  |
-| [MWV](https://gpsd.gitlab.io/gpsd/NMEA.html#_mwv_wind_speed_and_angle)        | Wind Speed and Angle                                      |
-| [MTW](https://gpsd.gitlab.io/gpsd/NMEA.html#_mtw_mean_temperature_of_water)   | Mean Temperature of Water                                 |
-| [THS](http://www.nuovamarea.net/pytheas_9.html)                               | Actual vessel heading in degrees True and status          |
-| [TXT](https://www.nmea.org/Assets/20160520%20txt%20amendment.pdf)             | Sentence is for the transmission of text messages         |
+| Sentence type                                                                                 | Description                                               |
+|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| [AAM](https://gpsd.gitlab.io/gpsd/NMEA.html#_aam_waypoint_arrival_alarm)                      | Waypoint Arrival Alarm                                    |
+| [ALA](./ala.go)                                                                               | System Faults and Alarms                                  |
+| [APB](https://gpsd.gitlab.io/gpsd/NMEA.html#_apb_autopilot_sentence_b)                        | Autopilot Sentence "B"                                    |
+| [BEC](http://www.nmea.de/nmea0183datensaetze.html#bec)                                        | Bearing and distance to waypoint (dead reckoning)         |
+| [BOD](https://gpsd.gitlab.io/gpsd/NMEA.html#_bod_bearing_waypoint_to_waypoint)                | Bearing waypoint to waypoint (origin to destination)      |
+| [BWC](https://gpsd.gitlab.io/gpsd/NMEA.html#_bwc_bearing_distance_to_waypoint_great_circle)   | Bearing and distance to waypoint (great circle)           |
+| [BWR](https://gpsd.gitlab.io/gpsd/NMEA.html#_bwr_bearing_and_distance_to_waypoint_rhumb_line) | Bearing and distance to waypoint (Rhumb Line)             |
+| [BWW](https://gpsd.gitlab.io/gpsd/NMEA.html#_bww_bearing_waypoint_to_waypoint)                | Bearing from destination waypoint to origin waypoint      |
+| [DBK](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbk_depth_below_keel)                            | Depth Below Keel (obsolete, use DPT instead)              |
+| [DBS](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface)                         | Depth Below Surface (obsolete, use DPT instead)           |
+| [DBT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer)                      | Depth below transducer                                    |
+| [DOR](./dor.go)                                                                               | Door Status Detection                                     |
+| [DPT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water)                              | Depth of Water                                            |
+| [DSC](./dsc.go)                                                                               | Digital Selective Calling Information                     |
+| [DSE](./dse.go)                                                                               | Expanded digital selective calling                        |
+| [EVE](./eve.go)                                                                               | General Event Message                                     |
+| [FIR](./fir.go)                                                                               | Fire Detection event with time and location               |
+| [GGA](http://aprs.gids.nl/nmea/#gga)                                                          | GPS Positioning System Fix Data                           |
+| [GLL](http://aprs.gids.nl/nmea/#gll)                                                          | Geographic Position, Latitude / Longitude and time        |
+| [GNS](https://gpsd.gitlab.io/gpsd/NMEA.html#_gns_fix_data)                                    | Combined GPS fix for GPS, Glonass, Galileo, and BeiDou    |
+| [GSA](http://aprs.gids.nl/nmea/#gsa)                                                          | GPS DOP and active satellites                             |
+| [GSV](http://aprs.gids.nl/nmea/#gsv)                                                          | GPS Satellites in view                                    |
+| [HDG](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdg_heading_deviation_variation)                 | Heading, Deviation & Variation                            |
+| [HDM](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdm_heading_magnetic)                            | Heading - Magnetic                                        |
+| [HDT](http://aprs.gids.nl/nmea/#hdt)                                                          | Actual vessel heading in degrees True                     |
+| [HSC](https://gpsd.gitlab.io/gpsd/NMEA.html#_hsc_heading_steering_command)                    | Heading steering command                                  |
+| [MDA](https://gpsd.gitlab.io/gpsd/NMEA.html#_mda_meteorological_composite)                    | Meteorological Composite                                  |
+| [MTA](./mta.go)                                                                               | Air Temperature (obsolete, use XDR instead)               |
+| [MTW](https://gpsd.gitlab.io/gpsd/NMEA.html#_mtw_mean_temperature_of_water)                   | Mean Temperature of Water                                 |
+| [MWD](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                                         | Wind Direction and Speed                                  |
+| [MWV](https://gpsd.gitlab.io/gpsd/NMEA.html#_mwv_wind_speed_and_angle)                        | Wind Speed and Angle                                      |
+| [RMB](https://gpsd.gitlab.io/gpsd/NMEA.html#_rmb_recommended_minimum_navigation_information)  | Recommended Minimum Navigation Information                |
+| [RMC](http://aprs.gids.nl/nmea/#rmc)                                                          | Recommended Minimum Specific GPS/Transit data             |
+| [ROT](https://gpsd.gitlab.io/gpsd/NMEA.html#_rot_rate_of_turn)                                | Rate of turn                                              |
+| [RPM](https://gpsd.gitlab.io/gpsd/NMEA.html#_rpm_revolutions)                                 | Engine or Shaft revolutions and pitch                     |
+| [RSA](https://gpsd.gitlab.io/gpsd/NMEA.html#_rsa_rudder_sensor_angle)                         | Rudder Sensor Angle                                       |
+| [RTE](http://aprs.gids.nl/nmea/#rte)                                                          | Route                                                     |
+| [THS](http://www.nuovamarea.net/pytheas_9.html)                                               | Actual vessel heading in degrees True and status          |
+| [TXT](https://www.nmea.org/Assets/20160520%20txt%20amendment.pdf)                             | Sentence is for the transmission of text messages         |
+| [VDM/VDO](https://gpsd.gitlab.io/gpsd/AIVDM.html)                                             | Encapsulated binary payload (commonly used with AIS data) |
+| [VDR](https://gpsd.gitlab.io/gpsd/NMEA.html#_vdr_set_and_drift)                               | Set and Drift                                             |
+| [VHW](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                                         | Water Speed and Heading                                   |
+| [VLW](https://gpsd.gitlab.io/gpsd/NMEA.html#_vlw_distance_traveled_through_water)             | Distance Traveled through Water                           |
+| [VPW](https://gpsd.gitlab.io/gpsd/NMEA.html#_vpw_speed_measured_parallel_to_wind)             | Speed Measured Parallel to Wind                           |
+| [VTG](http://aprs.gids.nl/nmea/#vtg)                                                          | Track Made Good and Ground Speed                          |
+| [VWR](https://gpsd.gitlab.io/gpsd/NMEA.html#_vwr_relative_wind_speed_and_angle)               | Relative Wind Speed and Angle                             |
+| [VWT](./vwt.go)                                                                               | True Wind Speed and Angle                                 |
+| [WPL](http://aprs.gids.nl/nmea/#wpl)                                                          | Waypoint location                                         |
+| [XDR](https://gpsd.gitlab.io/gpsd/NMEA.html#_xdr_transducer_measurement)                      | Transducer Measurement                                    |
+| [ZDA](http://aprs.gids.nl/nmea/#zda)                                                          | Date & time data                                          |
 
 | Proprietary sentence type                                   | Description                                                                                     |
 |-------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| [PMTK](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf) | Messages for setting and reading commands for MediaTek gps modules.                             |
 | [PGRME](http://aprs.gids.nl/nmea/#rme)                      | Estimated Position Error (Garmin proprietary sentence)                                          |
-| [PSONCMS](#)                                                | Quaternion, acceleration, rate of turn, magnetic field, sensor temperature (Xsens IMU/VRU/AHRS) |
-| [PRDID](#)                                                  | Vessel pitch, roll and heading (Xsens IMU/VRU/AHRS)                                             |
 | [PHTRO](#)                                                  | Vessel pitch and roll (Xsens IMU/VRU/AHRS)                                                      |
+| [PMTK](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf) | Messages for setting and reading commands for MediaTek gps modules.                             |
+| [PRDID](#)                                                  | Vessel pitch, roll and heading (Xsens IMU/VRU/AHRS)                                             |
+| [PSONCMS](#)                                                | Quaternion, acceleration, rate of turn, magnetic field, sensor temperature (Xsens IMU/VRU/AHRS) |
 
 If you need to parse a message that contains an unsupported sentence type you can implement and register your own
 message parser and get yourself unblocked immediately. Check the example below to know how
