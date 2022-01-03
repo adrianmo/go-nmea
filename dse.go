@@ -25,7 +25,7 @@ type DSE struct {
 	TotalNumber     int64  // total number of sentences, 01 to 99
 	Number          int64  // number of current sentence, 01 to 99
 	Acknowledgement string // Acknowledgement (R=Acknowledge request, B=Acknowledgement, S=Neither (end of sequence))
-	MSSI            string // MMSI of vessel (10 digits)
+	MMSI            string // MMSI of vessel (10 digits)
 	DataSets        []DSEDataSet
 }
 
@@ -56,7 +56,7 @@ func newDSE(s BaseSentence) (DSE, error) {
 		TotalNumber:     p.Int64(0, "total number of sentences"),
 		Number:          p.Int64(1, "sentence number"),
 		Acknowledgement: p.EnumString(2, "acknowledgement", AcknowledgementAutomaticDSE, AcknowledgementRequestDSE, AcknowledgementQueryDSE),
-		MSSI:            p.String(3, "MSSI"),
+		MMSI:            p.String(3, "MMSI"),
 		DataSets:        nil,
 	}
 	datasetFieldCount := len(p.Fields) - 4

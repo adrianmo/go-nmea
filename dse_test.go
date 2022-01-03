@@ -19,7 +19,7 @@ func TestDSE(t *testing.T) {
 				TotalNumber:     1,
 				Number:          1,
 				Acknowledgement: AcknowledgementAutomaticDSE,
-				MSSI:            "3380400790",
+				MMSI:            "3380400790",
 				DataSets: []DSEDataSet{
 					{Code: "00", Data: "46504437"},
 				},
@@ -32,7 +32,7 @@ func TestDSE(t *testing.T) {
 				TotalNumber:     1,
 				Number:          1,
 				Acknowledgement: AcknowledgementAutomaticDSE,
-				MSSI:            "3380400790",
+				MMSI:            "3380400790",
 				DataSets: []DSEDataSet{
 					{Code: "00", Data: "46504437"},
 					{Code: "01", Data: "16501437"},

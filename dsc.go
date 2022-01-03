@@ -92,7 +92,7 @@ type DSC struct {
 	// MMSI of ship in distress (10 digits or empty)
 	// > The call content is next described as having a "self-identification" element. This is simply the sending
 	// > station's MMSI, encoded like the address element. This identifies who sent the message.
-	MSSI string
+	MMSI string
 
 	// DistressCause is The cause of the distress (2 digits or empty)
 	DistressCause string
@@ -117,7 +117,7 @@ func newDSC(s BaseSentence) (DSC, error) {
 		CommandTypeOrTeleCommand2:   p.String(4, "type of communication or second telecommand"),
 		PositionOrCanal:             p.String(5, "position or canal"),
 		TimeOrTelephoneNumber:       p.String(6, "time or telephone"),
-		MSSI:                        p.String(7, "MSSI"),
+		MMSI:                        p.String(7, "MMSI"),
 		DistressCause:               p.String(8, "distress cause"),
 		Acknowledgement: strings.TrimSpace(p.EnumString(
 			9,
