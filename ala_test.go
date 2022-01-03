@@ -56,9 +56,9 @@ func TestALA(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(ALA)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				ala := m.(ALA)
+				ala.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, ala)
 			}
 		})
 	}

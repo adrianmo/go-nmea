@@ -51,9 +51,9 @@ func TestRSA(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(RSA)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				rsa := m.(RSA)
+				rsa.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, rsa)
 			}
 		})
 	}

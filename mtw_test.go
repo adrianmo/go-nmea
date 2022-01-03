@@ -39,9 +39,9 @@ func TestMTW(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(MTW)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				mtw := m.(MTW)
+				mtw.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, mtw)
 			}
 		})
 	}

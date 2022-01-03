@@ -51,9 +51,9 @@ func TestHSC(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(HSC)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				hsc := m.(HSC)
+				hsc.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, hsc)
 			}
 		})
 	}

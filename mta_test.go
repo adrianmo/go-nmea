@@ -39,9 +39,9 @@ func TestMTA(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(MTA)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				mta := m.(MTA)
+				mta.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, mta)
 			}
 		})
 	}

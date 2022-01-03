@@ -63,9 +63,9 @@ func TestBEC(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(BEC)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				bec := m.(BEC)
+				bec.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, bec)
 			}
 		})
 	}

@@ -62,9 +62,9 @@ func TestFIR(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(FIR)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				fir := m.(FIR)
+				fir.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, fir)
 			}
 		})
 	}

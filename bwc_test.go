@@ -104,9 +104,9 @@ func TestBWC(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(BWC)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				bwc := m.(BWC)
+				bwc.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, bwc)
 			}
 		})
 	}

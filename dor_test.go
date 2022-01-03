@@ -62,9 +62,9 @@ func TestDOR(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(DOR)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				dor := m.(DOR)
+				dor.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, dor)
 			}
 		})
 	}

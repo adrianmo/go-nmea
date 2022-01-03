@@ -69,9 +69,9 @@ func TestVLW(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(VLW)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				vlw := m.(VLW)
+				vlw.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, vlw)
 			}
 		})
 	}

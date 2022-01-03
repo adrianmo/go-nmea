@@ -77,9 +77,9 @@ func TestDSC(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(DSC)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				dsc := m.(DSC)
+				dsc.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, dsc)
 			}
 		})
 	}

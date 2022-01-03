@@ -65,9 +65,9 @@ func TestXTE(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(XTE)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				xte := m.(XTE)
+				xte.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, xte)
 			}
 		})
 	}

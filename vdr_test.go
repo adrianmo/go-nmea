@@ -48,9 +48,9 @@ func TestVDR(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(VDR)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				vdr := m.(VDR)
+				vdr.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, vdr)
 			}
 		})
 	}

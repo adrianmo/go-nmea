@@ -39,9 +39,9 @@ func TestHDM(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(HDM)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				hdm := m.(HDM)
+				hdm.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, hdm)
 			}
 		})
 	}

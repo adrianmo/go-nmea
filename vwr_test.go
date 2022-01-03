@@ -83,9 +83,9 @@ func TestVWR(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(VWR)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				vwr := m.(VWR)
+				vwr.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, vwr)
 			}
 		})
 	}

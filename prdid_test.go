@@ -45,9 +45,9 @@ func TestPRDID(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(PRDID)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				prdid := m.(PRDID)
+				prdid.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, prdid)
 			}
 		})
 	}

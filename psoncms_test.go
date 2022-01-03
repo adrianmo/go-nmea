@@ -52,9 +52,9 @@ func TestPSONCMS(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(PSONCMS)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				psoncms := m.(PSONCMS)
+				psoncms.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, psoncms)
 			}
 		})
 	}

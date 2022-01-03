@@ -48,9 +48,9 @@ func TestDBK(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(DBK)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				dbk := m.(DBK)
+				dbk.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, dbk)
 			}
 		})
 	}

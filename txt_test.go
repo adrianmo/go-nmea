@@ -46,9 +46,9 @@ func TestTXT(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(TXT)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				txt := m.(TXT)
+				txt.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, txt)
 			}
 		})
 	}

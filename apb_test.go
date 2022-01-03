@@ -83,9 +83,9 @@ func TestAPB(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(APB)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				apb := m.(APB)
+				apb.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, apb)
 			}
 		})
 	}

@@ -41,9 +41,9 @@ func TestEVE(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(EVE)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				eve := m.(EVE)
+				eve.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, eve)
 			}
 		})
 	}

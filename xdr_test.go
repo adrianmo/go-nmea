@@ -68,9 +68,9 @@ func TestXDR(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(XDR)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				xdr := m.(XDR)
+				xdr.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, xdr)
 			}
 		})
 	}

@@ -57,9 +57,9 @@ func TestHDG(t *testing.T) {
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				hdt := m.(HDG)
-				hdt.BaseSentence = BaseSentence{}
-				assert.Equal(t, tt.msg, hdt)
+				hdg := m.(HDG)
+				hdg.BaseSentence = BaseSentence{}
+				assert.Equal(t, tt.msg, hdg)
 			}
 		})
 	}
