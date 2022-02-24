@@ -5,11 +5,10 @@ import (
 	"strconv"
 )
 
-// Parser provides a simple way of accessing and parsing
-// sentence fields
+// Parser provides a simple way of accessing and parsing sentence fields
 type Parser struct {
 	BaseSentence
-	err error
+	err []error
 }
 
 // NewParser constructor
@@ -20,30 +19,38 @@ func NewParser(s BaseSentence) *Parser {
 // AssertType makes sure the sentence's type matches the provided one.
 func (p *Parser) AssertType(typ string) {
 	if p.Type != typ {
-		p.SetErr("type", p.Type)
+		p.setError(fmt.Errorf("nmea: %s invalid type: %s", p.Prefix(), p.Type))
 	}
 }
 
-// Err returns the first error encountered during the parser's usage.
+// Err returns the error(s) encountered during the parser's usage.
 func (p *Parser) Err() error {
-	return p.err
+	if p.err == nil {
+		return nil
+	}
+	return &ParseError{Errors: p.err}
 }
 
-// SetErr assigns an error. Calling this method has no
-// effect if there is already an error.
+// SetErr assigns an error. Calling this method has no effect if there is already an error.
 func (p *Parser) SetErr(context, value string) {
+	p.setError(&FieldError{
+		Prefix:  p.Prefix(),
+		Context: context,
+		Value:   value,
+	})
+}
+
+func (p *Parser) setError(err error) {
 	if p.err == nil {
-		p.err = fmt.Errorf("nmea: %s invalid %s: %s", p.Prefix(), context, value)
+		p.err = make([]error, 0, 1)
 	}
+	p.err = append(p.err, err)
 }
 
 // String returns the field value at the specified index.
 func (p *Parser) String(i int, context string) string {
-	if p.err != nil {
-		return ""
-	}
 	if i < 0 || i >= len(p.Fields) {
-		p.SetErr(context, "index out of range")
+		p.setError(fmt.Errorf("nmea: %s invalid %s: index out of range", p.Prefix(), context))
 		return ""
 	}
 	return p.Fields[i]
@@ -52,11 +59,8 @@ func (p *Parser) String(i int, context string) string {
 // ListString returns a list of all fields from the given start index.
 // An error occurs if there is no fields after the given start index.
 func (p *Parser) ListString(from int, context string) (list []string) {
-	if p.err != nil {
-		return []string{}
-	}
 	if from < 0 || from >= len(p.Fields) {
-		p.SetErr(context, "index out of range")
+		p.setError(fmt.Errorf("nmea: %s invalid %s: index out of range", p.Prefix(), context))
 		return []string{}
 	}
 	return append(list, p.Fields[from:]...)
@@ -66,7 +70,7 @@ func (p *Parser) ListString(from int, context string) (list []string) {
 // An error occurs if the value is not one of the options and not empty.
 func (p *Parser) EnumString(i int, context string, options ...string) string {
 	s := p.String(i, context)
-	if p.err != nil || s == "" {
+	if s == "" {
 		return ""
 	}
 	for _, o := range options {
@@ -74,16 +78,17 @@ func (p *Parser) EnumString(i int, context string, options ...string) string {
 			return s
 		}
 	}
-	p.SetErr(context, s)
-	return ""
+	p.setError(&InvalidEnumStringError{Prefix: p.Prefix(), Context: context, Value: s})
+	return s // intentional, we allow setting even invalid values
 }
 
 // EnumChars returns an array of strings that are matched in the Mode field.
 // It will only match the number of characters that are in the Mode field.
 // If the value is empty, it will return an empty array
+// Returns only valid characters matching options. Invalid values are filtered out and an error is set.
 func (p *Parser) EnumChars(i int, context string, options ...string) []string {
 	s := p.String(i, context)
-	if p.err != nil || s == "" {
+	if s == "" {
 		return []string{}
 	}
 	strs := []string{}
@@ -97,20 +102,15 @@ func (p *Parser) EnumChars(i int, context string, options ...string) []string {
 		}
 	}
 	if len(strs) != len(s) {
-
-		p.SetErr(context, s)
-		return []string{}
+		p.setError(&InvalidEnumCharsError{Prefix: p.Prefix(), Context: context, Value: s})
 	}
-	return strs
+	return strs // in case of an error we return only valid values
 }
 
 // Int64 returns the int64 value at the specified index.
 // If the value is an empty string, 0 is returned.
 func (p *Parser) Int64(i int, context string) int64 {
 	s := p.String(i, context)
-	if p.err != nil {
-		return 0
-	}
 	if s == "" {
 		return 0
 	}
@@ -125,9 +125,6 @@ func (p *Parser) Int64(i int, context string) int64 {
 // If the value is an empty string, 0 is returned.
 func (p *Parser) Float64(i int, context string) float64 {
 	s := p.String(i, context)
-	if p.err != nil {
-		return 0
-	}
 	if s == "" {
 		return 0
 	}
@@ -142,9 +139,6 @@ func (p *Parser) Float64(i int, context string) float64 {
 // If the value is empty, the Time is marked as invalid.
 func (p *Parser) Time(i int, context string) Time {
 	s := p.String(i, context)
-	if p.err != nil {
-		return Time{}
-	}
 	v, err := ParseTime(s)
 	if err != nil {
 		p.SetErr(context, s)
@@ -156,9 +150,6 @@ func (p *Parser) Time(i int, context string) Time {
 // If the value is empty, the Date is marked as invalid.
 func (p *Parser) Date(i int, context string) Date {
 	s := p.String(i, context)
-	if p.err != nil {
-		return Date{}
-	}
 	v, err := ParseDate(s)
 	if err != nil {
 		p.SetErr(context, s)
@@ -170,9 +161,6 @@ func (p *Parser) Date(i int, context string) Date {
 func (p *Parser) LatLong(i, j int, context string) float64 {
 	a := p.String(i, context)
 	b := p.String(j, context)
-	if p.err != nil {
-		return 0
-	}
 	s := fmt.Sprintf("%s %s", a, b)
 	v, err := ParseLatLong(s)
 	if err != nil {
@@ -192,9 +180,6 @@ func (p *Parser) LatLong(i, j int, context string) float64 {
 
 // SixBitASCIIArmour decodes the 6-bit ascii armor used for VDM and VDO messages
 func (p *Parser) SixBitASCIIArmour(i int, fillBits int, context string) []byte {
-	if p.err != nil {
-		return nil
-	}
 	if fillBits < 0 || fillBits >= 6 {
 		p.SetErr(context, "fill bits")
 		return nil

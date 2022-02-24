@@ -28,16 +28,6 @@ var (
 // ParserFunc callback used to parse specific sentence variants
 type ParserFunc func(BaseSentence) (Sentence, error)
 
-// NotSupportedError is returned when parsed sentence is not supported
-type NotSupportedError struct {
-	Prefix string
-}
-
-// Error returns error message
-func (p *NotSupportedError) Error() string {
-	return fmt.Sprintf("nmea: sentence prefix '%s' not supported", p.Prefix)
-}
-
 // Sentence interface for all NMEA sentence
 type Sentence interface {
 	fmt.Stringer
@@ -136,7 +126,7 @@ func parsePrefix(s string) (string, string) {
 	return s[:2], s[2:]
 }
 
-// Checksum xor all the bytes in a string an return it
+// Checksum xor all the bytes in a string and return it
 // as an uppercase hex string
 func Checksum(s string) string {
 	var checksum uint8
