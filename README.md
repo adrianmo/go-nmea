@@ -46,6 +46,7 @@ At this moment, this library supports the following sentence types:
 | [DPT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water)                              | Depth of Water                                            |
 | [DSC](./dsc.go)                                                                               | Digital Selective Calling Information                     |
 | [DSE](./dse.go)                                                                               | Expanded digital selective calling                        |
+| [DTM](https://gpsd.gitlab.io/gpsd/NMEA.html#_dtm_datum_reference)                             | Datum Reference                                           |
 | [EVE](./eve.go)                                                                               | General Event Message                                     |
 | [FIR](./fir.go)                                                                               | Fire Detection event with time and location               |
 | [GGA](http://aprs.gids.nl/nmea/#gga)                                                          | GPS Positioning System Fix Data                           |
@@ -62,14 +63,19 @@ At this moment, this library supports the following sentence types:
 | [MTW](https://gpsd.gitlab.io/gpsd/NMEA.html#_mtw_mean_temperature_of_water)                   | Mean Temperature of Water                                 |
 | [MWD](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                                         | Wind Direction and Speed                                  |
 | [MWV](https://gpsd.gitlab.io/gpsd/NMEA.html#_mwv_wind_speed_and_angle)                        | Wind Speed and Angle                                      |
+| [OSD](https://gpsd.gitlab.io/gpsd/NMEA.html#_osd_own_ship_data)                               | Own Ship Data                                             |
 | [RMB](https://gpsd.gitlab.io/gpsd/NMEA.html#_rmb_recommended_minimum_navigation_information)  | Recommended Minimum Navigation Information                |
 | [RMC](http://aprs.gids.nl/nmea/#rmc)                                                          | Recommended Minimum Specific GPS/Transit data             |
 | [ROT](https://gpsd.gitlab.io/gpsd/NMEA.html#_rot_rate_of_turn)                                | Rate of turn                                              |
 | [RPM](https://gpsd.gitlab.io/gpsd/NMEA.html#_rpm_revolutions)                                 | Engine or Shaft revolutions and pitch                     |
 | [RSA](https://gpsd.gitlab.io/gpsd/NMEA.html#_rsa_rudder_sensor_angle)                         | Rudder Sensor Angle                                       |
+| [RSD](https://gpsd.gitlab.io/gpsd/NMEA.html#_rsd_radar_system_data)                           | RADAR System Data                                         |
 | [RTE](http://aprs.gids.nl/nmea/#rte)                                                          | Route                                                     |
 | [THS](http://www.nuovamarea.net/pytheas_9.html)                                               | Actual vessel heading in degrees True and status          |
+| [TLL](https://gpsd.gitlab.io/gpsd/NMEA.html#_tll_target_latitude_and_longitude)               | Target latitude and longitude                             |
+| [TTM](https://gpsd.gitlab.io/gpsd/NMEA.html#_ttm_tracked_target_message)                      | Tracked Target Message                                    |
 | [TXT](https://www.nmea.org/Assets/20160520%20txt%20amendment.pdf)                             | Sentence is for the transmission of text messages         |
+| [VBW](https://gpsd.gitlab.io/gpsd/NMEA.html#_vbw_dual_groundwater_speed)                      | Dual Ground/Water Speed                                   |
 | [VDM/VDO](https://gpsd.gitlab.io/gpsd/AIVDM.html)                                             | Encapsulated binary payload (commonly used with AIS data) |
 | [VDR](https://gpsd.gitlab.io/gpsd/NMEA.html#_vdr_set_and_drift)                               | Set and Drift                                             |
 | [VHW](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                                         | Water Speed and Heading                                   |
