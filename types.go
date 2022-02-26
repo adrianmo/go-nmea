@@ -184,7 +184,7 @@ const (
 // Supported formats are:
 // - DMS (e.g. 33° 23' 22")
 // - Decimal (e.g. 33.23454)
-// - GPS (e.g 15113.4322S)
+// - GPS (e.g 15113.4322 S)
 //
 func ParseLatLong(s string) (float64, error) {
 	var l float64
@@ -201,7 +201,7 @@ func ParseLatLong(s string) (float64, error) {
 }
 
 // ParseGPS parses a GPS/NMEA coordinate.
-// e.g 15113.4322S
+// e.g `15113.4322 S`
 func ParseGPS(s string) (float64, error) {
 	parts := strings.Split(s, " ")
 	if len(parts) != 2 {

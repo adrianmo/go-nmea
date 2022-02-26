@@ -207,10 +207,12 @@ func Parse(raw string) (Sentence, error) {
 			return newBWW(s)
 		case TypeDOR:
 			return newDOR(s)
-		case TypeDSE:
-			return newDSE(s)
 		case TypeDSC:
 			return newDSC(s)
+		case TypeDSE:
+			return newDSE(s)
+		case TypeDTM:
+			return newDTM(s)
 		case TypeEVE:
 			return newEVE(s)
 		case TypeFIR:
@@ -247,6 +249,10 @@ func Parse(raw string) (Sentence, error) {
 			return newGNS(s)
 		case TypeTHS:
 			return newTHS(s)
+		case TypeTLL:
+			return newTLL(s)
+		case TypeTTM:
+			return newTTM(s)
 		case TypeTXT:
 			return newTXT(s)
 		case TypeWPL:
@@ -257,10 +263,14 @@ func Parse(raw string) (Sentence, error) {
 			return newRPM(s)
 		case TypeRSA:
 			return newRSA(s)
+		case TypeRSD:
+			return newRSD(s)
 		case TypeRTE:
 			return newRTE(s)
 		case TypeROT:
 			return newROT(s)
+		case TypeVBW:
+			return newVBW(s)
 		case TypeVDR:
 			return newVDR(s)
 		case TypeVHW:
@@ -291,6 +301,8 @@ func Parse(raw string) (Sentence, error) {
 			return newMWD(s)
 		case TypeMWV:
 			return newMWV(s)
+		case TypeOSD:
+			return newOSD(s)
 		case TypeXDR:
 			return newXDR(s)
 		case TypeXTE:
