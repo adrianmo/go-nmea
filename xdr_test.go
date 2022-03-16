@@ -40,6 +40,19 @@ func TestXDR(t *testing.T) {
 			},
 		},
 		{
+			name: "good sentence with 4 measurements",
+			raw:  "$WIXDR,C,9.7,C,2,U,24.1,N,0,U,24.4,V,1,U,3.510,V,2*46",
+			msg: XDR{
+				Measurements: []XDRMeasurement{
+					{TransducerType: "C", Value: 9.7, Unit: "C", TransducerName: "2"},
+					// U+N - Voltage+Newtons? This is real sentence from actual vessel nmea0183 bus. Maybe misconfigured device?
+					{TransducerType: "U", Value: 24.1, Unit: "N", TransducerName: "0"},
+					{TransducerType: "U", Value: 24.4, Unit: "V", TransducerName: "1"},
+					{TransducerType: "U", Value: 3.510, Unit: "V", TransducerName: "2"},
+				},
+			},
+		},
+		{
 			name: "invalid nmea: odd number of fields",
 			raw:  "$HCXDR,A,171,D,PITCH,A,-37,D,ROLL,G,367,,MAGX,G,2420,MAGY,G,-8984,,MAGZ*6d",
 			err:  "XDR field count is not exactly dividable by 4",

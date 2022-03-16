@@ -42,6 +42,8 @@ const (
 	UnitKilogramPerCubicMetre = "K"
 	// UnitMeters is unit of distance in Meters
 	UnitMeters = DistanceUnitMetre
+	// UnitNewtons is unit of force in Newtons (1 kg*m/s2)
+	UnitNewtons = "N"
 	// UnitCubicMeters is unit of volume in cubic meters
 	UnitCubicMeters = "M"
 	// UnitRevolutionsPerMinute is unit of rotational speed or the frequency of rotation around a fixed axis in revolutions per minute (RPM)
