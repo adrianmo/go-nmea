@@ -91,10 +91,11 @@ At this moment, this library supports the following sentence types:
 | Proprietary sentence type                                   | Description                                                                                     |
 |-------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
 | [PGRME](http://aprs.gids.nl/nmea/#rme)                      | Estimated Position Error (Garmin proprietary sentence)                                          |
-| [PHTRO](#)                                                  | Vessel pitch and roll (Xsens IMU/VRU/AHRS)                                                      |
+| [PHTRO](./phtro.go)                                         | Vessel pitch and roll (Xsens IMU/VRU/AHRS)                                                      |
 | [PMTK](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf) | Messages for setting and reading commands for MediaTek gps modules.                             |
-| [PRDID](#)                                                  | Vessel pitch, roll and heading (Xsens IMU/VRU/AHRS)                                             |
-| [PSONCMS](#)                                                | Quaternion, acceleration, rate of turn, magnetic field, sensor temperature (Xsens IMU/VRU/AHRS) |
+| [PRDID](./prdid.go)                                         | Vessel pitch, roll and heading (Xsens IMU/VRU/AHRS)                                             |
+| [PSKPDPT](./pskpdpt.go)                                     | Depth of Water for multiple transducer installation                                             |
+| [PSONCMS](./psoncms.go)                                     | Quaternion, acceleration, rate of turn, magnetic field, sensor temperature (Xsens IMU/VRU/AHRS) |
 
 If you need to parse a message that contains an unsupported sentence type you can implement and register your own
 message parser and get yourself unblocked immediately. Check the example below to know how

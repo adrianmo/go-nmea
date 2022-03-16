@@ -233,6 +233,8 @@ func Parse(raw string) (Sentence, error) {
 			return newPHTRO(s)
 		case TypePRDID:
 			return newPRDID(s)
+		case TypePSKPDPT:
+			return newPSKPDPT(s)
 		case TypePSONCMS:
 			return newPSONCMS(s)
 		case TypeGSV:
