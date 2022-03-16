@@ -151,6 +151,7 @@ func newXDR(s BaseSentence) (XDR, error) {
 				UnitLitresPerSecond,
 				UnitKelvin,
 				UnitKilogramPerCubicMetre,
+				UnitNewtons,
 				UnitMeters,
 				UnitCubicMeters,
 				UnitRevolutionsPerMinute,
