@@ -24,7 +24,7 @@ type VDMVDO struct {
 }
 
 // newVDMVDO constructor
-func newVDMVDO(s BaseSentence) (VDMVDO, error) {
+func newVDMVDO(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	m := VDMVDO{
 		BaseSentence:   s,

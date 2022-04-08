@@ -79,7 +79,7 @@ type DOR struct {
 }
 
 // newDOR constructor
-func newDOR(s BaseSentence) (DOR, error) {
+func newDOR(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeDOR)
 	return DOR{

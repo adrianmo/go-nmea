@@ -18,7 +18,7 @@ type DBT struct {
 }
 
 // newDBT constructor
-func newDBT(s BaseSentence) (DBT, error) {
+func newDBT(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeDBT)
 	return DBT{

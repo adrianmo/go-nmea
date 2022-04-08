@@ -29,7 +29,7 @@ type PSKPDPT struct {
 }
 
 // newPSKPDPT constructor
-func newPSKPDPT(s BaseSentence) (PSKPDPT, error) {
+func newPSKPDPT(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypePSKPDPT)
 	sentence := PSKPDPT{

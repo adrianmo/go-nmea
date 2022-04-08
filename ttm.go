@@ -32,7 +32,7 @@ type TTM struct {
 }
 
 // newTTM constructor
-func newTTM(s BaseSentence) (TTM, error) {
+func newTTM(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeTTM)
 	return TTM{

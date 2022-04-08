@@ -26,7 +26,7 @@ type BEC struct {
 }
 
 // newBEC constructor
-func newBEC(s BaseSentence) (BEC, error) {
+func newBEC(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeBEC)
 	return BEC{

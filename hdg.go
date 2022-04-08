@@ -21,7 +21,7 @@ type HDG struct {
 }
 
 // newHDG constructor
-func newHDG(s BaseSentence) (HDG, error) {
+func newHDG(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeHDG)
 	m := HDG{

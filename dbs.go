@@ -22,7 +22,7 @@ type DBS struct {
 }
 
 // newDBS constructor
-func newDBS(s BaseSentence) (DBS, error) {
+func newDBS(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeDBS)
 	return DBS{

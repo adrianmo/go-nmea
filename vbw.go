@@ -32,7 +32,7 @@ type VBW struct {
 }
 
 // newVBW constructor
-func newVBW(s BaseSentence) (VBW, error) {
+func newVBW(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeVBW)
 

@@ -25,7 +25,7 @@ type TXT struct {
 }
 
 // newTXT constructor
-func newTXT(s BaseSentence) (TXT, error) {
+func newTXT(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeTXT)
 	m := TXT{

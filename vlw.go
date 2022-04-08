@@ -25,7 +25,7 @@ type VLW struct {
 }
 
 // newVLW constructor
-func newVLW(s BaseSentence) (VLW, error) {
+func newVLW(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeVLW)
 

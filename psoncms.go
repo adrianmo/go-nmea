@@ -31,7 +31,7 @@ type PSONCMS struct {
 }
 
 // newPSONCMS constructor
-func newPSONCMS(s BaseSentence) (PSONCMS, error) {
+func newPSONCMS(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypePSONCMS)
 	m := PSONCMS{

@@ -50,7 +50,7 @@ type MWD struct {
 	MetersValid           bool
 }
 
-func newMWD(s BaseSentence) (MWD, error) {
+func newMWD(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeMWD)
 	return MWD{

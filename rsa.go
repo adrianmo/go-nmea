@@ -19,7 +19,7 @@ type RSA struct {
 }
 
 // newRSA constructor
-func newRSA(s BaseSentence) (RSA, error) {
+func newRSA(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeRSA)
 	return RSA{
