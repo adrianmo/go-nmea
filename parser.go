@@ -107,35 +107,49 @@ func (p *Parser) EnumChars(i int, context string, options ...string) []string {
 // Int64 returns the int64 value at the specified index.
 // If the value is an empty string, 0 is returned.
 func (p *Parser) Int64(i int, context string) int64 {
+	return p.NullInt64(i, context).Value
+}
+
+// NullInt64 returns the int64 value at the specified index.
+// If the value is an empty string, Valid is set to false
+func (p *Parser) NullInt64(i int, context string) Int64 {
 	s := p.String(i, context)
 	if p.err != nil {
-		return 0
+		return Int64{}
 	}
 	if s == "" {
-		return 0
+		return Int64{}
 	}
 	v, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
 		p.SetErr(context, s)
+		return Int64{}
 	}
-	return v
+	return Int64{Value: v, Valid: true}
 }
 
 // Float64 returns the float64 value at the specified index.
 // If the value is an empty string, 0 is returned.
 func (p *Parser) Float64(i int, context string) float64 {
+	return p.NullFloat64(i, context).Value
+}
+
+// NullFloat64 returns the Float64 value at the specified index.
+// If the value is an empty string, Valid is set to false.
+func (p *Parser) NullFloat64(i int, context string) Float64 {
 	s := p.String(i, context)
 	if p.err != nil {
-		return 0
+		return Float64{}
 	}
 	if s == "" {
-		return 0
+		return Float64{}
 	}
 	v, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		p.SetErr(context, s)
+		return Float64{}
 	}
-	return v
+	return Float64{Value: v, Valid: true}
 }
 
 // Time returns the Time value at the specified index.

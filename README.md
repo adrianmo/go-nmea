@@ -265,6 +265,73 @@ Counter: 23
 Value: 5133.820000
 ```
 
+### Message parsing with optional values
+
+Some messages have optional fields. By default, omitted numeric values are set to 0. In situations where you need finer control to distinguish between an undefined value and an actual 0, you can register types overriding existing sentences, using `nmea.Int64` and `nmea.Float64` instead of `int64` and `float64`. The matching parsing methods are `(*Parser).NullInt64` and `(*Parser).NullFloat64`. Both `nmea.Int64` and `nmea.Float64` contains a numeric field `Value` which is defined only if the field `Valid` is `true`.
+
+See below example for a modified VTG sentence parser:
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/adrianmo/go-nmea"
+)
+
+// VTG represents track & speed data.
+// http://aprs.gids.nl/nmea/#vtg
+type VTG struct {
+	nmea.BaseSentence
+	TrueTrack        nmea.Float64
+	MagneticTrack    nmea.Float64
+	GroundSpeedKnots nmea.Float64
+	GroundSpeedKPH   nmea.Float64
+}
+
+func main() {
+	nmea.MustRegisterParser("VTG", func(s nmea.BaseSentence) (nmea.Sentence, error) {
+		p := nmea.NewParser(s)
+		return VTG{
+			BaseSentence:     s,
+			TrueTrack:        p.NullFloat64(0, "true track"),
+			MagneticTrack:    p.NullFloat64(2, "magnetic track"),
+			GroundSpeedKnots: p.NullFloat64(4, "ground speed (knots)"),
+			GroundSpeedKPH:   p.NullFloat64(6, "ground speed (km/h)"),
+		}, p.Err()
+	})
+
+	sentence := "$GPVTG,140.88,T,,M,8.04,N,14.89,K,D*05"
+	s, err := nmea.Parse(sentence)
+	if err != nil {
+		panic(err)
+	}
+
+	m, ok := s.(VTG)
+	if !ok {
+		panic("Could not parse VTG sentence")
+	}
+	fmt.Printf("Raw sentence: %v\n", m)
+	fmt.Printf("TrueTrack: %v\n", m.TrueTrack)
+	fmt.Printf("MagneticTrack: %v\n", m.MagneticTrack)
+	fmt.Printf("GroundSpeedKnots: %v\n", m.GroundSpeedKnots)
+	fmt.Printf("GroundSpeedKPH: %v\n", m.GroundSpeedKPH)
+}
+```
+
+Output:
+
+```
+$ go run main/main.go
+
+Raw sentence: $GPVTG,140.88,T,,M,8.04,N,14.89,K,D*05
+TrueTrack: {140.88 true}
+MagneticTrack: {0 false}
+GroundSpeedKnots: {8.04 true}
+GroundSpeedKPH: {14.89 true}
+```
+
 ## Contributing
 
 Please feel free to submit issues or fork the repository and send pull requests to update the library and fix bugs,

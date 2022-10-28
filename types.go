@@ -409,3 +409,15 @@ func LonDir(l float64) string {
 	}
 	return West
 }
+
+// Float64 is a nullable float64 value
+type Float64 struct {
+	Value float64
+	Valid bool
+}
+
+// Int64 is a nullable int64 value
+type Int64 struct {
+	Value int64
+	Valid bool
+}
