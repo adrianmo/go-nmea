@@ -110,7 +110,7 @@ func (p *Parser) Int64(i int, context string) int64 {
 	return p.NullInt64(i, context).Value
 }
 
-// Int64 returns the int64 value at the specified index.
+// NullInt64 returns the int64 value at the specified index.
 // If the value is an empty string, Valid is set to false
 func (p *Parser) NullInt64(i int, context string) Int64 {
 	s := p.String(i, context)
@@ -134,7 +134,7 @@ func (p *Parser) Float64(i int, context string) float64 {
 	return p.NullFloat64(i, context).Value
 }
 
-// Float64 returns the Float64 value at the specified index.
+// NullFloat64 returns the Float64 value at the specified index.
 // If the value is an empty string, Valid is set to false.
 func (p *Parser) NullFloat64(i int, context string) Float64 {
 	s := p.String(i, context)
