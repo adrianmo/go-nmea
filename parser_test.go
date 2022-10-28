@@ -190,6 +190,76 @@ var parsertests = []struct {
 		},
 	},
 	{
+		name:     "NullInt64",
+		fields:   []string{"123"},
+		expected: Int64{Value: 123, Valid: true},
+		parse: func(p *Parser) interface{} {
+			return p.NullInt64(0, "context")
+		},
+	},
+	{
+		name:     "NullInt64 empty field is invalid",
+		fields:   []string{""},
+		expected: Int64{},
+		parse: func(p *Parser) interface{} {
+			return p.NullInt64(0, "context")
+		},
+	},
+	{
+		name:     "NullInt64 invalid",
+		fields:   []string{"abc"},
+		expected: Int64{},
+		hasErr:   true,
+		parse: func(p *Parser) interface{} {
+			return p.NullInt64(0, "context")
+		},
+	},
+	{
+		name:     "NullInt64 with existing error",
+		fields:   []string{"123"},
+		expected: Int64{},
+		hasErr:   true,
+		parse: func(p *Parser) interface{} {
+			p.SetErr("context", "value")
+			return p.NullInt64(0, "context")
+		},
+	},
+	{
+		name:     "NullFloat64",
+		fields:   []string{"123.123"},
+		expected: Float64{Value: 123.123, Valid: true},
+		parse: func(p *Parser) interface{} {
+			return p.NullFloat64(0, "context")
+		},
+	},
+	{
+		name:     "NullFloat64 empty field is invalid",
+		fields:   []string{""},
+		expected: Float64{},
+		parse: func(p *Parser) interface{} {
+			return p.NullFloat64(0, "context")
+		},
+	},
+	{
+		name:     "NullFloat64 invalid",
+		fields:   []string{"abc"},
+		expected: Float64{},
+		hasErr:   true,
+		parse: func(p *Parser) interface{} {
+			return p.NullFloat64(0, "context")
+		},
+	},
+	{
+		name:     "NullFloat64 with existing error",
+		fields:   []string{"123.123"},
+		expected: Float64{},
+		hasErr:   true,
+		parse: func(p *Parser) interface{} {
+			p.SetErr("context", "value")
+			return p.NullFloat64(0, "context")
+		},
+	},
+	{
 		name:     "Time",
 		fields:   []string{"123456"},
 		expected: Time{true, 12, 34, 56, 0},
