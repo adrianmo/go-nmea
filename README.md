@@ -267,7 +267,7 @@ Value: 5133.820000
 
 ### Message parsing with optional values
 
-Some messages have optional fields. By default, omitted numeric values are set to 0. In situations where you need finer control to distinguish between an undefined value and an actual 0, you can register types overriding existing sentences, using `nmea.Int64` and `nmea.Float64` instead of `int64` and `float64`. The matching parsing methods are `parser.NullInt64` and `parser.NullFloat64`. Both `nmea.Int64` and `nmea.Float64` contains a numeric field `Value` which is defined only if the field `Valid` is `true`.
+Some messages have optional fields. By default, omitted numeric values are set to 0. In situations where you need finer control to distinguish between an undefined value and an actual 0, you can register types overriding existing sentences, using `nmea.Int64` and `nmea.Float64` instead of `int64` and `float64`. The matching parsing methods are `(*Parser).NullInt64` and `(*Parser).NullFloat64`. Both `nmea.Int64` and `nmea.Float64` contains a numeric field `Value` which is defined only if the field `Valid` is `true`.
 
 See below example for a modified VTG sentence parser:
 
@@ -308,16 +308,15 @@ func main() {
 		panic(err)
 	}
 
-	switch m := s.(type) {
-	case VTG:
-		fmt.Printf("Raw sentence: %v\n", m)
-		fmt.Printf("TrueTrack: %v\n", m.TrueTrack)
-		fmt.Printf("MagneticTrack: %v\n", m.MagneticTrack)
-		fmt.Printf("GroundSpeedKnots: %v\n", m.GroundSpeedKnots)
-		fmt.Printf("GroundSpeedKPH: %v\n", m.GroundSpeedKPH)
-	default:
+	m, ok := s.(VTG)
+	if !ok {
 		panic("Could not parse VTG sentence")
 	}
+	fmt.Printf("Raw sentence: %v\n", m)
+	fmt.Printf("TrueTrack: %v\n", m.TrueTrack)
+	fmt.Printf("MagneticTrack: %v\n", m.MagneticTrack)
+	fmt.Printf("GroundSpeedKnots: %v\n", m.GroundSpeedKnots)
+	fmt.Printf("GroundSpeedKPH: %v\n", m.GroundSpeedKPH)
 }
 ```
 
