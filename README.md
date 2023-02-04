@@ -27,75 +27,152 @@ To update go-nmea to the latest version, use `go get -u github.com/adrianmo/go-n
 
 ## Supported sentences
 
-At this moment, this library supports the following sentence types:
+Sentence with link is supported by this library. NMEA0183 sentences list is based on [IEC 61162-1:2016 (Edition 5.0 2016-08)](https://webstore.iec.ch/publication/25754) table of contents.
 
-| Sentence type                                                                                 | Description                                               |
-|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------|
-| [AAM](https://gpsd.gitlab.io/gpsd/NMEA.html#_aam_waypoint_arrival_alarm)                      | Waypoint Arrival Alarm                                    |
-| [ALA](./ala.go)                                                                               | System Faults and Alarms                                  |
-| [APB](https://gpsd.gitlab.io/gpsd/NMEA.html#_apb_autopilot_sentence_b)                        | Autopilot Sentence "B"                                    |
-| [BEC](http://www.nmea.de/nmea0183datensaetze.html#bec)                                        | Bearing and distance to waypoint (dead reckoning)         |
-| [BOD](https://gpsd.gitlab.io/gpsd/NMEA.html#_bod_bearing_waypoint_to_waypoint)                | Bearing waypoint to waypoint (origin to destination)      |
-| [BWC](https://gpsd.gitlab.io/gpsd/NMEA.html#_bwc_bearing_distance_to_waypoint_great_circle)   | Bearing and distance to waypoint (great circle)           |
-| [BWR](https://gpsd.gitlab.io/gpsd/NMEA.html#_bwr_bearing_and_distance_to_waypoint_rhumb_line) | Bearing and distance to waypoint (Rhumb Line)             |
-| [BWW](https://gpsd.gitlab.io/gpsd/NMEA.html#_bww_bearing_waypoint_to_waypoint)                | Bearing from destination waypoint to origin waypoint      |
-| [DBK](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbk_depth_below_keel)                            | Depth Below Keel (obsolete, use DPT instead)              |
-| [DBS](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface)                         | Depth Below Surface (obsolete, use DPT instead)           |
-| [DBT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer)                      | Depth below transducer                                    |
-| [DOR](./dor.go)                                                                               | Door Status Detection                                     |
-| [DPT](https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water)                              | Depth of Water                                            |
-| [DSC](./dsc.go)                                                                               | Digital Selective Calling Information                     |
-| [DSE](./dse.go)                                                                               | Expanded digital selective calling                        |
-| [DTM](https://gpsd.gitlab.io/gpsd/NMEA.html#_dtm_datum_reference)                             | Datum Reference                                           |
-| [EVE](./eve.go)                                                                               | General Event Message                                     |
-| [FIR](./fir.go)                                                                               | Fire Detection event with time and location               |
-| [GGA](http://aprs.gids.nl/nmea/#gga)                                                          | GPS Positioning System Fix Data                           |
-| [GLL](http://aprs.gids.nl/nmea/#gll)                                                          | Geographic Position, Latitude / Longitude and time        |
-| [GNS](https://gpsd.gitlab.io/gpsd/NMEA.html#_gns_fix_data)                                    | Combined GPS fix for GPS, Glonass, Galileo, and BeiDou    |
-| [GSA](http://aprs.gids.nl/nmea/#gsa)                                                          | GPS DOP and active satellites                             |
-| [GSV](http://aprs.gids.nl/nmea/#gsv)                                                          | GPS Satellites in view                                    |
-| [HDG](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdg_heading_deviation_variation)                 | Heading, Deviation & Variation                            |
-| [HDM](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdm_heading_magnetic)                            | Heading - Magnetic                                        |
-| [HDT](http://aprs.gids.nl/nmea/#hdt)                                                          | Actual vessel heading in degrees True                     |
-| [HSC](https://gpsd.gitlab.io/gpsd/NMEA.html#_hsc_heading_steering_command)                    | Heading steering command                                  |
-| [MDA](https://gpsd.gitlab.io/gpsd/NMEA.html#_mda_meteorological_composite)                    | Meteorological Composite                                  |
-| [MTA](./mta.go)                                                                               | Air Temperature (obsolete, use XDR instead)               |
-| [MTW](https://gpsd.gitlab.io/gpsd/NMEA.html#_mtw_mean_temperature_of_water)                   | Mean Temperature of Water                                 |
-| [MWD](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                                         | Wind Direction and Speed                                  |
-| [MWV](https://gpsd.gitlab.io/gpsd/NMEA.html#_mwv_wind_speed_and_angle)                        | Wind Speed and Angle                                      |
-| [OSD](https://gpsd.gitlab.io/gpsd/NMEA.html#_osd_own_ship_data)                               | Own Ship Data                                             |
-| [RMB](https://gpsd.gitlab.io/gpsd/NMEA.html#_rmb_recommended_minimum_navigation_information)  | Recommended Minimum Navigation Information                |
-| [RMC](http://aprs.gids.nl/nmea/#rmc)                                                          | Recommended Minimum Specific GPS/Transit data             |
-| [ROT](https://gpsd.gitlab.io/gpsd/NMEA.html#_rot_rate_of_turn)                                | Rate of turn                                              |
-| [RPM](https://gpsd.gitlab.io/gpsd/NMEA.html#_rpm_revolutions)                                 | Engine or Shaft revolutions and pitch                     |
-| [RSA](https://gpsd.gitlab.io/gpsd/NMEA.html#_rsa_rudder_sensor_angle)                         | Rudder Sensor Angle                                       |
-| [RSD](https://gpsd.gitlab.io/gpsd/NMEA.html#_rsd_radar_system_data)                           | RADAR System Data                                         |
-| [RTE](http://aprs.gids.nl/nmea/#rte)                                                          | Route                                                     |
-| [THS](http://www.nuovamarea.net/pytheas_9.html)                                               | Actual vessel heading in degrees True and status          |
-| [TLL](https://gpsd.gitlab.io/gpsd/NMEA.html#_tll_target_latitude_and_longitude)               | Target latitude and longitude                             |
-| [TTM](https://gpsd.gitlab.io/gpsd/NMEA.html#_ttm_tracked_target_message)                      | Tracked Target Message                                    |
-| [TXT](https://www.nmea.org/Assets/20160520%20txt%20amendment.pdf)                             | Sentence is for the transmission of text messages         |
-| [VBW](https://gpsd.gitlab.io/gpsd/NMEA.html#_vbw_dual_groundwater_speed)                      | Dual Ground/Water Speed                                   |
-| [VDM/VDO](https://gpsd.gitlab.io/gpsd/AIVDM.html)                                             | Encapsulated binary payload (commonly used with AIS data) |
-| [VDR](https://gpsd.gitlab.io/gpsd/NMEA.html#_vdr_set_and_drift)                               | Set and Drift                                             |
-| [VHW](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                                         | Water Speed and Heading                                   |
-| [VLW](https://gpsd.gitlab.io/gpsd/NMEA.html#_vlw_distance_traveled_through_water)             | Distance Traveled through Water                           |
-| [VPW](https://gpsd.gitlab.io/gpsd/NMEA.html#_vpw_speed_measured_parallel_to_wind)             | Speed Measured Parallel to Wind                           |
-| [VTG](http://aprs.gids.nl/nmea/#vtg)                                                          | Track Made Good and Ground Speed                          |
-| [VWR](https://gpsd.gitlab.io/gpsd/NMEA.html#_vwr_relative_wind_speed_and_angle)               | Relative Wind Speed and Angle                             |
-| [VWT](./vwt.go)                                                                               | True Wind Speed and Angle                                 |
-| [WPL](http://aprs.gids.nl/nmea/#wpl)                                                          | Waypoint location                                         |
-| [XDR](https://gpsd.gitlab.io/gpsd/NMEA.html#_xdr_transducer_measurement)                      | Transducer Measurement                                    |
-| [ZDA](http://aprs.gids.nl/nmea/#zda)                                                          | Date & time data                                          |
+| Sentence           | Description                                                         | References                                                                                     |
+|--------------------|---------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| [AAM](./aam.go)    | Waypoint arrival alarm                                              | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_aam_waypoint_arrival_alarm)                      |
+| ABK                | AIS addressed and binary broadcast acknowledgement                  |                                                                                                |
+| [ABM](./abm.go)    | AIS addressed binary and safety related message                     |                                                                                                |
+| ACA                | AIS channel assignment message                                      |                                                                                                |
+| [ACK](./ack.go)    | Acknowledge alarm                                                   |                                                                                                |
+| [ACN](./acn.go)    | Alert command                                                       |                                                                                                |
+| ACS                | AIS channel management information source                           |                                                                                                |
+| AIR                | AIS interrogation request                                           |                                                                                                |
+| AKD                | Acknowledge detail alarm condition                                  |                                                                                                |
+| [ALA](./ala.go)    | Report detailed alarm condition                                     |                                                                                                |
+| [ALC](./alc.go)    | Cyclic alert list                                                   |                                                                                                |
+| [ALF](./alf.go)    | Alert sentence                                                      |                                                                                                |
+| [ALR](./alr.go)    | Set alarm state                                                     |                                                                                                |
+| [APB](./apb.go)    | Heading/track controller (autopilot) sentence B                     | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_apb_autopilot_sentence_b)                        |
+| [ARC](./arc.go)    | Alert command refused                                               |                                                                                                |
+| [BBM](./bbm.go)    | AIS broadcast binary message                                        |                                                                                                |
+| [BEC](./bec.go)    | Bearing and distance to waypoint, Dead reckoning                    | [1](http://www.nmea.de/nmea0183datensaetze.html#bec)                                           |
+| [BOD](./bod.go)    | Bearing origin to destination                                       | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_bod_bearing_waypoint_to_waypoint)                |
+| [BWC](./bwc.go)    | Bearing and distance to waypoint, Great circle                      | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_bwc_bearing_distance_to_waypoint_great_circle)   |
+| [BWR](./bwr.go)    | Bearing and distance to waypoint, Rhumb line                        | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_bwr_bearing_and_distance_to_waypoint_rhumb_line) |
+| [BWW](./bww.go)    | Bearing waypoint to waypoint                                        | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_bww_bearing_waypoint_to_waypoint)                |
+| CUR                | Water current layer, Multi-layer water current data                 |                                                                                                |
+| [DBK](./dbk.go)    | Depth Below Keel (obsolete, use DPT instead)                        | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbk_depth_below_keel)                            |
+| [DBS](./dbs.go)    | Depth below transducer                                              | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbs_depth_below_surface)                         |
+| [DBT](./dbt.go)    | Depth below transducer                                              | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_dbt_depth_below_transducer)                      |
+| DDC                | Display dimming control                                             |                                                                                                |
+| [DOR](./dor.go)    | Door status detection                                               |                                                                                                |
+| [DPT](./dpt.go)    | Depth                                                               | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_dpt_depth_of_water)                              |
+| [DSC](./dsc.go)    | Digital selective calling information                               |                                                                                                |
+| [DSE](./dse.go)    | Expanded digital selective calling                                  |                                                                                                |
+| [DTM](./dtm.go)    | Datum reference                                                     | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_dtm_datum_reference)                             |
+| EPV                | Command or report equipment property value                          |                                                                                                |
+| ETL                | Engine telegraph operation status                                   |                                                                                                |
+| [EVE](./eve.go)    | General event message                                               |                                                                                                |
+| [FIR](./fir.go)    | Fire detection                                                      |                                                                                                |
+| FSI                | Frequency set information                                           |                                                                                                |
+| GBS                | GNSS satellite fault detection                                      |                                                                                                |
+| GEN                | Generic binary information                                          |                                                                                                |
+| GFA                | GNSS fix accuracy and integrity                                     |                                                                                                |
+| [GGA](./gga.go)    | Global positioning system (GPS) fix data                            | [1](http://aprs.gids.nl/nmea/#gga)                                                             |
+| [GLL](./gll.go)    | Geographic position, Latitude/longitude                             | [1](http://aprs.gids.nl/nmea/#gll)                                                             |
+| [GNS](./gns.go)    | GNSS fix data                                                       | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_gns_fix_data)                                    |
+| GRS                | GNSS range residuals                                                |                                                                                                |
+| [GSA](./gsa.go)    | GNSS DOP and active satellites                                      | [1](http://aprs.gids.nl/nmea/#gsa)                                                             |
+| GST                | GNSS pseudorange noise statistics                                   |                                                                                                |
+| [GSV](./gsv.go)    | GNSS satellites in view                                             | [1](http://aprs.gids.nl/nmea/#gsv)                                                             |
+| [HBT](./hbt.go)    | Heartbeat supervision sentence                                      |                                                                                                |
+| HCR                | Heading correction report                                           |                                                                                                |
+| [HDG](./hdg.go)    | Heading, deviation and variation                                    | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdg_heading_deviation_variation)                 |
+| HDM                | Heading - Magnetic                                                  | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdm_heading_magnetic)                            |
+| [HDT](./hdt.go)    | Heading true                                                        | [gpsd](http://aprs.gids.nl/nmea/#hdt)                                                          |
+| HMR                | Heading monitor receive                                             |                                                                                                |
+| HMS                | Heading monitor set                                                 |                                                                                                |
+| HRM                | heel angle, roll period and roll amplitude measurement device       |                                                                                                |
+| [HSC](./hsc.go)    | Heading steering command                                            | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_hsc_heading_steering_command)                    |
+| HSS                | Hull stress surveillance systems                                    |                                                                                                |
+| HTC                | Heading/track control command                                       |                                                                                                |
+| HTD                | Heading /track control data                                         |                                                                                                |
+| LR1                | AIS long-range reply sentence 1                                     |                                                                                                |
+| LR2                | AIS long-range reply sentence 2                                     |                                                                                                |
+| LR3                | AIS long-range reply sentence 3                                     |                                                                                                |
+| LRF                | AIS long-range function                                             |                                                                                                |
+| LRI                | AIS long-range interrogation                                        |                                                                                                |
+| [MDA](./mda.go)    | Meteorological Composite                                            | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_mda_meteorological_composite)                    |
+| [MTA](./mta.go)    | Air Temperature (obsolete, use XDR instead)                         |                                                                                                |
+| MOB                | Man over board notification                                         |                                                                                                |
+| MSK                | MSK receiver interface                                              |                                                                                                |
+| MSS                | MSK receiver signal status                                          |                                                                                                |
+| [MTW](./mtw.go)    | Water temperature                                                   | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_mtw_mean_temperature_of_water)                   |
+| [MWD](./mwd.go)    | Wind direction and speed                                            | [1](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                                            |
+| [MWV](./mwv.go)    | Wind speed and angle                                                | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_mwv_wind_speed_and_angle)                        |
+| NAK                | Negative acknowledgement                                            |                                                                                                |
+| NRM                | NAVTEX receiver mask                                                |                                                                                                |
+| NRX                | NAVTEX received message                                             |                                                                                                |
+| NSR                | Navigation status report                                            |                                                                                                |
+| [OSD](./osd.go)    | Own ship data                                                       | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_osd_own_ship_data)                               |
+| POS                | Device position and ship dimensions report or configuration command |                                                                                                |
+| PRC                | Propulsion remote control status                                    |                                                                                                |
+| RLM                | Return link message                                                 |                                                                                                |
+| RMA                | Recommended minimum specific LORAN-C data                           |                                                                                                |
+| [RMB](./rmb.go)    | Recommended minimum navigation information                          | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_rmb_recommended_minimum_navigation_information)  |
+| [RMC](./rmc.go)    | Recommended minimum specific GNSS data                              | [1](http://aprs.gids.nl/nmea/#rmc)                                                             |
+| ROR                | Rudder order status                                                 |                                                                                                |
+| [ROT](./rot.go)    | Rate of turn                                                        | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_rot_rate_of_turn)                                |
+| RRT                | Report route transfer                                               |                                                                                                |
+| [RPM](./rpm.go)    | Revolutions                                                         | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_rpm_revolutions)                                 |
+| [RSA](./rsa.go)    | Rudder sensor angle                                                 | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_rsa_rudder_sensor_angle)                         |
+| [RSD](./rsd.go)    | Radar system data                                                   | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_rsd_radar_system_data)                           |
+| [RTE](./rte.go)    | Routes                                                              | [1](http://aprs.gids.nl/nmea/#rte)                                                             |
+| SFI                | Scanning frequency information                                      |                                                                                                |
+| SMI                | SafetyNET Message, All Ships/NavArea                                |                                                                                                |
+| SM2                | SafetyNET Message, Coastal Warning Area                             |                                                                                                |
+| SM3                | SafetyNET Message, Circular Area address                            |                                                                                                |
+| SM4                | SafetyNET Message, Rectangular Area Address                         |                                                                                                |
+| SMB                | IMO SafetyNET Message Body                                          |                                                                                                |
+| SPW                | Security password sentence                                          |                                                                                                |
+| SSD                | AIS ship static data                                                |                                                                                                |
+| STN                | Multiple data ID                                                    |                                                                                                |
+| [THS](./ths.go)    | True heading and status                                             | [1](http://www.nuovamarea.net/pytheas_9.html)                                                  |
+| [TLB](./tlb.go)    | Target label                                                        |                                                                                                |
+| [TLL](./tll.go)    | Target latitude and longitude                                       | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_tll_target_latitude_and_longitude)               |
+| TRC                | Thruster control data                                               |                                                                                                |
+| TRL                | AIS transmitter-non-functioning log                                 |                                                                                                |
+| TRD                | Thruster response data                                              |                                                                                                |
+| [TTD](./ttd.go)    | Tracked target data                                                 |                                                                                                |
+| [TTM](./ttm.go)    | Tracked target message                                              | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_ttm_tracked_target_message)                      |
+| TUT                | Transmission of multi-language text                                 |                                                                                                |
+| [TXT](./txt.go)    | Text transmission                                                   | [NMEA](https://www.nmea.org/Assets/20160520%20txt%20amendment.pdf)                             |
+| UID                | User identification code transmission                               |                                                                                                |
+| [VBW](./vbw.go)    | Dual ground/water speed                                             | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_vbw_dual_groundwater_speed)                      |
+| [VDM](./vdmvdo.go) | AIS VHF data-link message                                           | [gpsd](https://gpsd.gitlab.io/gpsd/AIVDM.html)                                                 |
+| [VDO](./vdmvdo.go) | AIS VHF data-link own-vessel report                                 | [gpsd](https://gpsd.gitlab.io/gpsd/AIVDM.html)                                                 |
+| [VDR](./vdr.go)    | Set and drift                                                       | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_vdr_set_and_drift)                               |
+| VER                | Version                                                             |                                                                                                |
+| [VHW](./vhw.go)    | Water speed and heading                                             | [1](https://www.tronico.fi/OH6NT/docs/NMEA0183.pdf)                                            |
+| [VLW](./vlw.go)    | Dual ground/water distance                                          | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_vlw_distance_traveled_through_water)             |
+| [VPW](./vpw.go)    | Speed measured parallel to wind                                     | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_vpw_speed_measured_parallel_to_wind)             |
+| [VSD](./vsd.go)    | AIS voyage static data                                              |                                                                                                |
+| [VTG](./vtg.go)    | Course over ground and ground speed                                 | [1](http://aprs.gids.nl/nmea/#vtg)                                                             |
+| VWR                | Relative Wind Speed and Angle                                       | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_vwr_relative_wind_speed_and_angle)               |
+| VWT                | True Wind Speed and Angle                                           |                                                                                                |
+| WAT                | Water level detection                                               |                                                                                                |
+| WCV                | Waypoint closure velocity                                           |                                                                                                |
+| WNC                | Distance waypoint to waypoint                                       |                                                                                                |
+| [WPL](./wpl.go)    | Waypoint location                                                   | [1](http://aprs.gids.nl/nmea/#wpl)                                                             |
+| [XDR](./xdr.go)    | Transducer measurements                                             | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_xdr_transducer_measurement)                      |
+| [XTE](./xte.go)    | Cross-track error, measured                                         |                                                                                                |
+| XTR                | Cross-track error, dead reckoning                                   |                                                                                                |
+| [ZDA](./zda.go)    | Time and date                                                       | [1](http://aprs.gids.nl/nmea/#zda)                                                             |
+| ZDL                | Time and distance to variable point                                 |                                                                                                |
+| ZFO                | UTC and time from origin waypoint                                   |                                                                                                |
+| ZTG                | UTC and time to destination waypoint                                |                                                                                                |
 
-| Proprietary sentence type                                   | Description                                                                                     |
-|-------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| [PGRME](http://aprs.gids.nl/nmea/#rme)                      | Estimated Position Error (Garmin proprietary sentence)                                          |
-| [PHTRO](./phtro.go)                                         | Vessel pitch and roll (Xsens IMU/VRU/AHRS)                                                      |
-| [PMTK](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf) | Messages for setting and reading commands for MediaTek gps modules.                             |
-| [PRDID](./prdid.go)                                         | Vessel pitch, roll and heading (Xsens IMU/VRU/AHRS)                                             |
-| [PSKPDPT](./pskpdpt.go)                                     | Depth of Water for multiple transducer installation                                             |
-| [PSONCMS](./psoncms.go)                                     | Quaternion, acceleration, rate of turn, magnetic field, sensor temperature (Xsens IMU/VRU/AHRS) |
+
+| Proprietary sentence type | Description                                                                                     | References                                               |
+|---------------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------------------|
+| [PGRME](./pgrme.go)       | Estimated Position Error (Garmin proprietary sentence)                                          | [1](http://aprs.gids.nl/nmea/#rme)                       |
+| [PHTRO](./phtro.go)       | Vessel pitch and roll (Xsens IMU/VRU/AHRS)                                                      |                                                          |
+| [PMTK001](./pmtk.go)      | Acknowledgement of previously sent command/packet                                               | [1](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf) |
+| [PRDID](./prdid.go)       | Vessel pitch, roll and heading (Xsens IMU/VRU/AHRS)                                             |                                                          |
+| [PSKPDPT](./pskpdpt.go)   | Depth of Water for multiple transducer installation                                             |                                                          |
+| [PSONCMS](./psoncms.go)   | Quaternion, acceleration, rate of turn, magnetic field, sensor temperature (Xsens IMU/VRU/AHRS) |                                                          |
 
 If you need to parse a message that contains an unsupported sentence type you can implement and register your own
 message parser and get yourself unblocked immediately. Check the example below to know how

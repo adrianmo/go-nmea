@@ -11,6 +11,8 @@ const (
 // VDMVDO is sentence ($--VDM or $--VDO) used to encapsulate generic binary payloads. It is most commonly used with AIS data.
 // https://gpsd.gitlab.io/gpsd/AIVDM.html
 //
+// Format: !--VDO,x,x,x,a,s--s,x*hh<CR><LF>
+// Format: !--VDM,x,x,x,a,s--s,x*hh<CR><LF>
 // Example: !AIVDM,1,1,,B,177KQJ5000G?tO`K>RA1wUbN0TKH,0*5C
 type VDMVDO struct {
 	BaseSentence
