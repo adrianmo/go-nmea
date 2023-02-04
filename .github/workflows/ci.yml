@@ -15,19 +15,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: ["1.17", "1.16", "1.15", "1.14"]
+        go: ["1.20", "1.19", "1.18", "1.17"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
 
       - name: Install dependencies
         run: |
-          go get -u golang.org/x/lint/golint@latest
-          go get -u github.com/mattn/goveralls@v0.0.9
+          go install golang.org/x/lint/golint@latest
+          go install github.com/mattn/goveralls@v0.0.11
 
       - name: Lint
         run: |

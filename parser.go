@@ -104,6 +104,23 @@ func (p *Parser) EnumChars(i int, context string, options ...string) []string {
 	return strs
 }
 
+// HexInt64 returns the hex encoded int64 value at the specified index.
+// If the value is an empty string, 0 is returned.
+func (p *Parser) HexInt64(i int, context string) int64 {
+	s := p.String(i, context)
+	if p.err != nil {
+		return 0
+	}
+	if s == "" {
+		return 0
+	}
+	value, err := strconv.ParseInt(s, 16, 64)
+	if err != nil {
+		p.SetErr(context, s)
+	}
+	return value
+}
+
 // Int64 returns the int64 value at the specified index.
 // If the value is an empty string, 0 is returned.
 func (p *Parser) Int64(i int, context string) int64 {

@@ -26,7 +26,7 @@ var (
 )
 
 // ParserFunc callback used to parse specific sentence variants
-type ParserFunc func(BaseSentence) (Sentence, error)
+type ParserFunc func(s BaseSentence) (Sentence, error)
 
 // NotSupportedError is returned when parsed sentence is not supported
 type NotSupportedError struct {
@@ -191,10 +191,22 @@ func Parse(raw string) (Sentence, error) {
 			return newRMC(s)
 		case TypeAAM:
 			return newAAM(s)
+		case TypeACK:
+			return newACK(s)
+		case TypeACN:
+			return newACN(s)
 		case TypeALA:
 			return newALA(s)
+		case TypeALC:
+			return newALC(s)
+		case TypeALF:
+			return newALF(s)
+		case TypeALR:
+			return newALR(s)
 		case TypeAPB:
 			return newAPB(s)
+		case TypeARC:
+			return newARC(s)
 		case TypeBEC:
 			return newBEC(s)
 		case TypeBOD:
@@ -239,6 +251,8 @@ func Parse(raw string) (Sentence, error) {
 			return newPSONCMS(s)
 		case TypeGSV:
 			return newGSV(s)
+		case TypeHBT:
+			return newHBT(s)
 		case TypeHDG:
 			return newHDG(s)
 		case TypeHDT:
@@ -251,6 +265,8 @@ func Parse(raw string) (Sentence, error) {
 			return newGNS(s)
 		case TypeTHS:
 			return newTHS(s)
+		case TypeTLB:
+			return newTLB(s)
 		case TypeTLL:
 			return newTLL(s)
 		case TypeTTM:
@@ -277,6 +293,8 @@ func Parse(raw string) (Sentence, error) {
 			return newVDR(s)
 		case TypeVHW:
 			return newVHW(s)
+		case TypeVSD:
+			return newVSD(s)
 		case TypeVPW:
 			return newVPW(s)
 		case TypeVLW:
@@ -313,6 +331,12 @@ func Parse(raw string) (Sentence, error) {
 	}
 	if strings.HasPrefix(s.Raw, SentenceStartEncapsulated) {
 		switch s.Type {
+		case TypeABM:
+			return newABM(s)
+		case TypeBBM:
+			return newBBM(s)
+		case TypeTTD:
+			return newTTD(s)
 		case TypeVDM, TypeVDO:
 			return newVDMVDO(s)
 		}
