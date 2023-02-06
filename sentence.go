@@ -176,6 +176,10 @@ func Parse(raw string) (Sentence, error) {
 	// Custom parser allow overriding of existing parsers
 	if parser, ok := customParsers[s.Type]; ok {
 		return parser(s)
+	} else if parser, ok := customParsers[s.Talker+s.Type]; ok {
+		s.Type = s.Talker + s.Type
+		s.Talker = ""
+		return parser(s)
 	}
 
 	if strings.HasPrefix(s.Raw, SentenceStart) {

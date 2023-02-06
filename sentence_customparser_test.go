@@ -52,6 +52,21 @@ var customparsetests = []struct {
 		},
 	},
 	{
+		name: "zzz sentence without a talker ID",
+		raw:  "$ZZZ,30,two,*19",
+		msg: TestZZZ{
+			BaseSentence: BaseSentence{
+				Talker:   "",
+				Type:     "ZZZ",
+				Fields:   []string{"30", "two", ""},
+				Checksum: "19",
+				Raw:      "$ZZZ,30,two,*19",
+			},
+			NumberValue: 30,
+			StringValue: "two",
+		},
+	},
+	{
 		name: "zzz sentence type",
 		raw:  "$INVALID,123,123,*7D",
 		err:  "nmea: sentence prefix 'INVALID' not supported",
