@@ -79,13 +79,15 @@ func (s BaseSentence) TalkerID() string {
 // String formats the sentence into a string
 func (s BaseSentence) String() string { return s.Raw }
 
-// SentenceParserConfig is configuration for creating new instance of SentenceParser
-type SentenceParserConfig struct {
+// SentenceParser is configurable parser instance to parse raw input into NMEA0183 Sentence
+//
+// SentenceParser fields/methods are not co-routine safe!
+type SentenceParser struct {
 	// CustomParsers allows registering additional parsers
 	CustomParsers map[string]ParserFunc
 
-	// ParseAddress takes in the sentence first field (address) and splits it into a talker id and sentence type
-	ParseAddress func(rawAddress string) (talkerID string, sentence string, err error)
+	// ParsePrefix takes in the sentence first field (NMEA0183 address) and splits it into a talker id and sentence type
+	ParsePrefix func(prefix string) (talkerID string, sentence string, err error)
 
 	// CheckCRC allows custom handling of checksum checking based on parsed sentence
 	CheckCRC func(sentence BaseSentence, rawFields string) error
@@ -101,40 +103,8 @@ type SentenceParserConfig struct {
 	OnTagBlock func(tagBlock TagBlock)
 }
 
-// SentenceParser provides configurable functionality to parse raw input into Sentence
-type SentenceParser struct {
-	config SentenceParserConfig
-}
-
-// NewSentenceParser creates new instance of SentenceParser
-func NewSentenceParser() *SentenceParser {
-	return NewSentenceParserWithConfig(SentenceParserConfig{})
-}
-
-// NewSentenceParserWithConfig creates new instance of SentenceParser with given config
-func NewSentenceParserWithConfig(c SentenceParserConfig) *SentenceParser {
-	if c.ParseAddress == nil {
-		c.ParseAddress = DefaultParseAddress
-	}
-	if c.CheckCRC == nil {
-		c.CheckCRC = DefaultCheckCRC
-	}
-	cp := map[string]ParserFunc{}
-	for sType, pFunc := range c.CustomParsers {
-		cp[sType] = pFunc
-	}
-
-	return &SentenceParser{
-		config: SentenceParserConfig{
-			CustomParsers: cp,
-			ParseAddress:  c.ParseAddress,
-			CheckCRC:      c.CheckCRC,
-			OnTagBlock:    c.OnTagBlock,
-		},
-	}
-}
-
 // ParseBaseSentence parses BaseSentence from input
+// This method is not co-routine safe!
 func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
 	raw = strings.TrimSpace(raw)
 
@@ -156,8 +126,8 @@ func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
 		if err != nil {
 			return BaseSentence{}, err
 		}
-		if p.config.OnTagBlock != nil {
-			p.config.OnTagBlock(tagBlock)
+		if p.OnTagBlock != nil {
+			p.OnTagBlock(tagBlock)
 		}
 		raw = raw[endOfTagBlock+1:]
 	}
@@ -173,20 +143,36 @@ func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
 		rawFields = raw[startIndex+1 : checksumSepIndex]
 		checksumRaw = strings.ToUpper(raw[checksumSepIndex+1:])
 	}
+	// TODO: fields can contain encoded chars that need to be unescaped. `^` 0x5e is escape character for HEX representation of ISO/IEC 8859-1 (ASCII) characters.
+	// TODO: `^` itself is escaped as `^5e` and `,` is escaped as `^2c` etc. All reserved characters should be escaped/unescaped (See wikipedia https://en.wikipedia.org/wiki/NMEA_0183#Message_structure)
 	fields := strings.Split(rawFields, FieldSep)
-	talker, typ, err := p.config.ParseAddress(fields[0])
+
+	var (
+		talkerID string
+		typ      string
+	)
+	if p.ParsePrefix == nil {
+		talkerID, typ, err = DefaultParsePrefix(fields[0])
+	} else {
+		talkerID, typ, err = p.ParsePrefix(fields[0])
+	}
 	if err != nil {
 		return BaseSentence{}, err
 	}
 	sentence := BaseSentence{
-		Talker:   talker,
+		Talker:   talkerID,
 		Type:     typ,
 		Fields:   fields[1:],
 		Checksum: checksumRaw,
 		Raw:      raw,
 		TagBlock: tagBlock,
 	}
-	if err := p.config.CheckCRC(sentence, rawFields); err != nil {
+	if p.CheckCRC == nil {
+		err = DefaultCheckCRC(sentence, rawFields)
+	} else {
+		err = p.CheckCRC(sentence, rawFields)
+	}
+	if err != nil {
 		return BaseSentence{}, err
 	}
 	return sentence, nil
@@ -203,22 +189,24 @@ func DefaultCheckCRC(sentence BaseSentence, rawFields string) error {
 	return nil
 }
 
-// DefaultParseAddress takes in the sentence first field (Address) and splits it into a talker id and sentence type.
-func DefaultParseAddress(raw string) (string, string, error) {
+// DefaultParsePrefix takes in the sentence first field (NMEA0183 Address) and splits it into a talker id and sentence type.
+func DefaultParsePrefix(prefix string) (string, string, error) {
 	// proprietary sentences
-	if raw[0] == ProprietarySentencePrefix {
-		return string(ProprietarySentencePrefix), raw[1:], nil
+	if prefix[0] == ProprietarySentencePrefix {
+		return string(ProprietarySentencePrefix), prefix[1:], nil
 	}
 	// valid NMEA talkerID (2) + sentence identifier (3+) must be at least 5 characters long
-	if len(raw) < 5 {
-		return "", "", fmt.Errorf("nmea: sentence address too short: '%s'", raw)
+	if len(prefix) < 5 {
+		return "", "", fmt.Errorf("nmea: sentence prefix too short: '%s'", prefix)
 	}
 	// query sentence is a special type of sentence in NMEA standard that is used for a listener to request a
 	// particular sentence from a talker.
-	if len(raw) == 5 && raw[4] == QuerySentencePostfix {
-		return raw[:2], string(QuerySentencePostfix), nil
+	// Query address consist of: XXYYQ, XX - requester talker ID, YY - requestee/destination talker ID, `Q` - query type
+	// Destination talker ID is handled/parsed by newQuery function
+	if len(prefix) == 5 && prefix[4] == QuerySentencePostfix {
+		return prefix[:2], string(QuerySentencePostfix), nil
 	}
-	return raw[:2], raw[2:], nil
+	return prefix[:2], prefix[2:], nil
 }
 
 // Checksum xor all the bytes in a string and return it
@@ -235,13 +223,11 @@ var defaultSentenceParserMu = new(sync.Mutex)
 
 // defaultSentenceParser exists for backwards compatibility reasons to allow global Parse/RegisterParser/MustRegisterParser
 // to work as they did before SentenceParser was added.
-var defaultSentenceParser = NewSentenceParserWithConfig(
-	SentenceParserConfig{
-		CustomParsers: map[string]ParserFunc{
-			TypeMTK: newMTK, // for backwards compatibility support MTK. PMTK001 is correct an supported when using SentenceParser instance
-		},
+var defaultSentenceParser = SentenceParser{
+	CustomParsers: map[string]ParserFunc{
+		TypeMTK: newMTK, // for backwards compatibility support MTK. PMTK001 is correct an supported when using SentenceParser instance
 	},
-)
+}
 
 // MustRegisterParser register a custom parser or panic
 func MustRegisterParser(sentenceType string, parser ParserFunc) {
@@ -255,11 +241,11 @@ func RegisterParser(sentenceType string, parser ParserFunc) error {
 	defaultSentenceParserMu.Lock()
 	defer defaultSentenceParserMu.Unlock()
 
-	if _, ok := defaultSentenceParser.config.CustomParsers[sentenceType]; ok {
+	if _, ok := defaultSentenceParser.CustomParsers[sentenceType]; ok {
 		return fmt.Errorf("nmea: parser for sentence type '%q' already exists", sentenceType)
 	}
 
-	defaultSentenceParser.config.CustomParsers[sentenceType] = parser
+	defaultSentenceParser.CustomParsers[sentenceType] = parser
 	return nil
 }
 
@@ -272,6 +258,7 @@ func Parse(raw string) (Sentence, error) {
 }
 
 // Parse parses the given string into the correct sentence type.
+// This method is not co-routine safe!
 func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 	s, err := p.ParseBaseSentence(raw)
 	if err != nil {
@@ -279,7 +266,7 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 	}
 
 	// Custom parser allow overriding of existing parsers
-	if parser, ok := p.config.CustomParsers[s.Type]; ok {
+	if parser, ok := p.CustomParsers[s.Type]; ok {
 		return parser(s)
 	}
 

@@ -32,7 +32,7 @@ func TestPMTK001(t *testing.T) {
 			err:  "nmea: PMTK001 invalid command: index out of range",
 		},
 	}
-	p := NewSentenceParser()
+	p := SentenceParser{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m, err := p.Parse(tt.raw)
