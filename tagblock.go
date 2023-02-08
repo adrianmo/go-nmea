@@ -37,7 +37,7 @@ func parseTagBlock(tags string) (TagBlock, error) {
 		fieldsRaw   = tags[0:sumSepIndex]
 		checksumRaw = strings.ToUpper(tags[sumSepIndex+1:])
 		checksum    = Checksum(fieldsRaw)
-		tagBlock	TagBlock
+		tagBlock    TagBlock
 		err         error
 	)
 
