@@ -376,6 +376,15 @@ func TestParser(t *testing.T) {
 			},
 		},
 		{
+			name:     "HexInt64 empty field",
+			fields:   []string{""},
+			expected: int64(0),
+			hasErr:   false,
+			parse: func(p *Parser) interface{} {
+				return p.HexInt64(0, "context")
+			},
+		},
+		{
 			name:     "HexInt64 negative",
 			fields:   []string{"-FF"},
 			expected: int64(-255),

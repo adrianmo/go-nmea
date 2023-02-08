@@ -1,6 +1,7 @@
 package nmea
 
 import (
+	"encoding/hex"
 	"errors"
 	"testing"
 
@@ -78,6 +79,28 @@ func TestSentences(t *testing.T) {
 			},
 		},
 		{
+			name: "valid IEC 61162-450 message with tag block",
+			// IEC 61162-450 (NMEA0183 over multicast UDP) has prefix `UdPbC` + 0x0 (null character)
+			raw: func() string {
+				//  `UdPbC` + 0x0 + `\s:SI1001*53\$IIHDG,,,,,*67`
+				str, _ := hex.DecodeString("5564506243005c733a5349313030312a35335c2449494844472c2c2c2c2c2a3637")
+				return string(str)
+			}(),
+			datatype: "HDG",
+			talkerid: "II",
+			prefix:   "IIHDG",
+			sent: BaseSentence{
+				Talker:   "II",
+				Type:     "HDG",
+				Fields:   []string{"", "", "", "", ""},
+				Checksum: "67",
+				Raw:      "$IIHDG,,,,,*67",
+				TagBlock: TagBlock{
+					Source: "SI1001",
+				},
+			},
+		},
+		{
 			name: "checksum bad",
 			raw:  "$GPFOO,1,2,3.4,x,y,zz,*51",
 			err:  "nmea: sentence checksum mismatch [56 != 51]",
@@ -89,8 +112,8 @@ func TestSentences(t *testing.T) {
 		},
 		{
 			name: "too short prefix",
-			raw:  "$XXXX,1,2,3,x,y,z*4B",
-			err:  "nmea: sentence prefix too short: 'XXXX'",
+			raw:  "$,1,2,3,x,y,z*4B",
+			err:  "nmea: sentence prefix is empty",
 		},
 		{
 			name: "bad checksum delimiter",
@@ -115,7 +138,7 @@ func TestSentences(t *testing.T) {
 		{
 			name: "missing TAG Block start delimiter",
 			raw:  "s:Satelite_1,c:1553390539*62\\!AIVDM,1,1,,A,13M@ah0025QdPDTCOl`K6`nV00Sv,0*52",
-			err:  "nmea: sentence does not start with a '$' or '!'",
+			err:  `nmea: sentence tag block is missing '\' at the end`,
 		},
 		{
 			name: "missing TAG Block end delimiter",
@@ -136,7 +159,7 @@ func TestSentences(t *testing.T) {
 
 	for _, tt := range sentencetests {
 		t.Run(tt.name, func(t *testing.T) {
-			sent, err := defaultSentenceParser.ParseBaseSentence(tt.raw)
+			sent, err := defaultSentenceParser.parseBaseSentence(tt.raw)
 			if tt.err != "" {
 				assert.EqualError(t, err, tt.err)
 			} else {
@@ -151,7 +174,7 @@ func TestSentences(t *testing.T) {
 	}
 }
 
-func TestDefaultParseAddress(t *testing.T) {
+func TestParsePrefix(t *testing.T) {
 	var prefixtests = []struct {
 		name          string
 		prefix        string
@@ -166,25 +189,23 @@ func TestDefaultParseAddress(t *testing.T) {
 			typ:    "RMC",
 		},
 		{
-			name:          "too short, missing type",
-			prefix:        "GP",
+			name:          "can not be empty",
+			prefix:        "",
 			talker:        "",
 			typ:           "",
-			expectedError: `nmea: sentence prefix too short: 'GP'`,
+			expectedError: `nmea: sentence prefix is empty`,
 		},
 		{
-			name:          "too short, one character",
-			prefix:        "X",
-			talker:        "",
-			typ:           "",
-			expectedError: `nmea: sentence prefix too short: 'X'`,
+			name:   "invalid NMEA0183 spec prefix, use everything as type",
+			prefix: "GP",
+			talker: "",
+			typ:    "GP",
 		},
 		{
-			name:          "too short",
-			prefix:        "GPRM",
-			talker:        "",
-			typ:           "",
-			expectedError: `nmea: sentence prefix too short: 'GPRM'`,
+			name:   "too long to be valid NMEA0183 prefix, use everything as type",
+			prefix: "GPXXXX",
+			talker: "",
+			typ:    "GPXXXX",
 		},
 		{
 			name:   "proprietary talker",
@@ -199,6 +220,12 @@ func TestDefaultParseAddress(t *testing.T) {
 			typ:    "X",
 		},
 		{
+			name:   "long proprietary type",
+			prefix: "PXXXXX",
+			talker: "P",
+			typ:    "XXXXX",
+		},
+		{
 			name:   "query",
 			prefix: "CCGPQ",
 			talker: "CC",
@@ -208,11 +235,77 @@ func TestDefaultParseAddress(t *testing.T) {
 
 	for _, tt := range prefixtests {
 		t.Run(tt.name, func(t *testing.T) {
-			talker, typ, err := DefaultParsePrefix(tt.prefix)
+			talker, typ, err := ParsePrefix(tt.prefix)
 			assert.Equal(t, tt.talker, talker)
 			assert.Equal(t, tt.typ, typ)
 			if tt.expectedError != "" {
 				assert.EqualError(t, err, tt.expectedError)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestSentenceParser_ParsePrefix(t *testing.T) {
+	var testCases = []struct {
+		name          string
+		given         func(prefix string) (talkerID string, sentence string, err error)
+		when          string
+		expected      interface{}
+		expectedError string
+	}{
+		{
+			name:  "ok, use default implementation as custom",
+			given: ParsePrefix,
+			when:  `$VRACK,001*50`,
+			expected: ACK{
+				BaseSentence: BaseSentence{
+					Talker:   "VR",
+					Type:     "ACK",
+					Fields:   []string{"001"},
+					Checksum: "50",
+					Raw:      "$VRACK,001*50",
+				},
+				AlertIdentifier: 1,
+			},
+		},
+		{
+			name: "ok, use custom implementation ",
+			given: func(prefix string) (talkerID string, sentence string, err error) {
+				return "VR", "ACK", nil
+			},
+			when: `$VRACK,001*50`,
+			expected: ACK{
+				BaseSentence: BaseSentence{
+					Talker:   "VR",
+					Type:     "ACK",
+					Fields:   []string{"001"},
+					Checksum: "50",
+					Raw:      "$VRACK,001*50",
+				},
+				AlertIdentifier: 1,
+			},
+		},
+		{
+			name: "nok, custom prefix parsing error",
+			given: func(prefix string) (talkerID string, sentence string, err error) {
+				return "", "", errors.New("failed_to_parse_prefix")
+			},
+			when:          `$VRACK,001*50`,
+			expected:      nil,
+			expectedError: "failed_to_parse_prefix",
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			p := SentenceParser{ParsePrefix: tc.given}
+
+			result, err := p.Parse(tc.when)
+
+			assert.Equal(t, tc.expected, result)
+			if tc.expectedError != "" {
+				assert.EqualError(t, err, tc.expectedError)
 			} else {
 				assert.NoError(t, err)
 			}
@@ -363,10 +456,16 @@ func TestSentenceParser_Parse(t *testing.T) {
 			},
 		},
 		{
-			name:          "nok, sentence prefix too short",
+			name:          "nok, unsupported custom type, too short prefix to be valid NMEA0183 prefix",
 			whenInput:     "$XXXX,20,one,*4A",
 			expected:      nil,
-			expectedError: "nmea: sentence prefix too short: 'XXXX'",
+			expectedError: "nmea: sentence prefix 'XXXX' not supported",
+		},
+		{
+			name:          "nok, empty sentence",
+			whenInput:     "",
+			expected:      nil,
+			expectedError: "nmea: can not parse empty input",
 		},
 	}
 
@@ -390,16 +489,60 @@ func TestSentenceParser_Parse(t *testing.T) {
 }
 
 func TestSentenceParser_OnTagBlock(t *testing.T) {
-	tbCalled := false
-	p := SentenceParser{OnTagBlock: func(tb TagBlock) {
-		tbCalled = true
-	}}
+	var testCases = []struct {
+		name            string
+		given           string
+		whenReturnError error
+		expectCalled    bool
+		expectTagBlock  TagBlock
+		expectError     string
+	}{
+		{
+			name:           "ok, called",
+			given:          `\g:1-3-1234,s:r3669961,c:1120959341*0c\`,
+			expectCalled:   true,
+			expectTagBlock: TagBlock{Time: 1120959341, RelativeTime: 0, Destination: "", Grouping: "1-3-1234", LineCount: 0, Source: "r3669961", Text: ""},
+			expectError:    `nmea: sentence does not start with a '$' or '!'`,
+		},
+		{
+			name:            "ok, return custom error",
+			given:           `\g:1-3-1234,s:r3669961,c:1120959341*0c\`,
+			whenReturnError: errors.New("custom_error"),
+			expectCalled:    true,
+			expectTagBlock:  TagBlock{Time: 1120959341, RelativeTime: 0, Destination: "", Grouping: "1-3-1234", LineCount: 0, Source: "r3669961", Text: ""},
+			expectError:     `custom_error`,
+		},
+		{
+			name:         "nok, not called, invalid CRC stops",
+			given:        `\g:1-3-1234,s:r3669961,c:1120959341*xx\`,
+			expectCalled: false,
+			expectError:  "nmea: tagblock checksum mismatch [0C != XX]",
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			tbCalled := false
+			var actualBlock TagBlock
+			p := SentenceParser{
+				OnTagBlock: func(tb TagBlock) error {
+					tbCalled = true
+					actualBlock = tb
+					return tc.whenReturnError
+				},
+			}
 
-	result, err := p.Parse(`\g:1-3-1234,s:r3669961,c:1120959341*0c\`)
+			result, err := p.Parse(tc.given)
 
-	assert.EqualError(t, err, `nmea: sentence does not start with a '$' or '!'`)
-	assert.True(t, tbCalled)
-	assert.Nil(t, result)
+			assert.Equal(t, tc.expectCalled, tbCalled)
+			assert.Equal(t, tc.expectTagBlock, actualBlock)
+			if tc.expectError != "" {
+				assert.EqualError(t, err, tc.expectError)
+			} else {
+				assert.NoError(t, err)
+			}
+			assert.Nil(t, result)
+		})
+	}
 }
 
 func TestSentenceParser_CheckCRC(t *testing.T) {

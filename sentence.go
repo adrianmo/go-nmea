@@ -95,39 +95,44 @@ type SentenceParser struct {
 	// OnTagBlock is callback to handle all parsed tag blocks even for lines containing only a tag block and
 	// allows to track multiline tag group separate lines. Logic how to combine/assemble multiline tag group
 	// should be implemented outside SentenceParser
+	// OnTagBlock is called before actual sentence part is parsed. When callback returns an error sentence parsing will
+	// not be done and Parse returns early with the returned error.
 	//
 	// Example of group of 3:
 	// \g:1-3-1234,s:r3669961,c:1120959341*hh\
 	// \g:2-3-1234*hh\!ABVDM,1,1,1,B,.....,0*hh
 	// \g:3-3-1234*hh\$ABVSI,r3669961,1,013536.96326433,1386,-98,,*hh
-	OnTagBlock func(tagBlock TagBlock)
+	OnTagBlock func(tagBlock TagBlock) error
 }
 
-// ParseBaseSentence parses BaseSentence from input
-// This method is not co-routine safe!
-func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
+func (p *SentenceParser) parseBaseSentence(raw string) (BaseSentence, error) {
 	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return BaseSentence{}, errors.New("nmea: can not parse empty input")
+	}
 
 	var (
 		tagBlock TagBlock
 		err      error
 	)
 
-	if raw[0] == TagBlockSep {
-		// tag block is always at the start of line. Starts with `\` and ends with `\` and has valid sentence
+	if startOfTagBlock := strings.IndexByte(raw, TagBlockSep); startOfTagBlock != -1 {
+		// tag block is always at the start of line (unless IEC 61162-450). Starts with `\` and ends with `\` and has valid sentence
 		// following or <CR><LF>
 		//
 		// Note: tag block group can span multiple lines but we only parse ones that have sentence
 		endOfTagBlock := strings.LastIndexByte(raw, TagBlockSep)
-		if endOfTagBlock <= 0 {
+		if endOfTagBlock <= startOfTagBlock {
 			return BaseSentence{}, fmt.Errorf("nmea: sentence tag block is missing '\\' at the end")
 		}
-		tagBlock, err = parseTagBlock(raw[1:endOfTagBlock])
+		tagBlock, err = parseTagBlock(raw[startOfTagBlock+1 : endOfTagBlock])
 		if err != nil {
 			return BaseSentence{}, err
 		}
 		if p.OnTagBlock != nil {
-			p.OnTagBlock(tagBlock)
+			if err := p.OnTagBlock(tagBlock); err != nil {
+				return BaseSentence{}, err
+			}
 		}
 		raw = raw[endOfTagBlock+1:]
 	}
@@ -152,7 +157,7 @@ func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
 		typ      string
 	)
 	if p.ParsePrefix == nil {
-		talkerID, typ, err = DefaultParsePrefix(fields[0])
+		talkerID, typ, err = ParsePrefix(fields[0])
 	} else {
 		talkerID, typ, err = p.ParsePrefix(fields[0])
 	}
@@ -168,7 +173,7 @@ func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
 		TagBlock: tagBlock,
 	}
 	if p.CheckCRC == nil {
-		err = DefaultCheckCRC(sentence, rawFields)
+		err = CheckCRC(sentence, rawFields)
 	} else {
 		err = p.CheckCRC(sentence, rawFields)
 	}
@@ -178,8 +183,8 @@ func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
 	return sentence, nil
 }
 
-// DefaultCheckCRC is default implementation for checking sentence Checksum
-func DefaultCheckCRC(sentence BaseSentence, rawFields string) error {
+// CheckCRC is default implementation for checking sentence Checksum
+func CheckCRC(sentence BaseSentence, rawFields string) error {
 	if sentence.Checksum == "" {
 		return fmt.Errorf("nmea: sentence does not contain checksum separator")
 	}
@@ -189,24 +194,34 @@ func DefaultCheckCRC(sentence BaseSentence, rawFields string) error {
 	return nil
 }
 
-// DefaultParsePrefix takes in the sentence first field (NMEA0183 Address) and splits it into a talker id and sentence type.
-func DefaultParsePrefix(prefix string) (string, string, error) {
-	// proprietary sentences
+// ParsePrefix is default implementation for prefix parsing. It takes in the sentence first field and splits it into
+// a talker id and sentence type.
+func ParsePrefix(prefix string) (string, string, error) {
+	if prefix == "" {
+		return "", "", errors.New("nmea: sentence prefix is empty")
+	}
+	// proprietary sentences start with `P` + sentence type. By NMEA0183 spec they should be 5 character long,
+	// In this case we allow sentence type to be longer as there are plenty of examples with longer sentence
+	// types (PSKPDPT, PMTK001 etc)
 	if prefix[0] == ProprietarySentencePrefix {
 		return string(ProprietarySentencePrefix), prefix[1:], nil
 	}
-	// valid NMEA talkerID (2) + sentence identifier (3+) must be at least 5 characters long
-	if len(prefix) < 5 {
-		return "", "", fmt.Errorf("nmea: sentence prefix too short: '%s'", prefix)
+	// valid prefix, by the NMEA0183 standard, is 5 character long:
+	// a) talkerID (2) + sentence identifier (3)
+	// b) talkerID (2) + destinationID (2) + 'Q' (1)
+	if len(prefix) == 5 {
+		// query sentence is a special type of sentence in NMEA standard that is used for a listener to request a
+		// particular sentence from a talker.
+		// Query prefix consist of: XXYYQ, XX - requester talker ID, YY - requestee/destination talker ID, `Q` - query type
+		// Destination talker ID is handled/parsed by newQuery function
+		if prefix[4] == QuerySentencePostfix {
+			return prefix[:2], string(QuerySentencePostfix), nil
+		}
+		return prefix[:2], prefix[2:], nil
 	}
-	// query sentence is a special type of sentence in NMEA standard that is used for a listener to request a
-	// particular sentence from a talker.
-	// Query address consist of: XXYYQ, XX - requester talker ID, YY - requestee/destination talker ID, `Q` - query type
-	// Destination talker ID is handled/parsed by newQuery function
-	if len(prefix) == 5 && prefix[4] == QuerySentencePostfix {
-		return prefix[:2], string(QuerySentencePostfix), nil
-	}
-	return prefix[:2], prefix[2:], nil
+	// this is catch all for other invalid NMEA0183 implementations. When prefix is shorter or longer than 5 characters
+	// we use everything as sentence type. This way custom parser could be created that matches this off-spec prefix.
+	return "", prefix, nil
 }
 
 // Checksum xor all the bytes in a string and return it
@@ -260,7 +275,7 @@ func Parse(raw string) (Sentence, error) {
 // Parse parses the given string into the correct sentence type.
 // This method is not co-routine safe!
 func (p *SentenceParser) Parse(raw string) (Sentence, error) {
-	s, err := p.ParseBaseSentence(raw)
+	s, err := p.parseBaseSentence(raw)
 	if err != nil {
 		return nil, err
 	}
@@ -431,92 +446,4 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 		}
 	}
 	return nil, &NotSupportedError{Prefix: s.Prefix()}
-}
-
-// SupportedParsers list all available parsers provided by the library
-var SupportedParsers = map[string]ParserFunc{
-	// ones that have `$` as a prefix (parametric sentences)
-	TypeAAM: newAAM,
-	TypeACK: newACK,
-	TypeACN: newACN,
-	TypeALA: newALA,
-	TypeALC: newALC,
-	TypeALF: newALF,
-	TypeALR: newALR,
-	TypeAPB: newAPB,
-	TypeARC: newARC,
-	TypeBEC: newBEC,
-	TypeBOD: newBOD,
-	TypeBWC: newBWC,
-	TypeBWR: newBWR,
-	TypeBWW: newBWW,
-	TypeDBK: newDBK,
-	TypeDBS: newDBS,
-	TypeDBT: newDBT,
-	TypeDOR: newDOR,
-	TypeDPT: newDPT,
-	TypeDSC: newDSC,
-	TypeDSE: newDSE,
-	TypeDTM: newDTM,
-	TypeEVE: newEVE,
-	TypeFIR: newFIR,
-	TypeGGA: newGGA,
-	TypeGLL: newGLL,
-	TypeGNS: newGNS,
-	TypeGSA: newGSA,
-	TypeGSV: newGSV,
-	TypeHBT: newHBT,
-	TypeHDG: newHDG,
-	TypeHDM: newHDM,
-	TypeHDT: newHDT,
-	TypeHSC: newHSC,
-	TypeMDA: newMDA,
-	TypeMTA: newMTA,
-	//TypeMTK: newMTK, // deprecated - we are not exposing it here
-	TypeMTW:     newMTW,
-	TypeMWD:     newMWD,
-	TypeMWV:     newMWV,
-	TypeOSD:     newOSD,
-	TypePGRME:   newPGRME,
-	TypePHTRO:   newPHTRO,
-	TypePMTK001: newPMTK001,
-	TypePRDID:   newPRDID,
-	TypePSKPDPT: newPSKPDPT,
-	TypePSONCMS: newPSONCMS,
-	TypeRMB:     newRMB,
-	TypeRMC:     newRMC,
-	TypeROT:     newROT,
-	TypeRPM:     newRPM,
-	TypeRSA:     newRSA,
-	TypeRSD:     newRSD,
-	TypeRTE:     newRTE,
-	TypeTHS:     newTHS,
-	TypeTLB:     newTLB,
-	TypeTLL:     newTLL,
-	TypeTTM:     newTTM,
-	TypeTXT:     newTXT,
-	TypeVBW:     newVBW,
-	TypeVDR:     newVDR,
-	TypeVHW:     newVHW,
-	TypeVLW:     newVLW,
-	TypeVPW:     newVPW,
-	TypeVSD:     newVSD,
-	TypeVTG:     newVTG,
-	TypeVWR:     newVWR,
-	TypeVWT:     newVWT,
-	TypeWPL:     newWPL,
-	TypeXDR:     newXDR,
-	TypeXTE:     newXTE,
-	TypeZDA:     newZDA,
-
-	// ones that have `!` as a prefix (encapsulation sentences)
-	TypeABM: newABM,
-	TypeBBM: newBBM,
-	TypeTTD: newTTD,
-	TypeVDM: newVDMVDO,
-	TypeVDO: newVDMVDO,
-
-	// Query is special case as sentence type ends always with `Q` and "destination"/recipient is encoded into
-	// sentence type/identifier
-	TypeQuery: newQuery,
 }
