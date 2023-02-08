@@ -45,7 +45,7 @@ type ARC struct {
 }
 
 // newARC constructor
-func newARC(s BaseSentence) (ARC, error) {
+func newARC(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeARC)
 	return ARC{

@@ -90,7 +90,7 @@ func TestSentences(t *testing.T) {
 		{
 			name: "too short prefix",
 			raw:  "$XXXX,1,2,3,x,y,z*4B",
-			err:  "nmea: sentence prefix too short: 'XXXX'",
+			err:  "nmea: sentence address too short: 'XXXX'",
 		},
 		{
 			name: "bad checksum delimiter",
@@ -151,7 +151,7 @@ func TestSentences(t *testing.T) {
 	}
 }
 
-func TestPrefix(t *testing.T) {
+func TestDefaultParseAddress(t *testing.T) {
 	var prefixtests = []struct {
 		name          string
 		prefix        string
@@ -170,21 +170,21 @@ func TestPrefix(t *testing.T) {
 			prefix:        "GP",
 			talker:        "",
 			typ:           "",
-			expectedError: `nmea: sentence prefix too short: 'GP'`,
+			expectedError: `nmea: sentence address too short: 'GP'`,
 		},
 		{
 			name:          "too short, one character",
 			prefix:        "X",
 			talker:        "",
 			typ:           "",
-			expectedError: `nmea: sentence prefix too short: 'X'`,
+			expectedError: `nmea: sentence address too short: 'X'`,
 		},
 		{
 			name:          "too short",
 			prefix:        "GPRM",
 			talker:        "",
 			typ:           "",
-			expectedError: `nmea: sentence prefix too short: 'GPRM'`,
+			expectedError: `nmea: sentence address too short: 'GPRM'`,
 		},
 		{
 			name:   "proprietary talker",
@@ -208,7 +208,7 @@ func TestPrefix(t *testing.T) {
 
 	for _, tt := range prefixtests {
 		t.Run(tt.name, func(t *testing.T) {
-			talker, typ, err := parsePrefix(tt.prefix)
+			talker, typ, err := DefaultParseAddress(tt.prefix)
 			assert.Equal(t, tt.talker, talker)
 			assert.Equal(t, tt.typ, typ)
 			if tt.expectedError != "" {
@@ -260,7 +260,7 @@ func TestParse(t *testing.T) {
 func TestSentenceParser_Parse(t *testing.T) {
 	var testCases = []struct {
 		name          string
-		givenParser   *SentenceParser
+		givenParser   SentenceParserConfig
 		whenInput     string
 		expected      Sentence
 		expectedError string
@@ -336,19 +336,19 @@ func TestSentenceParser_Parse(t *testing.T) {
 		},
 		{
 			name: "ok, parse custom sentence",
-			givenParser: func() *SentenceParser {
-				parser := NewSentenceParser()
-				parser.MustRegisterParser("YYY", func(s BaseSentence) (Sentence, error) {
-					p := NewParser(s)
-					return TestZZZ{
-						BaseSentence: s,
-						NumberValue:  int(p.Int64(0, "number")),
-						StringValue:  p.String(1, "str"),
-					}, p.Err()
-				})
+			givenParser: SentenceParserConfig{
+				CustomParsers: map[string]ParserFunc{
+					"YYY": func(s BaseSentence) (Sentence, error) {
+						p := NewParser(s)
+						return TestZZZ{
+							BaseSentence: s,
+							NumberValue:  int(p.Int64(0, "number")),
+							StringValue:  p.String(1, "str"),
+						}, p.Err()
 
-				return parser
-			}(),
+					},
+				},
+			},
 			whenInput: "$AAYYY,20,one,*13",
 			expected: TestZZZ{
 				BaseSentence: BaseSentence{
@@ -366,15 +366,15 @@ func TestSentenceParser_Parse(t *testing.T) {
 			name:          "nok, sentence prefix too short",
 			whenInput:     "$XXXX,20,one,*4A",
 			expected:      nil,
-			expectedError: "nmea: sentence prefix too short: 'XXXX'",
+			expectedError: "nmea: sentence address too short: 'XXXX'",
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			parser := tc.givenParser
-			if parser == nil {
-				parser = NewSentenceParser()
+			parser := NewSentenceParser()
+			if parser != nil {
+				parser = NewSentenceParserWithConfig(tc.givenParser)
 			}
 
 			result, err := parser.Parse(tc.whenInput)
@@ -390,12 +390,10 @@ func TestSentenceParser_Parse(t *testing.T) {
 }
 
 func TestSentenceParser_OnTagBlock(t *testing.T) {
-	p := NewSentenceParser()
-
 	tbCalled := false
-	p.OnTagBlock = func(tb TagBlock) {
+	p := NewSentenceParserWithConfig(SentenceParserConfig{OnTagBlock: func(tb TagBlock) {
 		tbCalled = true
-	}
+	}})
 
 	result, err := p.Parse(`\g:1-3-1234,s:r3669961,c:1120959341*0c\`)
 
@@ -407,7 +405,7 @@ func TestSentenceParser_OnTagBlock(t *testing.T) {
 func TestSentenceParser_CheckCRC(t *testing.T) {
 	var testCases = []struct {
 		name          string
-		givenCheckCRC func(t *testing.T, rawCRC string, calculatedCRC string, sentence BaseSentence) error
+		givenCheckCRC func(t *testing.T, sentence BaseSentence, fieldsRaw string) error
 		whenInput     string
 		expectError   string
 		expectCalled  bool
@@ -415,9 +413,9 @@ func TestSentenceParser_CheckCRC(t *testing.T) {
 		{
 			name:      "ok, custom CRC check allows invalid CRC",
 			whenInput: `$HEROT,-11.23,A*FF`,
-			givenCheckCRC: func(t *testing.T, rawCRC string, calculatedCRC string, sentence BaseSentence) error {
-				assert.Equal(t, "FF", rawCRC)
-				assert.Equal(t, "07", calculatedCRC)
+			givenCheckCRC: func(t *testing.T, sentence BaseSentence, rawFields string) error {
+				assert.Equal(t, "HEROT,-11.23,A", rawFields)
+				assert.Equal(t, "FF", sentence.Checksum)
 				assert.Equal(t, "ROT", sentence.Type)
 
 				return nil
@@ -427,9 +425,9 @@ func TestSentenceParser_CheckCRC(t *testing.T) {
 		{
 			name:      "ok, custom CRC check allows no CRC",
 			whenInput: `$HEROT,-11.23,A`,
-			givenCheckCRC: func(t *testing.T, rawCRC string, calculatedCRC string, sentence BaseSentence) error {
-				assert.Equal(t, "", rawCRC)
-				assert.Equal(t, "07", calculatedCRC)
+			givenCheckCRC: func(t *testing.T, sentence BaseSentence, rawFields string) error {
+				assert.Equal(t, "HEROT,-11.23,A", rawFields)
+				assert.Equal(t, "", sentence.Checksum)
 				assert.Equal(t, "ROT", sentence.Type)
 
 				return nil
@@ -439,9 +437,9 @@ func TestSentenceParser_CheckCRC(t *testing.T) {
 		{
 			name:      "nok, custom CRC check returns an error",
 			whenInput: `$HEROT,-11.23,A`,
-			givenCheckCRC: func(t *testing.T, rawCRC string, calculatedCRC string, sentence BaseSentence) error {
-				assert.Equal(t, "", rawCRC)
-				assert.Equal(t, "07", calculatedCRC)
+			givenCheckCRC: func(t *testing.T, sentence BaseSentence, rawFields string) error {
+				assert.Equal(t, "HEROT,-11.23,A", rawFields)
+				assert.Equal(t, "", sentence.Checksum)
 				assert.Equal(t, "ROT", sentence.Type)
 
 				return errors.New("invalid CRC")
@@ -453,13 +451,15 @@ func TestSentenceParser_CheckCRC(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			p := NewSentenceParser()
-
 			called := false
-			p.CheckCRC = func(rawCRC string, calculatedCRC string, sentence BaseSentence) error {
-				called = true
-				return tc.givenCheckCRC(t, rawCRC, calculatedCRC, sentence)
-			}
+			p := NewSentenceParserWithConfig(
+				SentenceParserConfig{
+					CheckCRC: func(sentence BaseSentence, rawFields string) error {
+						called = true
+						return tc.givenCheckCRC(t, sentence, rawFields)
+					},
+				},
+			)
 
 			_, err := p.Parse(tc.whenInput)
 

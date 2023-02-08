@@ -41,7 +41,7 @@ type ABM struct {
 }
 
 // newABM constructor
-func newABM(s BaseSentence) (ABM, error) {
+func newABM(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeABM)
 	return ABM{

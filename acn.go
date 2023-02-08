@@ -40,7 +40,7 @@ type ACN struct {
 }
 
 // newACN constructor
-func newACN(s BaseSentence) (ACN, error) {
+func newACN(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeACN)
 	return ACN{

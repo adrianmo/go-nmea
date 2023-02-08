@@ -1,6 +1,7 @@
 package nmea
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -78,21 +79,20 @@ func (s BaseSentence) TalkerID() string {
 // String formats the sentence into a string
 func (s BaseSentence) String() string { return s.Raw }
 
-var defaultSentenceParser = SentenceParser{
-	parserLock:    &sync.RWMutex{},
-	customParsers: map[string]ParserFunc{},
-}
+// SentenceParserConfig is configuration for creating new instance of SentenceParser
+type SentenceParserConfig struct {
+	// CustomParsers allows registering additional parsers
+	CustomParsers map[string]ParserFunc
 
-// SentenceParser provides configurable functionality to parse raw input into Sentence
-type SentenceParser struct {
-	parserLock    *sync.RWMutex
-	customParsers map[string]ParserFunc
+	// ParseAddress takes in the sentence first field (address) and splits it into a talker id and sentence type
+	ParseAddress func(rawAddress string) (talkerID string, sentence string, err error)
 
 	// CheckCRC allows custom handling of checksum checking based on parsed sentence
-	CheckCRC func(rawCRC string, calculatedCRC string, sentence BaseSentence) error
+	CheckCRC func(sentence BaseSentence, rawFields string) error
 
 	// OnTagBlock is callback to handle all parsed tag blocks even for lines containing only a tag block and
-	// allows to track multiline tag group separate lines
+	// allows to track multiline tag group separate lines. Logic how to combine/assemble multiline tag group
+	// should be implemented outside SentenceParser
 	//
 	// Example of group of 3:
 	// \g:1-3-1234,s:r3669961,c:1120959341*hh\
@@ -101,11 +101,36 @@ type SentenceParser struct {
 	OnTagBlock func(tagBlock TagBlock)
 }
 
+// SentenceParser provides configurable functionality to parse raw input into Sentence
+type SentenceParser struct {
+	config SentenceParserConfig
+}
+
 // NewSentenceParser creates new instance of SentenceParser
 func NewSentenceParser() *SentenceParser {
+	return NewSentenceParserWithConfig(SentenceParserConfig{})
+}
+
+// NewSentenceParserWithConfig creates new instance of SentenceParser with given config
+func NewSentenceParserWithConfig(c SentenceParserConfig) *SentenceParser {
+	if c.ParseAddress == nil {
+		c.ParseAddress = DefaultParseAddress
+	}
+	if c.CheckCRC == nil {
+		c.CheckCRC = DefaultCheckCRC
+	}
+	cp := map[string]ParserFunc{}
+	for sType, pFunc := range c.CustomParsers {
+		cp[sType] = pFunc
+	}
+
 	return &SentenceParser{
-		parserLock:    &sync.RWMutex{},
-		customParsers: map[string]ParserFunc{},
+		config: SentenceParserConfig{
+			CustomParsers: cp,
+			ParseAddress:  c.ParseAddress,
+			CheckCRC:      c.CheckCRC,
+			OnTagBlock:    c.OnTagBlock,
+		},
 	}
 }
 
@@ -117,6 +142,7 @@ func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
 		tagBlock TagBlock
 		err      error
 	)
+
 	if raw[0] == TagBlockSep {
 		// tag block is always at the start of line. Starts with `\` and ends with `\` and has valid sentence
 		// following or <CR><LF>
@@ -130,34 +156,25 @@ func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
 		if err != nil {
 			return BaseSentence{}, err
 		}
-		if p.OnTagBlock != nil {
-			p.OnTagBlock(tagBlock)
+		if p.config.OnTagBlock != nil {
+			p.config.OnTagBlock(tagBlock)
 		}
 		raw = raw[endOfTagBlock+1:]
 	}
 
 	startIndex := strings.IndexAny(raw, SentenceStart+SentenceStartEncapsulated)
 	if startIndex != 0 {
-		return BaseSentence{}, fmt.Errorf("nmea: sentence does not start with a '$' or '!'")
+		return BaseSentence{}, errors.New("nmea: sentence does not start with a '$' or '!'")
 	}
 	checksumSepIndex := strings.Index(raw, ChecksumSep)
-	fieldsRaw := raw[startIndex+1:]
+	rawFields := raw[startIndex+1:]
 	checksumRaw := ""
 	if checksumSepIndex != -1 {
-		fieldsRaw = raw[startIndex+1 : checksumSepIndex]
+		rawFields = raw[startIndex+1 : checksumSepIndex]
 		checksumRaw = strings.ToUpper(raw[checksumSepIndex+1:])
 	}
-	if p.CheckCRC == nil {
-		if checksumSepIndex == -1 {
-			return BaseSentence{}, fmt.Errorf("nmea: sentence does not contain checksum separator")
-		}
-		if checksum := Checksum(fieldsRaw); checksum != checksumRaw {
-			return BaseSentence{}, fmt.Errorf("nmea: sentence checksum mismatch [%s != %s]", checksum, checksumRaw)
-		}
-	}
-
-	fields := strings.Split(fieldsRaw, FieldSep)
-	talker, typ, err := parsePrefix(fields[0])
+	fields := strings.Split(rawFields, FieldSep)
+	talker, typ, err := p.config.ParseAddress(fields[0])
 	if err != nil {
 		return BaseSentence{}, err
 	}
@@ -169,31 +186,39 @@ func (p *SentenceParser) ParseBaseSentence(raw string) (BaseSentence, error) {
 		Raw:      raw,
 		TagBlock: tagBlock,
 	}
-	if p.CheckCRC != nil {
-		if err := p.CheckCRC(checksumRaw, Checksum(fieldsRaw), sentence); err != nil {
-			return BaseSentence{}, err
-		}
+	if err := p.config.CheckCRC(sentence, rawFields); err != nil {
+		return BaseSentence{}, err
 	}
-
 	return sentence, nil
 }
 
-// parsePrefix takes the first field and splits it into a talker id and data type.
-func parsePrefix(s string) (string, string, error) {
+// DefaultCheckCRC is default implementation for checking sentence Checksum
+func DefaultCheckCRC(sentence BaseSentence, rawFields string) error {
+	if sentence.Checksum == "" {
+		return fmt.Errorf("nmea: sentence does not contain checksum separator")
+	}
+	if checksum := Checksum(rawFields); checksum != sentence.Checksum {
+		return fmt.Errorf("nmea: sentence checksum mismatch [%s != %s]", checksum, sentence.Checksum)
+	}
+	return nil
+}
+
+// DefaultParseAddress takes in the sentence first field (Address) and splits it into a talker id and sentence type.
+func DefaultParseAddress(raw string) (string, string, error) {
 	// proprietary sentences
-	if s[0] == ProprietarySentencePrefix {
-		return string(ProprietarySentencePrefix), s[1:], nil
+	if raw[0] == ProprietarySentencePrefix {
+		return string(ProprietarySentencePrefix), raw[1:], nil
 	}
 	// valid NMEA talkerID (2) + sentence identifier (3+) must be at least 5 characters long
-	if len(s) < 5 {
-		return "", "", fmt.Errorf("nmea: sentence prefix too short: '%s'", s)
+	if len(raw) < 5 {
+		return "", "", fmt.Errorf("nmea: sentence address too short: '%s'", raw)
 	}
 	// query sentence is a special type of sentence in NMEA standard that is used for a listener to request a
 	// particular sentence from a talker.
-	if len(s) == 5 && s[4] == QuerySentencePostfix {
-		return s[:2], string(QuerySentencePostfix), nil
+	if len(raw) == 5 && raw[4] == QuerySentencePostfix {
+		return raw[:2], string(QuerySentencePostfix), nil
 	}
-	return s[:2], s[2:], nil
+	return raw[:2], raw[2:], nil
 }
 
 // Checksum xor all the bytes in a string and return it
@@ -206,38 +231,43 @@ func Checksum(s string) string {
 	return fmt.Sprintf("%02X", checksum)
 }
 
-// MustRegisterParser register a custom parser or panic
-func MustRegisterParser(sentenceType string, parser ParserFunc) {
-	defaultSentenceParser.MustRegisterParser(sentenceType, parser)
-}
+var defaultSentenceParserMu = new(sync.Mutex)
+
+// defaultSentenceParser exists for backwards compatibility reasons to allow global Parse/RegisterParser/MustRegisterParser
+// to work as they did before SentenceParser was added.
+var defaultSentenceParser = NewSentenceParserWithConfig(
+	SentenceParserConfig{
+		CustomParsers: map[string]ParserFunc{
+			TypeMTK: newMTK, // for backwards compatibility support MTK. PMTK001 is correct an supported when using SentenceParser instance
+		},
+	},
+)
 
 // MustRegisterParser register a custom parser or panic
-func (p *SentenceParser) MustRegisterParser(sentenceType string, parser ParserFunc) {
-	if err := p.RegisterParser(sentenceType, parser); err != nil {
+func MustRegisterParser(sentenceType string, parser ParserFunc) {
+	if err := RegisterParser(sentenceType, parser); err != nil {
 		panic(err)
 	}
 }
 
 // RegisterParser register a custom parser
 func RegisterParser(sentenceType string, parser ParserFunc) error {
-	return defaultSentenceParser.RegisterParser(sentenceType, parser)
-}
+	defaultSentenceParserMu.Lock()
+	defer defaultSentenceParserMu.Unlock()
 
-// RegisterParser register a custom parser
-func (p *SentenceParser) RegisterParser(sentenceType string, parser ParserFunc) error {
-	p.parserLock.Lock()
-	defer p.parserLock.Unlock()
-
-	if _, ok := p.customParsers[sentenceType]; ok {
+	if _, ok := defaultSentenceParser.config.CustomParsers[sentenceType]; ok {
 		return fmt.Errorf("nmea: parser for sentence type '%q' already exists", sentenceType)
 	}
 
-	p.customParsers[sentenceType] = parser
+	defaultSentenceParser.config.CustomParsers[sentenceType] = parser
 	return nil
 }
 
 // Parse parses the given string into the correct sentence type.
 func Parse(raw string) (Sentence, error) {
+	defaultSentenceParserMu.Lock()
+	defer defaultSentenceParserMu.Unlock()
+
 	return defaultSentenceParser.Parse(raw)
 }
 
@@ -249,12 +279,9 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 	}
 
 	// Custom parser allow overriding of existing parsers
-	p.parserLock.RLock()
-	if parser, ok := p.customParsers[s.Type]; ok {
-		p.parserLock.RUnlock()
+	if parser, ok := p.config.CustomParsers[s.Type]; ok {
 		return parser(s)
 	}
-	p.parserLock.RUnlock()
 
 	if s.Raw[0] == SentenceStart[0] {
 		switch s.Type {
@@ -422,35 +449,43 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 // SupportedParsers list all available parsers provided by the library
 var SupportedParsers = map[string]ParserFunc{
 	// ones that have `$` as a prefix (parametric sentences)
-	TypeAAM:     newAAM,
-	TypeALA:     newALA,
-	TypeAPB:     newAPB,
-	TypeBEC:     newBEC,
-	TypeBOD:     newBOD,
-	TypeBWC:     newBWC,
-	TypeBWR:     newBWR,
-	TypeBWW:     newBWW,
-	TypeDBK:     newDBK,
-	TypeDBS:     newDBS,
-	TypeDBT:     newDBT,
-	TypeDOR:     newDOR,
-	TypeDPT:     newDPT,
-	TypeDSC:     newDSC,
-	TypeDSE:     newDSE,
-	TypeDTM:     newDTM,
-	TypeEVE:     newEVE,
-	TypeFIR:     newFIR,
-	TypeGGA:     newGGA,
-	TypeGLL:     newGLL,
-	TypeGNS:     newGNS,
-	TypeGSA:     newGSA,
-	TypeGSV:     newGSV,
-	TypeHDG:     newHDG,
-	TypeHDM:     newHDM,
-	TypeHDT:     newHDT,
-	TypeHSC:     newHSC,
-	TypeMDA:     newMDA,
-	TypeMTA:     newMTA,
+	TypeAAM: newAAM,
+	TypeACK: newACK,
+	TypeACN: newACN,
+	TypeALA: newALA,
+	TypeALC: newALC,
+	TypeALF: newALF,
+	TypeALR: newALR,
+	TypeAPB: newAPB,
+	TypeARC: newARC,
+	TypeBEC: newBEC,
+	TypeBOD: newBOD,
+	TypeBWC: newBWC,
+	TypeBWR: newBWR,
+	TypeBWW: newBWW,
+	TypeDBK: newDBK,
+	TypeDBS: newDBS,
+	TypeDBT: newDBT,
+	TypeDOR: newDOR,
+	TypeDPT: newDPT,
+	TypeDSC: newDSC,
+	TypeDSE: newDSE,
+	TypeDTM: newDTM,
+	TypeEVE: newEVE,
+	TypeFIR: newFIR,
+	TypeGGA: newGGA,
+	TypeGLL: newGLL,
+	TypeGNS: newGNS,
+	TypeGSA: newGSA,
+	TypeGSV: newGSV,
+	TypeHBT: newHBT,
+	TypeHDG: newHDG,
+	TypeHDM: newHDM,
+	TypeHDT: newHDT,
+	TypeHSC: newHSC,
+	TypeMDA: newMDA,
+	TypeMTA: newMTA,
+	//TypeMTK: newMTK, // deprecated - we are not exposing it here
 	TypeMTW:     newMTW,
 	TypeMWD:     newMWD,
 	TypeMWV:     newMWV,
@@ -469,6 +504,7 @@ var SupportedParsers = map[string]ParserFunc{
 	TypeRSD:     newRSD,
 	TypeRTE:     newRTE,
 	TypeTHS:     newTHS,
+	TypeTLB:     newTLB,
 	TypeTLL:     newTLL,
 	TypeTTM:     newTTM,
 	TypeTXT:     newTXT,
@@ -477,6 +513,7 @@ var SupportedParsers = map[string]ParserFunc{
 	TypeVHW:     newVHW,
 	TypeVLW:     newVLW,
 	TypeVPW:     newVPW,
+	TypeVSD:     newVSD,
 	TypeVTG:     newVTG,
 	TypeVWR:     newVWR,
 	TypeVWT:     newVWT,
@@ -486,6 +523,9 @@ var SupportedParsers = map[string]ParserFunc{
 	TypeZDA:     newZDA,
 
 	// ones that have `!` as a prefix (encapsulation sentences)
+	TypeABM: newABM,
+	TypeBBM: newBBM,
+	TypeTTD: newTTD,
 	TypeVDM: newVDMVDO,
 	TypeVDO: newVDMVDO,
 

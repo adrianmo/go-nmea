@@ -6,17 +6,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPMTK001(t *testing.T) {
+func TestMTK(t *testing.T) {
 	var tests = []struct {
 		name string
 		raw  string
 		err  string
-		msg  PMTK001
+		msg  MTK
 	}{
 		{
 			name: "good: Packet Type: 001 PMTK_ACK",
 			raw:  "$PMTK001,604,3*32",
-			msg: PMTK001{
+			msg: MTK{
 				Cmd:  604,
 				Flag: 3,
 			},
@@ -32,25 +32,18 @@ func TestPMTK001(t *testing.T) {
 			err:  "nmea: PMTK001 invalid command: index out of range",
 		},
 	}
-	p := NewSentenceParser()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m, err := p.Parse(tt.raw)
+			m, err := Parse(tt.raw)
 			if tt.err != "" {
 				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
-				mtk := m.(PMTK001) // is used by non-global SentenceParser instance
+				mtk := m.(MTK)
 				mtk.BaseSentence = BaseSentence{}
 				assert.Equal(t, tt.msg, mtk)
 			}
 		})
 	}
-}
-
-func TestDefaultParserUsesDeprecatedMTK(t *testing.T) {
-	m, err := Parse("$PMTK001,604,3*32")
-	assert.NoError(t, err)
-	assert.IsType(t, MTK{}, m)
 }
