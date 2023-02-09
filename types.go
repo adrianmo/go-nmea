@@ -187,7 +187,6 @@ const (
 // - DMS (e.g. 33° 23' 22")
 // - Decimal (e.g. 33.23454)
 // - GPS (e.g 15113.4322 S)
-//
 func ParseLatLong(s string) (float64, error) {
 	var l float64
 	if v, err := ParseDMS(s); err == nil {

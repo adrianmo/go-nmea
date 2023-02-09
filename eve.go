@@ -20,7 +20,7 @@ type EVE struct {
 }
 
 // newEVE constructor
-func newEVE(s BaseSentence) (EVE, error) {
+func newEVE(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeEVE)
 	return EVE{

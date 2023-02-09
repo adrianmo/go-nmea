@@ -48,7 +48,7 @@ type DSEDataSet struct {
 }
 
 // newDSE constructor
-func newDSE(s BaseSentence) (DSE, error) {
+func newDSE(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeDSE)
 	dse := DSE{

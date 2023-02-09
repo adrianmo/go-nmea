@@ -2,10 +2,11 @@ package nmea
 
 const (
 	// TypeMTK type for PMTK sentences
-	TypeMTK = "PMTK"
+	// Deprecated: use PMTK001 instead. PMTK protocol contains actually many commands. This struct is for MTK 001 ACK command.
+	TypeMTK = "MTK001"
 )
 
-// MTK is sentence for NMEA embedded command packet protocol.
+// MTK is sentence for NMEA embedded command packet protocol, command type 001 - ACK.
 // https://www.rhydolabz.com/documents/25/PMTK_A11.pdf
 // https://www.sparkfun.com/datasheets/GPS/Modules/PMTK_Protocol.pdf
 //
@@ -13,7 +14,10 @@ const (
 //
 // Format: $PMTKxxx,c-c*hh<CR><LF>
 // Example: $PMTK000*32<CR><LF>
-//			$PMTK001,101,0*33<CR><LF>
+//
+//	$PMTK001,101,0*33<CR><LF>
+//
+// Deprecated: use PMTK001 instead. PMTK protocol contains actually many commands. This struct is for MTK 001 ACK command.
 type MTK struct {
 	BaseSentence
 	Cmd, // Three bytes character string. From "000" to "999". An identifier used to tell the decoder how to decode the packet
@@ -28,8 +32,10 @@ type MTK struct {
 }
 
 // newMTK constructor
-func newMTK(s BaseSentence) (MTK, error) {
+// Deprecated: use newPMTK001 instead
+func newMTK(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
+	p.AssertType(TypeMTK)
 	cmd := p.Int64(0, "command")
 	flag := p.Int64(1, "flag")
 	return MTK{

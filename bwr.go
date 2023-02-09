@@ -28,7 +28,7 @@ type BWR struct {
 }
 
 // newBWR constructor
-func newBWR(s BaseSentence) (BWR, error) {
+func newBWR(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeBWR)
 	bwc := BWR{

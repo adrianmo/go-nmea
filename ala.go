@@ -51,7 +51,7 @@ type ALA struct {
 }
 
 // newALA constructor
-func newALA(s BaseSentence) (ALA, error) {
+func newALA(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeALA)
 	return ALA{

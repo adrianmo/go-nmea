@@ -104,7 +104,7 @@ type APB struct {
 }
 
 // newAPB constructor
-func newAPB(s BaseSentence) (APB, error) {
+func newAPB(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeAPB)
 	apb := APB{

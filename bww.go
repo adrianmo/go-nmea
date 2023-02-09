@@ -24,7 +24,7 @@ type BWW struct {
 }
 
 // newBWW constructor
-func newBWW(s BaseSentence) (BWW, error) {
+func newBWW(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeBWW)
 	bod := BWW{

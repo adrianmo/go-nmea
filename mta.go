@@ -17,7 +17,7 @@ type MTA struct {
 }
 
 // newMTA constructor
-func newMTA(s BaseSentence) (MTA, error) {
+func newMTA(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeMTA)
 	return MTA{

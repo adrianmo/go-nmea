@@ -48,7 +48,7 @@ type ALCAlertEntry struct {
 }
 
 // newALC constructor
-func newALC(s BaseSentence) (ALC, error) {
+func newALC(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeALC)
 	alc := ALC{

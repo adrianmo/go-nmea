@@ -22,7 +22,7 @@ type DBK struct {
 }
 
 // newDBK constructor
-func newDBK(s BaseSentence) (DBK, error) {
+func newDBK(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeDBK)
 	return DBK{

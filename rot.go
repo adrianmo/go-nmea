@@ -20,7 +20,7 @@ type ROT struct {
 	Valid      bool    // "A" data valid,  "V" invalid data
 }
 
-func newROT(s BaseSentence) (ROT, error) {
+func newROT(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeROT)
 	return ROT{

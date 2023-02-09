@@ -28,7 +28,7 @@ type THS struct {
 }
 
 // newTHS constructor
-func newTHS(s BaseSentence) (THS, error) {
+func newTHS(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeTHS)
 	m := THS{

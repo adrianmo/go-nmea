@@ -27,7 +27,7 @@ type GLL struct {
 }
 
 // newGLL constructor
-func newGLL(s BaseSentence) (GLL, error) {
+func newGLL(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeGLL)
 	gll := GLL{

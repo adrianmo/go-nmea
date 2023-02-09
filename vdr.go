@@ -23,7 +23,7 @@ type VDR struct {
 }
 
 // newVDR constructor
-func newVDR(s BaseSentence) (VDR, error) {
+func newVDR(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeVDR)
 	return VDR{

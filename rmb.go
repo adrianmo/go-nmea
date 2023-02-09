@@ -65,7 +65,7 @@ type RMB struct {
 }
 
 // newRMB constructor
-func newRMB(s BaseSentence) (RMB, error) {
+func newRMB(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeRMB)
 	rmb := RMB{

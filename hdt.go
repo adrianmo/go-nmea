@@ -18,7 +18,7 @@ type HDT struct {
 }
 
 // newHDT constructor
-func newHDT(s BaseSentence) (HDT, error) {
+func newHDT(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeHDT)
 	m := HDT{

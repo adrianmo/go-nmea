@@ -20,7 +20,7 @@ type ACK struct {
 }
 
 // newACKN constructor
-func newACK(s BaseSentence) (ACK, error) {
+func newACK(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeACK)
 	return ACK{

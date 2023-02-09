@@ -19,7 +19,7 @@ type VHW struct {
 }
 
 // newVHW constructor
-func newVHW(s BaseSentence) (VHW, error) {
+func newVHW(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypeVHW)
 	return VHW{
