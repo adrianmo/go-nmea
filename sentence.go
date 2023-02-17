@@ -36,6 +36,7 @@ var (
 	defaultSentenceParser   = SentenceParser{Parsers: DefaultParsers()}
 	defaultSentenceParserMu sync.Mutex
 	defaultParsers          = DefaultParsers()
+	customParsers           = map[string]struct{}{}
 )
 
 func init() {
@@ -258,12 +259,11 @@ func MustRegisterParser(sentenceType string, parser ParserFunc) {
 func RegisterParser(sentenceType string, parser ParserFunc) error {
 	defaultSentenceParserMu.Lock()
 	defer defaultSentenceParserMu.Unlock()
-
-	if _, ok := defaultSentenceParser.Parsers[sentenceType]; ok {
+	if _, ok := customParsers[sentenceType]; ok {
 		return fmt.Errorf("nmea: parser for sentence type '%q' already exists", sentenceType)
 	}
-
 	defaultSentenceParser.Parsers[sentenceType] = parser
+	customParsers[sentenceType] = struct{}{}
 	return nil
 }
 
