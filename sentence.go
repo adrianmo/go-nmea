@@ -30,6 +30,17 @@ const (
 	ChecksumSep = "*"
 )
 
+// defaultSentenceParser exists for backwards compatibility reasons to allow global Parse/RegisterParser/MustRegisterParser
+// to work as they did before SentenceParser was added.
+var defaultSentenceParserMu sync.Mutex
+var defaultSentenceParser = SentenceParser{Parsers: DefaultParsers()}
+var defaultParsers = DefaultParsers()
+
+func init() {
+	// for backwards compatibility support MTK. PMTK001 is correct an supported when using SentenceParser instance
+	defaultSentenceParser.Parsers[TypeMTK] = newMTK
+}
+
 // ParserFunc callback used to parse specific sentence variants
 type ParserFunc func(s BaseSentence) (Sentence, error)
 
@@ -234,16 +245,6 @@ func Checksum(s string) string {
 	return fmt.Sprintf("%02X", checksum)
 }
 
-var defaultSentenceParserMu = new(sync.Mutex)
-
-// defaultSentenceParser exists for backwards compatibility reasons to allow global Parse/RegisterParser/MustRegisterParser
-// to work as they did before SentenceParser was added.
-var defaultSentenceParser = SentenceParser{
-	Parsers: map[string]ParserFunc{
-		TypeMTK: newMTK, // for backwards compatibility support MTK. PMTK001 is correct an supported when using SentenceParser instance
-	},
-}
-
 // MustRegisterParser register a custom parser or panic
 func MustRegisterParser(sentenceType string, parser ParserFunc) {
 	if err := RegisterParser(sentenceType, parser); err != nil {
@@ -279,171 +280,96 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// Custom parser allow overriding of existing parsers
-	if parser, ok := p.Parsers[s.Type]; ok {
+	parsers := p.Parsers
+	if parsers == nil {
+		parsers = defaultParsers
+	}
+	// lookup the parse
+	if parser, ok := parsers[s.Type]; ok {
 		return parser(s)
 	}
-
-	if s.Raw[0] == SentenceStart[0] {
-		switch s.Type {
-		case TypeRMC:
-			return newRMC(s)
-		case TypeAAM:
-			return newAAM(s)
-		case TypeACK:
-			return newACK(s)
-		case TypeACN:
-			return newACN(s)
-		case TypeALA:
-			return newALA(s)
-		case TypeALC:
-			return newALC(s)
-		case TypeALF:
-			return newALF(s)
-		case TypeALR:
-			return newALR(s)
-		case TypeAPB:
-			return newAPB(s)
-		case TypeARC:
-			return newARC(s)
-		case TypeBEC:
-			return newBEC(s)
-		case TypeBOD:
-			return newBOD(s)
-		case TypeBWC:
-			return newBWC(s)
-		case TypeBWR:
-			return newBWR(s)
-		case TypeBWW:
-			return newBWW(s)
-		case TypeDOR:
-			return newDOR(s)
-		case TypeDSC:
-			return newDSC(s)
-		case TypeDSE:
-			return newDSE(s)
-		case TypeDTM:
-			return newDTM(s)
-		case TypeEVE:
-			return newEVE(s)
-		case TypeFIR:
-			return newFIR(s)
-		case TypeGGA:
-			return newGGA(s)
-		case TypeGSA:
-			return newGSA(s)
-		case TypeGLL:
-			return newGLL(s)
-		case TypeVTG:
-			return newVTG(s)
-		case TypeZDA:
-			return newZDA(s)
-		case TypePGRME:
-			return newPGRME(s)
-		case TypePHTRO:
-			return newPHTRO(s)
-		case TypePMTK001:
-			return newPMTK001(s)
-		case TypePRDID:
-			return newPRDID(s)
-		case TypePSKPDPT:
-			return newPSKPDPT(s)
-		case TypePSONCMS:
-			return newPSONCMS(s)
-		case TypeQuery:
-			return newQuery(s)
-		case TypeGSV:
-			return newGSV(s)
-		case TypeHBT:
-			return newHBT(s)
-		case TypeHDG:
-			return newHDG(s)
-		case TypeHDT:
-			return newHDT(s)
-		case TypeHDM:
-			return newHDM(s)
-		case TypeHSC:
-			return newHSC(s)
-		case TypeGNS:
-			return newGNS(s)
-		case TypeTHS:
-			return newTHS(s)
-		case TypeTLB:
-			return newTLB(s)
-		case TypeTLL:
-			return newTLL(s)
-		case TypeTTM:
-			return newTTM(s)
-		case TypeTXT:
-			return newTXT(s)
-		case TypeWPL:
-			return newWPL(s)
-		case TypeRMB:
-			return newRMB(s)
-		case TypeRPM:
-			return newRPM(s)
-		case TypeRSA:
-			return newRSA(s)
-		case TypeRSD:
-			return newRSD(s)
-		case TypeRTE:
-			return newRTE(s)
-		case TypeROT:
-			return newROT(s)
-		case TypeVBW:
-			return newVBW(s)
-		case TypeVDR:
-			return newVDR(s)
-		case TypeVHW:
-			return newVHW(s)
-		case TypeVSD:
-			return newVSD(s)
-		case TypeVPW:
-			return newVPW(s)
-		case TypeVLW:
-			return newVLW(s)
-		case TypeVWR:
-			return newVWR(s)
-		case TypeVWT:
-			return newVWT(s)
-		case TypeDPT:
-			return newDPT(s)
-		case TypeDBT:
-			return newDBT(s)
-		case TypeDBK:
-			return newDBK(s)
-		case TypeDBS:
-			return newDBS(s)
-		case TypeMDA:
-			return newMDA(s)
-		case TypeMTA:
-			return newMTA(s)
-		case TypeMTW:
-			return newMTW(s)
-		case TypeMWD:
-			return newMWD(s)
-		case TypeMWV:
-			return newMWV(s)
-		case TypeOSD:
-			return newOSD(s)
-		case TypeXDR:
-			return newXDR(s)
-		case TypeXTE:
-			return newXTE(s)
-		}
-	}
-	if s.Raw[0] == SentenceStartEncapsulated[0] {
-		switch s.Type {
-		case TypeABM:
-			return newABM(s)
-		case TypeBBM:
-			return newBBM(s)
-		case TypeTTD:
-			return newTTD(s)
-		case TypeVDM, TypeVDO:
-			return newVDMVDO(s)
-		}
-	}
 	return nil, &NotSupportedError{Prefix: s.Prefix()}
+}
+
+// DefaultParsers returns the default sentence parsers.
+func DefaultParsers() map[string]ParserFunc {
+	return map[string]ParserFunc{
+		TypeRMC:     newRMC,
+		TypeAAM:     newAAM,
+		TypeACK:     newACK,
+		TypeACN:     newACN,
+		TypeALA:     newALA,
+		TypeALC:     newALC,
+		TypeALF:     newALF,
+		TypeALR:     newALR,
+		TypeAPB:     newAPB,
+		TypeARC:     newARC,
+		TypeBEC:     newBEC,
+		TypeBOD:     newBOD,
+		TypeBWC:     newBWC,
+		TypeBWR:     newBWR,
+		TypeBWW:     newBWW,
+		TypeDOR:     newDOR,
+		TypeDSC:     newDSC,
+		TypeDSE:     newDSE,
+		TypeDTM:     newDTM,
+		TypeEVE:     newEVE,
+		TypeFIR:     newFIR,
+		TypeGGA:     newGGA,
+		TypeGSA:     newGSA,
+		TypeGLL:     newGLL,
+		TypeVTG:     newVTG,
+		TypeZDA:     newZDA,
+		TypePGRME:   newPGRME,
+		TypePHTRO:   newPHTRO,
+		TypePMTK001: newPMTK001,
+		TypePRDID:   newPRDID,
+		TypePSKPDPT: newPSKPDPT,
+		TypePSONCMS: newPSONCMS,
+		TypeQuery:   newQuery,
+		TypeGSV:     newGSV,
+		TypeHBT:     newHBT,
+		TypeHDG:     newHDG,
+		TypeHDT:     newHDT,
+		TypeHDM:     newHDM,
+		TypeHSC:     newHSC,
+		TypeGNS:     newGNS,
+		TypeTHS:     newTHS,
+		TypeTLB:     newTLB,
+		TypeTLL:     newTLL,
+		TypeTTM:     newTTM,
+		TypeTXT:     newTXT,
+		TypeWPL:     newWPL,
+		TypeRMB:     newRMB,
+		TypeRPM:     newRPM,
+		TypeRSA:     newRSA,
+		TypeRSD:     newRSD,
+		TypeRTE:     newRTE,
+		TypeROT:     newROT,
+		TypeVBW:     newVBW,
+		TypeVDR:     newVDR,
+		TypeVHW:     newVHW,
+		TypeVSD:     newVSD,
+		TypeVPW:     newVPW,
+		TypeVLW:     newVLW,
+		TypeVWR:     newVWR,
+		TypeVWT:     newVWT,
+		TypeDPT:     newDPT,
+		TypeDBT:     newDBT,
+		TypeDBK:     newDBK,
+		TypeDBS:     newDBS,
+		TypeMDA:     newMDA,
+		TypeMTA:     newMTA,
+		TypeMTW:     newMTW,
+		TypeMWD:     newMWD,
+		TypeMWV:     newMWV,
+		TypeOSD:     newOSD,
+		TypeXDR:     newXDR,
+		TypeXTE:     newXTE,
+		TypeABM:     newABM,
+		TypeBBM:     newBBM,
+		TypeTTD:     newTTD,
+		TypeVDM:     newVDMVDO,
+		TypeVDO:     newVDMVDO,
+	}
 }

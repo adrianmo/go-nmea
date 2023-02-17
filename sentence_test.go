@@ -430,7 +430,7 @@ func TestSentenceParser_Parse(t *testing.T) {
 		{
 			name: "ok, parse custom sentence",
 			givenParser: &SentenceParser{
-				CustomParsers: map[string]ParserFunc{
+				Parsers: map[string]ParserFunc{
 					"YYY": func(s BaseSentence) (Sentence, error) {
 						p := NewParser(s)
 						return TestZZZ{
