@@ -30,11 +30,13 @@ const (
 	ChecksumSep = "*"
 )
 
-// defaultSentenceParser exists for backwards compatibility reasons to allow global Parse/RegisterParser/MustRegisterParser
-// to work as they did before SentenceParser was added.
-var defaultSentenceParserMu sync.Mutex
-var defaultSentenceParser = SentenceParser{Parsers: DefaultParsers()}
-var defaultParsers = DefaultParsers()
+var (
+	// defaultSentenceParser exists for backwards compatibility reasons to allow global Parse/RegisterParser/MustRegisterParser
+	// to work as they did before SentenceParser was added.
+	defaultSentenceParser   = SentenceParser{Parsers: DefaultParsers()}
+	defaultSentenceParserMu sync.Mutex
+	defaultParsers          = DefaultParsers()
+)
 
 func init() {
 	// for backwards compatibility support MTK. PMTK001 is correct an supported when using SentenceParser instance
