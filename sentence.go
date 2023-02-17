@@ -83,8 +83,8 @@ func (s BaseSentence) String() string { return s.Raw }
 //
 // SentenceParser fields/methods are not co-routine safe!
 type SentenceParser struct {
-	// CustomParsers allows registering additional parsers
-	CustomParsers map[string]ParserFunc
+	// Parsers allows registering additional parsers
+	Parsers map[string]ParserFunc
 
 	// ParsePrefix takes in the sentence first field (NMEA0183 address) and splits it into a talker id and sentence type
 	ParsePrefix func(prefix string) (talkerID string, sentence string, err error)
@@ -239,7 +239,7 @@ var defaultSentenceParserMu = new(sync.Mutex)
 // defaultSentenceParser exists for backwards compatibility reasons to allow global Parse/RegisterParser/MustRegisterParser
 // to work as they did before SentenceParser was added.
 var defaultSentenceParser = SentenceParser{
-	CustomParsers: map[string]ParserFunc{
+	Parsers: map[string]ParserFunc{
 		TypeMTK: newMTK, // for backwards compatibility support MTK. PMTK001 is correct an supported when using SentenceParser instance
 	},
 }
@@ -256,11 +256,11 @@ func RegisterParser(sentenceType string, parser ParserFunc) error {
 	defaultSentenceParserMu.Lock()
 	defer defaultSentenceParserMu.Unlock()
 
-	if _, ok := defaultSentenceParser.CustomParsers[sentenceType]; ok {
+	if _, ok := defaultSentenceParser.Parsers[sentenceType]; ok {
 		return fmt.Errorf("nmea: parser for sentence type '%q' already exists", sentenceType)
 	}
 
-	defaultSentenceParser.CustomParsers[sentenceType] = parser
+	defaultSentenceParser.Parsers[sentenceType] = parser
 	return nil
 }
 
@@ -281,7 +281,7 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 	}
 
 	// Custom parser allow overriding of existing parsers
-	if parser, ok := p.CustomParsers[s.Type]; ok {
+	if parser, ok := p.Parsers[s.Type]; ok {
 		return parser(s)
 	}
 
