@@ -297,6 +297,7 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 	if parse, ok := parsers[start+s.Type]; ok {
 		return parse(s)
 	}
+	// kept for backwards compatibility
 	if parser, ok := parsers[s.Type]; ok {
 		return parser(s)
 	}
