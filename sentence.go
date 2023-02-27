@@ -249,21 +249,21 @@ func Checksum(s string) string {
 }
 
 // MustRegisterParser register a custom parser or panic
-func MustRegisterParser(sentenceType string, parser ParserFunc) {
-	if err := RegisterParser(sentenceType, parser); err != nil {
+func MustRegisterParser(prefix string, parser ParserFunc) {
+	if err := RegisterParser(prefix, parser); err != nil {
 		panic(err)
 	}
 }
 
 // RegisterParser register a custom parser
-func RegisterParser(sentenceType string, parser ParserFunc) error {
+func RegisterParser(prefix string, parser ParserFunc) error {
 	defaultSentenceParserMu.Lock()
 	defer defaultSentenceParserMu.Unlock()
-	if _, ok := customParsers[sentenceType]; ok {
-		return fmt.Errorf("nmea: parser for sentence type '%q' already exists", sentenceType)
+	if _, ok := customParsers[prefix]; ok {
+		return fmt.Errorf("nmea: parser for sentence type '%q' already exists", prefix)
 	}
-	defaultSentenceParser.Parsers[sentenceType] = parser
-	customParsers[sentenceType] = struct{}{}
+	defaultSentenceParser.Parsers[prefix] = parser
+	customParsers[prefix] = struct{}{}
 	return nil
 }
 
