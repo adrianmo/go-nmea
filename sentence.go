@@ -33,9 +33,9 @@ const (
 var (
 	// defaultSentenceParser exists for backwards compatibility reasons to allow global Parse/RegisterParser/MustRegisterParser
 	// to work as they did before SentenceParser was added.
-	defaultSentenceParser   = SentenceParser{Parsers: DefaultParsers()}
+	defaultSentenceParser   = SentenceParser{Parsers: Parsers()}
 	defaultSentenceParserMu sync.Mutex
-	defaultParsers          = DefaultParsers()
+	defaultParsers          = Parsers()
 	customParsers           = map[string]struct{}{}
 )
 
@@ -303,8 +303,8 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 	return nil, &NotSupportedError{Prefix: s.Prefix()}
 }
 
-// DefaultParsers returns the default sentence parsers.
-func DefaultParsers() map[string]ParserFunc {
+// Parsers returns the default sentence parsers.
+func Parsers() map[string]ParserFunc {
 	return map[string]ParserFunc{
 		"$RMC":     newRMC,
 		"$AAM":     newAAM,
