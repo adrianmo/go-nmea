@@ -234,6 +234,20 @@ Date: 13/06/94
 Variation: -4.200000
 ```
 
+### Customize sentence parser
+
+Parser logic can be customized by creating `nmea.SentenceParser` instance and by providing callback implementations.
+
+```go
+p := nmea.SentenceParser{
+    CustomParsers: nil,
+    ParsePrefix:   nil,
+    CheckCRC:      nil,
+    OnTagBlock:    nil,
+}
+s, err := p.Parse("$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70")
+```
+
 ### TAG Blocks
 
 NMEA 4.10 TAG Block values can be accessed via the message's `TagBlock` struct:
