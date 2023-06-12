@@ -27,7 +27,8 @@ To update go-nmea to the latest version, use `go get -u github.com/adrianmo/go-n
 
 ## Supported sentences
 
-Sentence with link is supported by this library. NMEA0183 sentences list is based on [IEC 61162-1:2016 (Edition 5.0 2016-08)](https://webstore.iec.ch/publication/25754) table of contents.
+Sentence with link is supported by this library. NMEA0183 sentences list is based
+on [IEC 61162-1:2016 (Edition 5.0 2016-08)](https://webstore.iec.ch/publication/25754) table of contents.
 
 | Sentence           | Description                                                         | References                                                                                     |
 |--------------------|---------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
@@ -164,15 +165,16 @@ Sentence with link is supported by this library. NMEA0183 sentences list is base
 | ZFO                | UTC and time from origin waypoint                                   |                                                                                                |
 | ZTG                | UTC and time to destination waypoint                                |                                                                                                |
 
-
-| Proprietary sentence type | Description                                                                                     | References                                               |
-|---------------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------------------|
-| [PGRME](./pgrme.go)       | Estimated Position Error (Garmin proprietary sentence)                                          | [1](http://aprs.gids.nl/nmea/#rme)                       |
-| [PHTRO](./phtro.go)       | Vessel pitch and roll (Xsens IMU/VRU/AHRS)                                                      |                                                          |
-| [PMTK001](./pmtk.go)      | Acknowledgement of previously sent command/packet                                               | [1](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf) |
-| [PRDID](./prdid.go)       | Vessel pitch, roll and heading (Xsens IMU/VRU/AHRS)                                             |                                                          |
-| [PSKPDPT](./pskpdpt.go)   | Depth of Water for multiple transducer installation                                             |                                                          |
-| [PSONCMS](./psoncms.go)   | Quaternion, acceleration, rate of turn, magnetic field, sensor temperature (Xsens IMU/VRU/AHRS) |                                                          |
+| Proprietary sentence type | Description                                                                                     | References                                                                                         |
+|---------------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| [PNG](./pgn.go)           | Transfer NMEA2000 frame as NMEA0183 sentence (ShipModul MiniPlex-3)                             | [1](https://opencpn.org/wiki/dokuwiki/lib/exe/fetch.php?media=opencpn:software:mxpgn_sentence.pdf) |
+| [PCDIN](./pcdin.go)       | Transfer NMEA2000 frame as NMEA0183 sentence (SeaSmart.Net Protocol)                            | [1](http://www.seasmart.net/pdf/SeaSmart_HTTP_Protocol_RevG_043012.pdf)                            |
+| [PGRME](./pgrme.go)       | Estimated Position Error (Garmin proprietary sentence)                                          | [1](http://aprs.gids.nl/nmea/#rme)                                                                 |
+| [PHTRO](./phtro.go)       | Vessel pitch and roll (Xsens IMU/VRU/AHRS)                                                      |                                                                                                    |
+| [PMTK001](./pmtk.go)      | Acknowledgement of previously sent command/packet                                               | [1](https://www.rhydolabz.com/documents/25/PMTK_A11.pdf)                                           |
+| [PRDID](./prdid.go)       | Vessel pitch, roll and heading (Xsens IMU/VRU/AHRS)                                             |                                                                                                    |
+| [PSKPDPT](./pskpdpt.go)   | Depth of Water for multiple transducer installation                                             |                                                                                                    |
+| [PSONCMS](./psoncms.go)   | Quaternion, acceleration, rate of turn, magnetic field, sensor temperature (Xsens IMU/VRU/AHRS) |                                                                                                    |
 
 If you need to parse a message that contains an unsupported sentence type you can implement and register your own
 message parser and get yourself unblocked immediately. Check the example below to know how
@@ -358,7 +360,11 @@ Value: 5133.820000
 
 ### Message parsing with optional values
 
-Some messages have optional fields. By default, omitted numeric values are set to 0. In situations where you need finer control to distinguish between an undefined value and an actual 0, you can register types overriding existing sentences, using `nmea.Int64` and `nmea.Float64` instead of `int64` and `float64`. The matching parsing methods are `(*Parser).NullInt64` and `(*Parser).NullFloat64`. Both `nmea.Int64` and `nmea.Float64` contains a numeric field `Value` which is defined only if the field `Valid` is `true`.
+Some messages have optional fields. By default, omitted numeric values are set to 0. In situations where you need finer
+control to distinguish between an undefined value and an actual 0, you can register types overriding existing sentences,
+using `nmea.Int64` and `nmea.Float64` instead of `int64` and `float64`. The matching parsing methods
+are `(*Parser).NullInt64` and `(*Parser).NullFloat64`. Both `nmea.Int64` and `nmea.Float64` contains a numeric
+field `Value` which is defined only if the field `Valid` is `true`.
 
 See below example for a modified VTG sentence parser:
 
