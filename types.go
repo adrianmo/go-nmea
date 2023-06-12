@@ -404,9 +404,9 @@ func LatDir(l float64) string {
 // LonDir returns the longitude direction symbol
 func LonDir(l float64) string {
 	if l < 0.0 {
-		return East
+		return West
 	}
-	return West
+	return East
 }
 
 // Float64 is a nullable float64 value

@@ -240,8 +240,8 @@ func TestLonDir(t *testing.T) {
 		value    float64
 		expected string
 	}{
-		{100.0, "W"},
-		{-100.0, "E"},
+		{100.0, "E"},
+		{-100.0, "W"},
 	}
 	for _, tt := range tests {
 		if s := LonDir(tt.value); s != tt.expected {
