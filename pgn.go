@@ -36,12 +36,12 @@ func newPGN(s BaseSentence) (Sentence, error) {
 	}
 	pgn, err := strconv.ParseUint(p.Fields[0], 16, 24)
 	if err != nil {
-		p.err = fmt.Errorf("failed to parse PGN field, err: %w", err)
+		p.err = fmt.Errorf("nmea: %s failed to parse PGN field: %w", p.Prefix(), err)
 		return nil, p.Err()
 	}
 	attributes, err := strconv.ParseUint(p.Fields[1], 16, 16)
 	if err != nil {
-		p.err = fmt.Errorf("failed to parse attributes field, err: %w", err)
+		p.err = fmt.Errorf("nmea: %s failed to parse attributes field: %w", p.Prefix(), err)
 		return nil, p.Err()
 	}
 	dataLength := int((attributes >> 8) & 0b1111) // bits 8-11
@@ -51,7 +51,7 @@ func newPGN(s BaseSentence) (Sentence, error) {
 	}
 	data, err := hex.DecodeString(p.Fields[2])
 	if err != nil {
-		p.err = fmt.Errorf("failed to decode data, err: %w", err)
+		p.err = fmt.Errorf("nmea: %s failed to decode data: %w", p.Prefix(), err)
 		return nil, p.Err()
 	}
 

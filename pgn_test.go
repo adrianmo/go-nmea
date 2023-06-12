@@ -31,12 +31,12 @@ func TestPGN(t *testing.T) {
 		{
 			name: "invalid PGN field",
 			raw:  "$MXPGN,0xF112,2807,FC7FFF7FFF168012*58",
-			err:  "failed to parse PGN field, err: strconv.ParseUint: parsing \"0xF112\": invalid syntax",
+			err:  "nmea: MXPGN failed to parse PGN field: strconv.ParseUint: parsing \"0xF112\": invalid syntax",
 		},
 		{
 			name: "invalid attributes field",
 			raw:  "$MXPGN,01F112,x807,FC7FFF7FFF168012*5b",
-			err:  "failed to parse attributes field, err: strconv.ParseUint: parsing \"x807\": invalid syntax",
+			err:  "nmea: MXPGN failed to parse attributes field: strconv.ParseUint: parsing \"x807\": invalid syntax",
 		},
 		{
 			name: "invalid data length field",
@@ -46,7 +46,7 @@ func TestPGN(t *testing.T) {
 		{
 			name: "invalid hex data",
 			raw:  "$MXPGN,01F112,2807,xC7FFF7FFF168012*2f",
-			err:  "failed to decode data, err: encoding/hex: invalid byte: U+0078 'x'",
+			err:  "nmea: MXPGN failed to decode data: encoding/hex: invalid byte: U+0078 'x'",
 		},
 	}
 

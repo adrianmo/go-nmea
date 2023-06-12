@@ -37,22 +37,22 @@ func newPCDIN(s BaseSentence) (Sentence, error) {
 	}
 	pgn, err := strconv.ParseUint(p.Fields[0], 16, 24)
 	if err != nil {
-		p.err = fmt.Errorf("failed to parse PGN field, err: %w", err)
+		p.err = fmt.Errorf("nmea: %s failed to parse PGN field: %w", p.Prefix(), err)
 		return nil, p.Err()
 	}
 	timestamp, err := strconv.ParseUint(p.Fields[1], 16, 32)
 	if err != nil {
-		p.err = fmt.Errorf("failed to parse timestamp field, err: %w", err)
+		p.err = fmt.Errorf("nmea: %s failed to parse timestamp field: %w", p.Prefix(), err)
 		return nil, p.Err()
 	}
 	source, err := strconv.ParseUint(p.Fields[2], 16, 8)
 	if err != nil {
-		p.err = fmt.Errorf("failed to parse source field, err: %w", err)
+		p.err = fmt.Errorf("nmea: %s failed to parse source field: %w", p.Prefix(), err)
 		return nil, p.Err()
 	}
 	data, err := hex.DecodeString(p.Fields[3])
 	if err != nil {
-		p.err = fmt.Errorf("failed to decode data, err: %w", err)
+		p.err = fmt.Errorf("nmea: %s failed to decode data: %w", p.Prefix(), err)
 		return nil, p.Err()
 	}
 

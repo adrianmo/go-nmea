@@ -30,22 +30,22 @@ func TestPCDIN(t *testing.T) {
 		{
 			name: "invalid PGN field",
 			raw:  "$PCDIN,x1F112,000C72EA,09,28C36A0000B40AFD*1e",
-			err:  "failed to parse PGN field, err: strconv.ParseUint: parsing \"x1F112\": invalid syntax",
+			err:  "nmea: PCDIN failed to parse PGN field: strconv.ParseUint: parsing \"x1F112\": invalid syntax",
 		},
 		{
 			name: "invalid timestamp field",
 			raw:  "$PCDIN,01F112,x00C72EA,09,28C36A0000B40AFD*1e",
-			err:  "failed to parse timestamp field, err: strconv.ParseUint: parsing \"x00C72EA\": invalid syntax",
+			err:  "nmea: PCDIN failed to parse timestamp field: strconv.ParseUint: parsing \"x00C72EA\": invalid syntax",
 		},
 		{
 			name: "invalid source field",
 			raw:  "$PCDIN,01F112,000C72EA,x9,28C36A0000B40AFD*1e",
-			err:  "failed to parse source field, err: strconv.ParseUint: parsing \"x9\": invalid syntax",
+			err:  "nmea: PCDIN failed to parse source field: strconv.ParseUint: parsing \"x9\": invalid syntax",
 		},
 		{
 			name: "invalid hex data",
 			raw:  "$PCDIN,01F112,000C72EA,09,x8C36A0000B40AFD*1c",
-			err:  "failed to decode data, err: encoding/hex: invalid byte: U+0078 'x'",
+			err:  "nmea: PCDIN failed to decode data: encoding/hex: invalid byte: U+0078 'x'",
 		},
 	}
 
