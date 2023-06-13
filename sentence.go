@@ -339,6 +339,10 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 			return newVTG(s)
 		case TypeZDA:
 			return newZDA(s)
+		case TypePGN:
+			return newPGN(s)
+		case TypePCDIN:
+			return newPCDIN(s)
 		case TypePGRME:
 			return newPGRME(s)
 		case TypePHTRO:
