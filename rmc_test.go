@@ -110,13 +110,29 @@ var rmctests = []struct {
 			Date:      Date{Valid: true, DD: 30, MM: 5, YY: 18},
 			Variation: 0,
 			FFAMode:   FAAModeAutonomous,
-			NavStatus: NavStatusDataValid,
+			NavStatus: NavStatusNotValid,
 		},
 	},
 	{
 		name: "bad validity",
 		raw:  "$GPRMC,220516,D,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*75",
 		err:  "nmea: GPRMC invalid validity: D",
+	},
+	{
+		name: "good sentence G with nav status",
+		raw:  "$YDRMC,124014.00,A,5520.2848,N,01321.5108,E,0.0,0.0,230623,4.4,E,A,C*5D",
+		msg: RMC{
+			Time:      Time{Valid: true, Hour: 12, Minute: 40, Second: 14, Millisecond: 0},
+			Validity:  "A",
+			Latitude:  55.338080000000005,
+			Longitude: 13.358513333333333,
+			Speed:     0,
+			Course:    0,
+			Date:      Date{Valid: true, DD: 23, MM: 6, YY: 23},
+			Variation: 4.4,
+			FFAMode:   FAAModeAutonomous,
+			NavStatus: NavStatusCaution,
+		},
 	},
 }
 
