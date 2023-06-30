@@ -127,6 +127,14 @@ const (
 
 // Navigation Status (NMEA 4.1 and later)
 const (
+	// NavStatusSimulated is a deprecated placeholder for backwards
+	// compatibility. There is no such status in NMEA.
+	// Deprecated: use NavStatusSafe
+	NavStatusSimulated = "S"
+	// NavStatusDataValid is a deprecated placeholder for backwards
+	// compatibility. There is no such status in NMEA.
+	// Deprecated: use NavStatusNotValid
+	NavStatusDataValid = "V"
 	// NavStatusSafe is Safe (within selected accuracy level)
 	NavStatusSafe = "S"
 	// NavStatusCaution is Caution (integrity not available)
