@@ -127,20 +127,22 @@ const (
 
 // Navigation Status (NMEA 4.1 and later)
 const (
-	// NavStatusAutonomous is Autonomous mode
-	NavStatusAutonomous = "A"
-	// NavStatusDifferential is Differential Mode
-	NavStatusDifferential = "D"
-	// NavStatusEstimated is Estimated (dead-reckoning) mode
-	NavStatusEstimated = "E"
-	// NavStatusManualInput is Manual Input Mode
-	NavStatusManualInput = "M"
-	// NavStatusSimulated is Simulated Mode
+	// NavStatusSimulated is a deprecated placeholder for backwards
+	// compatibility. There is no such status in NMEA.
+	// Deprecated: use NavStatusSafe
 	NavStatusSimulated = "S"
-	// NavStatusDataNotValid is Data Not Valid
-	NavStatusDataNotValid = "N"
-	// NavStatusDataValid is valid
+	// NavStatusDataValid is a deprecated placeholder for backwards
+	// compatibility. There is no such status in NMEA.
+	// Deprecated: use NavStatusNotValid
 	NavStatusDataValid = "V"
+	// NavStatusSafe is Safe (within selected accuracy level)
+	NavStatusSafe = "S"
+	// NavStatusCaution is Caution (integrity not available)
+	NavStatusCaution = "C"
+	// NavStatusUnsafe is Unsafe (outside selected accuracy level)
+	NavStatusUnsafe = "U"
+	// NavStatusNotValid is Not Valid (equipment does not provide navigation status information)
+	NavStatusNotValid = "V"
 )
 
 const (

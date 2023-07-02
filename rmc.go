@@ -58,13 +58,10 @@ func newRMC(s BaseSentence) (Sentence, error) {
 		m.NavStatus = p.EnumString(
 			12,
 			"navigation status",
-			NavStatusAutonomous,
-			NavStatusDifferential,
-			NavStatusEstimated,
-			NavStatusManualInput,
-			NavStatusSimulated,
-			NavStatusDataNotValid,
-			NavStatusDataValid,
+			NavStatusSafe,
+			NavStatusCaution,
+			NavStatusUnsafe,
+			NavStatusNotValid,
 		)
 	}
 	return m, p.Err()
