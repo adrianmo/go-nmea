@@ -47,6 +47,7 @@ on [IEC 61162-1:2016 (Edition 5.0 2016-08)](https://webstore.iec.ch/publication/
 | [ALR](./alr.go)    | Set alarm state                                                     |                                                                                                |
 | [APB](./apb.go)    | Heading/track controller (autopilot) sentence B                     | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_apb_autopilot_sentence_b)                        |
 | [ARC](./arc.go)    | Alert command refused                                               |                                                                                                |
+| [AZT](./azt.go)    | Azimuth Thruster message                                            |                                                                                                |
 | [BBM](./bbm.go)    | AIS broadcast binary message                                        |                                                                                                |
 | [BEC](./bec.go)    | Bearing and distance to waypoint, Dead reckoning                    | [1](http://www.nmea.de/nmea0183datensaetze.html#bec)                                           |
 | [BOD](./bod.go)    | Bearing origin to destination                                       | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_bod_bearing_waypoint_to_waypoint)                |
@@ -95,6 +96,7 @@ on [IEC 61162-1:2016 (Edition 5.0 2016-08)](https://webstore.iec.ch/publication/
 | LR3                | AIS long-range reply sentence 3                                     |                                                                                                |
 | LRF                | AIS long-range function                                             |                                                                                                |
 | LRI                | AIS long-range interrogation                                        |                                                                                                |
+| [MCP](./mcp.go)    | Micropilot Joystick controller message                              |                                                                                                |
 | [MDA](./mda.go)    | Meteorological Composite                                            | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_mda_meteorological_composite)                    |
 | [MTA](./mta.go)    | Air Temperature (obsolete, use XDR instead)                         |                                                                                                |
 | MOB                | Man over board notification                                         |                                                                                                |
