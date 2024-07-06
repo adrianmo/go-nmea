@@ -110,32 +110,16 @@ func (p *SentenceParser) parseBaseSentence(raw string) (BaseSentence, error) {
 	if raw == "" {
 		return BaseSentence{}, errors.New("nmea: can not parse empty input")
 	}
-
-	var (
-		tagBlock TagBlock
-		err      error
-	)
-
-	if startOfTagBlock := strings.IndexByte(raw, TagBlockSep); startOfTagBlock != -1 {
-		// tag block is always at the start of line (unless IEC 61162-450). Starts with `\` and ends with `\` and has valid sentence
-		// following or <CR><LF>
-		//
-		// Note: tag block group can span multiple lines but we only parse ones that have sentence
-		endOfTagBlock := strings.LastIndexByte(raw, TagBlockSep)
-		if endOfTagBlock <= startOfTagBlock {
-			return BaseSentence{}, fmt.Errorf("nmea: sentence tag block is missing '\\' at the end")
-		}
-		tagBlock, err = parseTagBlock(raw[startOfTagBlock+1 : endOfTagBlock])
-		if err != nil {
+	tagBlock, tagBlockLen, err := ParseTagBlock(raw)
+	if err != nil {
+		return BaseSentence{}, err
+	}
+	if tagBlockLen > 0 && p.OnTagBlock != nil {
+		if err := p.OnTagBlock(tagBlock); err != nil {
 			return BaseSentence{}, err
 		}
-		if p.OnTagBlock != nil {
-			if err := p.OnTagBlock(tagBlock); err != nil {
-				return BaseSentence{}, err
-			}
-		}
-		raw = raw[endOfTagBlock+1:]
 	}
+	raw = raw[tagBlockLen:]
 
 	startIndex := strings.IndexAny(raw, SentenceStart+SentenceStartEncapsulated)
 	if startIndex != 0 {
