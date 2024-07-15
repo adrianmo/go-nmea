@@ -345,18 +345,7 @@ func ParseTime(s string) (Time, error) {
 	minute, _ := strconv.Atoi(s[2:4])
 	second, _ := strconv.ParseFloat(s[4:], 64)
 	whole, frac := math.Modf(second)
-	return Time{true, hour, minute, int(whole), int(round(frac * 1000))}, nil
-}
-
-// round is implemented here because it wasn't added until go1.10
-// this code is taken directly from the math.Round documentation
-// TODO: use math.Round after a reasonable amount of time
-func round(x float64) float64 {
-	t := math.Trunc(x)
-	if math.Abs(x-t) >= 0.5 {
-		return t + math.Copysign(1, x)
-	}
-	return t
+	return Time{true, hour, minute, int(whole), int(math.Round(frac * 1000))}, nil
 }
 
 // Date type
