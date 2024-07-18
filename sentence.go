@@ -103,6 +103,10 @@ type SentenceParser struct {
 	// \g:2-3-1234*hh\!ABVDM,1,1,1,B,.....,0*hh
 	// \g:3-3-1234*hh\$ABVSI,r3669961,1,013536.96326433,1386,-98,,*hh
 	OnTagBlock func(tagBlock TagBlock) error
+
+	// OnBaseSentence is a callback for accessing/modifying the base sentence
+	// before further parsing is done.
+	OnBaseSentence func(sentence *BaseSentence) error
 }
 
 func (p *SentenceParser) parseBaseSentence(raw string) (BaseSentence, error) {
@@ -262,6 +266,12 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 	s, err := p.parseBaseSentence(raw)
 	if err != nil {
 		return nil, err
+	}
+
+	if p.OnBaseSentence != nil {
+		if err := p.OnBaseSentence(&s); err != nil {
+			return nil, err
+		}
 	}
 
 	// Custom parser allow overriding of existing parsers
