@@ -3,6 +3,7 @@ package nmea
 import (
 	"encoding/hex"
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -609,6 +610,69 @@ func TestSentenceParser_CheckCRC(t *testing.T) {
 				assert.EqualError(t, err, tc.expectError)
 			} else {
 				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestSentenceParser_OnBaseSentence(t *testing.T) {
+	testErr := errors.New("this is a test")
+	tests := []struct {
+		name     string
+		fn       func(*BaseSentence) error
+		raw      string
+		sentence Sentence
+		err      error
+	}{
+		{
+			name: "can modify prefix",
+			fn: func(s *BaseSentence) error {
+				if s.Type == "VDM" && strings.HasPrefix(s.Raw, "$") {
+					s.Raw = "!" + s.Raw[1:]
+				}
+				return nil
+			},
+			raw: "\\s:somewhere,c:1720289719*4D\\$AIVDM,1,1,,A,,0*26",
+			sentence: VDMVDO{
+				BaseSentence: BaseSentence{
+					Talker:   "AI",
+					Type:     "VDM",
+					Fields:   []string{"1", "1", "", "A", "", "0"},
+					Checksum: "26",
+					Raw:      "!AIVDM,1,1,,A,,0*26",
+					TagBlock: TagBlock{
+						Time:         1720289719,
+						RelativeTime: 0,
+						Destination:  "",
+						Grouping:     "",
+						LineCount:    0,
+						Source:       "somewhere",
+						Text:         "",
+					},
+				},
+				NumFragments:   1,
+				FragmentNumber: 1,
+				MessageID:      0,
+				Channel:        "A",
+				Payload:        []uint8{},
+			},
+		},
+		{
+			name: "should return error",
+			fn:   func(_ *BaseSentence) error { return testErr },
+			raw:  "$GNRMC,142754.0,A,4302.539570,N,07920.379823,W,0.0,,070617,0.0,E,A*21",
+			err:  testErr,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := SentenceParser{OnBaseSentence: tt.fn}
+			s, err := p.Parse(tt.raw)
+			if tt.err == nil {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.sentence, s)
+			} else {
+				assert.Equal(t, tt.err, err)
 			}
 		})
 	}
