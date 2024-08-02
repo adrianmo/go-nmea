@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 )
 
@@ -382,6 +383,24 @@ func ParseDate(ddmmyy string) (Date, error) {
 		return Date{}, errors.New(ddmmyy)
 	}
 	return Date{true, dd, mm, yy}, nil
+}
+
+// DateTime converts the provided Date and Time values to a standard UTC time.Time.
+// The referenceYear parameter is used to determine the offset (century) for the two-digit year in Date.
+// For example, if the referenceYear is 2024, the offset used is 2000; and the input date's year is prepended with 20.
+// If referenceYear is 0, the current UTC year is used.
+// If either Date or Time is not valid, DateTime returns the zero time.Time.
+func DateTime(referenceYear int, d Date, t Time) time.Time {
+	if !d.Valid || !t.Valid {
+		return time.Time{}
+	}
+	if referenceYear == 0 {
+		referenceYear = time.Now().UTC().Year()
+	}
+	century := referenceYear / 100 * 100 // truncate the last two digits (year within century); keep first two digits of the full year
+	return time.Date(century+d.YY, time.Month(d.MM), d.DD,
+		t.Hour, t.Minute, t.Second, t.Millisecond*1e6,
+		time.UTC)
 }
 
 // LatDir returns the latitude direction symbol
