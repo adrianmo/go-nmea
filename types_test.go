@@ -268,9 +268,9 @@ func TestDateTime(t *testing.T) {
 			expect:  time.Time{},
 		},
 	} {
-		actual := DateTime(testCase.refYear, testCase.date, testCase.time)
+		actual := DateTime(testCase.date, testCase.time, testCase.refYear)
 		if !actual.Equal(testCase.expect) {
-			t.Fatalf("Test %d (refYear=%d date=%s time=%s): Expected %s but got %s", i, testCase.refYear, testCase.date, testCase.time, testCase.expect, actual)
+			t.Fatalf("Test %d (date=%s time=%s refYear=%d ): Expected %s but got %s", i, testCase.date, testCase.time, testCase.refYear, testCase.expect, actual)
 		}
 	}
 }
