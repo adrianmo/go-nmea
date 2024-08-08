@@ -390,7 +390,7 @@ func ParseDate(ddmmyy string) (Date, error) {
 // For example, if the referenceYear is 2024, the offset used is 2000; and the input date's year is prepended with 20.
 // If referenceYear is 0, the current UTC year is used.
 // If either Date or Time is not valid, DateTime returns the zero time.Time.
-func DateTime(d Date, t Time, referenceYear int) time.Time {
+func DateTime(referenceYear int, d Date, t Time) time.Time {
 	if !d.Valid || !t.Valid {
 		return time.Time{}
 	}
