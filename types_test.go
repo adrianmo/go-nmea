@@ -3,6 +3,7 @@ package nmea
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -217,6 +218,60 @@ func TestDateString(t *testing.T) {
 	expected := "01/02/03"
 	if s := d.String(); s != expected {
 		t.Fatalf("got %s expected %s", s, expected)
+	}
+}
+
+func TestDateTime(t *testing.T) {
+	for i, testCase := range []struct {
+		refYear int
+		date    Date
+		time    Time
+		expect  time.Time
+	}{
+		{
+			refYear: 2024,
+			date:    Date{DD: 1, MM: 2, YY: 3, Valid: true},
+			time:    Time{Hour: 1, Minute: 2, Second: 3, Millisecond: 4, Valid: true},
+			expect:  time.Date(2003, time.February, 1, 1, 2, 3, 4e6, time.UTC),
+		},
+		{
+			refYear: 1999,
+			date:    Date{DD: 1, MM: 2, YY: 3, Valid: true},
+			time:    Time{Hour: 1, Minute: 2, Second: 3, Millisecond: 4, Valid: true},
+			expect:  time.Date(1903, time.February, 1, 1, 2, 3, 4e6, time.UTC),
+		},
+		{
+			refYear: 2025,
+			date:    Date{DD: 23, MM: 7, YY: 24, Valid: true},
+			time:    Time{Hour: 18, Minute: 5, Second: 12, Millisecond: 1, Valid: true},
+			expect:  time.Date(2024, time.July, 23, 18, 5, 12, 1e6, time.UTC),
+		},
+		// zero reference year; this test will fail starting in the year 3000
+		{
+			refYear: 0,
+			date:    Date{DD: 1, MM: 2, YY: 3, Valid: true},
+			time:    Time{Hour: 1, Minute: 2, Second: 3, Millisecond: 4, Valid: true},
+			expect:  time.Date(2003, time.February, 1, 1, 2, 3, 4e6, time.UTC),
+		},
+		// invalid date
+		{
+			refYear: 2024,
+			date:    Date{DD: 1, MM: 2, YY: 3},
+			time:    Time{Hour: 1, Minute: 2, Second: 3, Millisecond: 4, Valid: true},
+			expect:  time.Time{},
+		},
+		// invalid time
+		{
+			refYear: 2024,
+			date:    Date{DD: 1, MM: 2, YY: 3, Valid: true},
+			time:    Time{Hour: 1, Minute: 2, Second: 3, Millisecond: 4},
+			expect:  time.Time{},
+		},
+	} {
+		actual := DateTime(testCase.refYear, testCase.date, testCase.time)
+		if !actual.Equal(testCase.expect) {
+			t.Fatalf("Test %d (refYear=%d date=%s time=%s): Expected %s but got %s", i, testCase.refYear, testCase.date, testCase.time, testCase.expect, actual)
+		}
 	}
 }
 
