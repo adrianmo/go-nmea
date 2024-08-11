@@ -3,6 +3,16 @@ package nmea
 const (
 	// TypePGRMT type for PGRMT sentences
 	TypePGRMT = "GRMT"
+	// PassPGRMT Self-Test Passed
+	PassPGRMT = "P"
+	// FailPGRMT Self-Test Failed
+	FailPGRMT = "F"
+	// DataRetainedPGRMT Data Retained
+	DataRetainedPGRMT = "R"
+	// DataLostPGRMT Data Lost
+	DataLostPGRMT = "L"
+	// DataCollectingPGRMT Data Collecting
+	DataCollectingPGRMT = "C"
 )
 
 // PGRMT is Sensor Status Information (Garmin proprietary sentence)
@@ -10,20 +20,6 @@ const (
 // $PGRMT,<0>,<1>,<2>,<3>,<4>,<5>,<6>,<7>,<8>*hh<CR><LF>
 // Format: $PGRMT,xxxxxxxxxx,A,A,A,A,A,A,N,A*hh<CR><LF>
 // Example: $PGRMT,GPS24xd-HVS VER 2.30,,,,,,,,*10
-
-const (
-	// Self-Test Passed
-	PassPGRMT = "P"
-	// Self-Test Failed
-	FailPGRMT = "F"
-	// Data Retained
-	DataRetainedPGRMT = "R"
-	// Data Lost
-	DataLostPGRMT = "L"
-	// Data Collecting
-	DataCollectingPGRMT = "C"
-)
-
 type PGRMT struct {
 	BaseSentence
 	ModelAndFirmwareVersion string
