@@ -46,7 +46,7 @@ func newPGRMT(s BaseSentence) (Sentence, error) {
 		StoredDataLost:          p.EnumString(3, "stored data lost", DataRetainedPGRMT, DataLostPGRMT),
 		RealtimeClockLost:       p.EnumString(4, "realtime clock lost", DataRetainedPGRMT, DataLostPGRMT),
 		OscillatorDriftDiscrete: p.EnumString(5, "oscillator drift discrete", PassPGRMT, FailPGRMT),
-		DataCollectionDiscrete:  p.EnumString(6, "oscillator drift discrete", DataCollectingPGRMT),
+		DataCollectionDiscrete:  p.EnumString(6, "data collection discrete", DataCollectingPGRMT),
 		SensorTemperature:       p.Float64(7, "sensor temperature in degrees celsius"),
 		SensorConfigurationData: p.EnumString(8, "sensor configuration data", DataRetainedPGRMT, DataLostPGRMT),
 	}, p.Err()
