@@ -18,7 +18,7 @@ var pklidtests = []struct {
 		msg:  PKLID{
 			SentanceVersion: "00",
 			Fleet:           "100",
-			ID:              "2000",
+			UnitID:          "2000",
 			Status:          "15",
 			Extension:       "00",
 		},

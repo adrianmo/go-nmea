@@ -16,17 +16,17 @@ const (
 // Example: $PKLDS,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W00,100,2000,25,00*6E
 type PKLDS struct {
 	BaseSentence
-	Time      Time    // Time Stamp
-	Validity  string  // validity - A-ok, V-invalid
-	Latitude  float64 // Latitude
-	Longitude float64 // Longitude
-	Speed     float64 // Speed in knots
-	Course    float64 // True course
-	Date      Date    // Date
-	Variation float64 // Magnetic variation
+	Time            Time    // Time Stamp
+	Validity        string  // validity - A-ok, V-invalid
+	Latitude        float64 // Latitude
+	Longitude       float64 // Longitude
+	Speed           float64 // Speed in knots
+	Course          float64 // True course
+	Date            Date    // Date
+	Variation       float64 // Magnetic variation
         SentanceVersion	string	// 00 to 15
 	Fleet		string	// 100 to 349
-	ID		string	// 1000 to 4999
+	UnitID		string	// 1000 to 4999
 	Status		string	// 10 to 99
 	Extension	string	// 00 to 99
 }
@@ -47,7 +47,7 @@ func newPKLDS(s BaseSentence) (Sentence, error) {
 		Variation:       p.Float64(9, "variation"),
 		SentanceVersion: p.String(10, "sentance version, range of 00 to 15"),
 		Fleet:		 p.String(11, "fleet, range of 100 to 349"),
-		ID:              p.String(12, "subscriber unit id, range of 1000 to 4999"),
+		UnitID:          p.String(12, "subscriber unit id, range of 1000 to 4999"),
 		Status:          p.String(13, "subscriber unit status id, range of 10 to 99"),
 		Extension:       p.String(14, "reserved for future use, range of 00 to 99"),
 	}
