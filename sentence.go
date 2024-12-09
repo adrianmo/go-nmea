@@ -431,6 +431,20 @@ func (p *SentenceParser) Parse(raw string) (Sentence, error) {
 			return newXDR(s)
 		case TypeXTE:
 			return newXTE(s)
+		case TypePKLID:
+			return newPKLID(s)
+		case TypePKNID:
+			return newPKNID(s)
+		case TypePKLSH:
+			return newPKLSH(s)
+		case TypePKNSH:
+			return newPKNSH(s)
+		case TypePKLDS:
+			return newPKLDS(s)
+		case TypePKNDS:
+			return newPKNDS(s)
+		case TypePKWDWPL:
+			return newPKWDWPL(s)
 		}
 	}
 	if s.Raw[0] == SentenceStartEncapsulated[0] {
