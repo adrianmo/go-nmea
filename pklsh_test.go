@@ -26,8 +26,8 @@ var pklshtests = []struct {
 				Millisecond: 0,
 			},
 			Validity: "A",
-			Fleet: "100",
-			UnitID: "2000",
+			Fleet:    "100",
+			UnitID:   "2000",
 		},
 	},
 	{

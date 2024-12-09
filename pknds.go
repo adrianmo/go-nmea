@@ -16,18 +16,18 @@ const (
 // Example: $PKNDS,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W00,U00001,207,00,*6E
 type PKNDS struct {
 	BaseSentence
-	Time      Time    // Time Stamp
-	Validity  string  // validity - A-ok, V-invalid
-	Latitude  float64 // Latitude
-	Longitude float64 // Longitude
-	Speed     float64 // Speed in knots
-	Course    float64 // True course
-	Date      Date    // Date
-	Variation float64 // Magnetic variation
-        SentanceVersion	string	// 00 to 15
-	UnitID		string	// U00001 to U65519 or U00000001 to U16776415 (U is FIXED)
-	Status		string	// 001 to 255
-	Extension	string	// 00 to 99
+	Time            Time    // Time Stamp
+	Validity        string  // validity - A-ok, V-invalid
+	Latitude        float64 // Latitude
+	Longitude       float64 // Longitude
+	Speed           float64 // Speed in knots
+	Course          float64 // True course
+	Date            Date    // Date
+	Variation       float64 // Magnetic variation
+	SentanceVersion string  // 00 to 15
+	UnitID          string  // U00001 to U65519 or U00000001 to U16776415 (U is FIXED)
+	Status          string  // 001 to 255
+	Extension       string  // 00 to 99
 }
 
 // newPKNDS constructor
@@ -35,7 +35,7 @@ func newPKNDS(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypePKNDS)
 	m := PKNDS{
-		BaseSentence: s,
+		BaseSentence:    s,
 		Time:            p.Time(0, "time"),
 		Validity:        p.EnumString(1, "validity", ValidRMC, InvalidRMC),
 		Latitude:        p.LatLong(2, 3, "latitude"),
@@ -49,9 +49,9 @@ func newPKNDS(s BaseSentence) (Sentence, error) {
 		Status:          p.String(12, "subscriber unit status id, range of 001 to 255"),
 		Extension:       p.String(13, "reserved for future use, range of 00 to 99"),
 	}
-        if strings.HasPrefix(m.SentanceVersion, "W") == true {
+	if strings.HasPrefix(m.SentanceVersion, "W") == true {
 		m.Variation = 0 - m.Variation
 	}
-        m.SentanceVersion = strings.TrimPrefix(strings.TrimPrefix(m.SentanceVersion, "W"), "E")
+	m.SentanceVersion = strings.TrimPrefix(strings.TrimPrefix(m.SentanceVersion, "W"), "E")
 	return m, p.Err()
 }

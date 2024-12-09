@@ -15,7 +15,7 @@ var pknidtests = []struct {
 	{
 		name: "typical sentance",
 		raw:  "$PKNID,00,U00001,015,00,*24",
-		msg:  PKNID{
+		msg: PKNID{
 			SentanceVersion: "00",
 			UnitID:          "U00001",
 			Status:          "015",
@@ -29,7 +29,7 @@ func TestPKNID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			m, err := Parse(tt.raw)
 			if tt.err != "" {
-				assert.Error(t,err)
+				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)

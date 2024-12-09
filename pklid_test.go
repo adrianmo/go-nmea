@@ -15,7 +15,7 @@ var pklidtests = []struct {
 	{
 		name: "typical sentance",
 		raw:  "$PKLID,00,100,2000,15,00,*6D",
-		msg:  PKLID{
+		msg: PKLID{
 			SentanceVersion: "00",
 			Fleet:           "100",
 			UnitID:          "2000",
@@ -30,7 +30,7 @@ func TestPKLID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			m, err := Parse(tt.raw)
 			if tt.err != "" {
-				assert.Error(t,err)
+				assert.Error(t, err)
 				assert.EqualError(t, err, tt.err)
 			} else {
 				assert.NoError(t, err)
@@ -41,4 +41,3 @@ func TestPKLID(t *testing.T) {
 		})
 	}
 }
-	

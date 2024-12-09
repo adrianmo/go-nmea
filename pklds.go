@@ -24,11 +24,11 @@ type PKLDS struct {
 	Course          float64 // True course
 	Date            Date    // Date
 	Variation       float64 // Magnetic variation
-        SentanceVersion	string	// 00 to 15
-	Fleet		string	// 100 to 349
-	UnitID		string	// 1000 to 4999
-	Status		string	// 10 to 99
-	Extension	string	// 00 to 99
+	SentanceVersion string  // 00 to 15
+	Fleet           string  // 100 to 349
+	UnitID          string  // 1000 to 4999
+	Status          string  // 10 to 99
+	Extension       string  // 00 to 99
 }
 
 // newPKLDS constructor
@@ -36,7 +36,7 @@ func newPKLDS(s BaseSentence) (Sentence, error) {
 	p := NewParser(s)
 	p.AssertType(TypePKLDS)
 	m := PKLDS{
-		BaseSentence: s,
+		BaseSentence:    s,
 		Time:            p.Time(0, "time"),
 		Validity:        p.EnumString(1, "validity", ValidRMC, InvalidRMC),
 		Latitude:        p.LatLong(2, 3, "latitude"),
@@ -46,14 +46,14 @@ func newPKLDS(s BaseSentence) (Sentence, error) {
 		Date:            p.Date(8, "date"),
 		Variation:       p.Float64(9, "variation"),
 		SentanceVersion: p.String(10, "sentance version, range of 00 to 15"),
-		Fleet:		 p.String(11, "fleet, range of 100 to 349"),
+		Fleet:           p.String(11, "fleet, range of 100 to 349"),
 		UnitID:          p.String(12, "subscriber unit id, range of 1000 to 4999"),
 		Status:          p.String(13, "subscriber unit status id, range of 10 to 99"),
 		Extension:       p.String(14, "reserved for future use, range of 00 to 99"),
 	}
-        if strings.HasPrefix(m.SentanceVersion, "W") == true {
+	if strings.HasPrefix(m.SentanceVersion, "W") == true {
 		m.Variation = 0 - m.Variation
 	}
-        m.SentanceVersion = strings.TrimPrefix(strings.TrimPrefix(m.SentanceVersion, "W"), "E")
+	m.SentanceVersion = strings.TrimPrefix(strings.TrimPrefix(m.SentanceVersion, "W"), "E")
 	return m, p.Err()
 }

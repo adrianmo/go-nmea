@@ -5,20 +5,21 @@ const (
 	TypePKLSH = "KLSH"
 )
 
-
 // PKLSH is a Kenwood Propritary sentance used for GPS data communications in FleetSync.
-//   adds UnitID and Fleet to $GPGLL sentance
+//
+//	adds UnitID and Fleet to $GPGLL sentance
+//
 // $PKLSH,<0>,<1>,<2>,<3>,<4>,<5>,<6>,<7>*hh<CR><LF>
 // Format:  $PKLSH,xxxx.xxxx,x,xxxxx.xxxx,x,xxxxxx,x,xxx,xxxx,*xx<CR><LF>
 // Example: $PKLSH,4000.0000,N,13500.0000,E,021720,A,100,2000,*??
 type PKLSH struct {
 	BaseSentence
-	Latitude  float64       // Latitude
-	Longitude float64       // Longitude
-	Time      Time          // Time Stamp
-	Validity  string        // validity - A=valid, V=invalid
-	Fleet	  string	// 100 to 349
-	UnitID	  string	// 1000 to 4999
+	Latitude  float64 // Latitude
+	Longitude float64 // Longitude
+	Time      Time    // Time Stamp
+	Validity  string  // validity - A=valid, V=invalid
+	Fleet     string  // 100 to 349
+	UnitID    string  // 1000 to 4999
 }
 
 // newPKLSH constructor

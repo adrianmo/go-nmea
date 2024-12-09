@@ -5,19 +5,20 @@ const (
 	TypePKNSH = "KNSH"
 )
 
-
 // PKNSH is a Kenwood Propritary sentance used for GPS data communications in NEXTEDGE Digital.
-//   adds UnitID and Fleet to $GPGLL sentance
+//
+//	adds UnitID and Fleet to $GPGLL sentance
+//
 // $PKNSH,<0>,<1>,<2>,<3>,<4>,<5>,<6>*hh<CR><LF>
 // Format:  $PKNSH,xxxx.xxxx,x,xxxxx.xxxx,x,xxxxxx,x,Uxxxxx,*xx<CR><LF>
 // Example: $PKNSH,4000.0000,N,13500.0000,E,021720,A,U00001,*??
 type PKNSH struct {
 	BaseSentence
-	Latitude  float64       // Latitude
-	Longitude float64       // Longitude
-	Time      Time          // Time Stamp
-	Validity  string        // validity - A=valid, V=invalid
-	UnitID    string        // U00001 to U65519 or U00000001 to U16776415 (U is FIXED)
+	Latitude  float64 // Latitude
+	Longitude float64 // Longitude
+	Time      Time    // Time Stamp
+	Validity  string  // validity - A=valid, V=invalid
+	UnitID    string  // U00001 to U65519 or U00000001 to U16776415 (U is FIXED)
 }
 
 // newPKNSH constructor

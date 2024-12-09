@@ -5,18 +5,17 @@ const (
 	TypePKLID = "KLID"
 )
 
-
 // PKLID is a Kenwood Propritary sentance used for GPS data communications in FleetSync.
 // $PKLID,<0>,<1>,<2>,<3>,<4>*hh<CR><LF>
 // Format:  $PKLID,xx,xxx,xxxx,xx,xx,*xx<CR><LF>
 // Example: $PKLID,00,100,2000,15,00,*??
 type PKLID struct {
 	BaseSentence
-	SentanceVersion	string	// 00 to 15
-	Fleet		string	// 100 to 349
-	UnitID		string	// 1000 to 4999
-	Status		string	// 10 to 99
-	Extension	string	// 00 to 99
+	SentanceVersion string // 00 to 15
+	Fleet           string // 100 to 349
+	UnitID          string // 1000 to 4999
+	Status          string // 10 to 99
+	Extension       string // 00 to 99
 }
 
 // newPKLID constructor

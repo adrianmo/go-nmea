@@ -26,7 +26,7 @@ var pknshtests = []struct {
 				Millisecond: 0,
 			},
 			Validity: "A",
-			UnitID: "U00001",
+			UnitID:   "U00001",
 		},
 	},
 	{
