@@ -96,7 +96,7 @@ on [IEC 61162-1:2016 (Edition 5.0 2016-08)](https://webstore.iec.ch/publication/
 | KNDS               | Kenwood LMR - Digital AVL                                           |                                                                                                |
 | KNID               | Kenwood LMR - Digital                                               |                                                                                                |
 | KNSH               | Kenwood LMR - Digital AVL                                           |                                                                                                |
-| KWDWPL             | Kenwood Waypoint Location - Amateur Radio                           | [direwolf](https://github.com/wb2osz/direwolf/blob/master/waypoint.c)                          |
+| KWDWPL             | Kenwood Waypoint Location - Amateur Radio                           | [direwolf](https://github.com/wb2osz/direwolf/blob/master/src/waypoint.c)                      |
 | LR1                | AIS long-range reply sentence 1                                     |                                                                                                |
 | LR2                | AIS long-range reply sentence 2                                     |                                                                                                |
 | LR3                | AIS long-range reply sentence 3                                     |                                                                                                |
