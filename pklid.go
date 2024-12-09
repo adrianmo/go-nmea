@@ -25,11 +25,11 @@ func newPKLID(s BaseSentence) (Sentence, error) {
 	p.AssertType(TypePKLID)
 
 	return PKLID{
-		BaseSentence:		s,
-		SentanceVersion:	p.String(0, "sentance version, range of 00 to 15"),
-		Fleet:			p.String(1, "fleet, range of 100 to 349"),
-		UnitID:			p.String(2, "subscriber unit id, range of 1000 to 4999"),
-		Status:			p.String(3, "subscriber unit status id, range of 10 to 99"),
-		Extension:		p.String(4, "reserved for future use, range of 00 to 99"),
+		BaseSentence:    s,
+		SentanceVersion: p.String(0, "sentance version, range of 00 to 15"),
+		Fleet:           p.String(1, "fleet, range of 100 to 349"),
+		UnitID:          p.String(2, "subscriber unit id, range of 1000 to 4999"),
+		Status:          p.String(3, "subscriber unit status id, range of 10 to 99"),
+		Extension:       p.String(4, "reserved for future use, range of 00 to 99"),
 	}, p.Err()
 }
