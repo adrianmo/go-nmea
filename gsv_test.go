@@ -52,7 +52,7 @@ var gsvtests = []struct {
 		},
 	},
 	{
-		name: "good sentence with system id",
+		name: "good sentence with signal id",
 		raw:  "$GAGSV,3,1,09,02,00,179,,04,09,321,,07,11,134,11,11,10,227,,7*7F",
 		msg: GSV{
 			TotalMessages:   3,
@@ -64,7 +64,7 @@ var gsvtests = []struct {
 				{SVPRNNumber: 7, Elevation: 11, Azimuth: 134, SNR: 11},
 				{SVPRNNumber: 11, Elevation: 10, Azimuth: 227, SNR: 0},
 			},
-			SystemID: 7,
+			SignalID: 7,
 		},
 	},
 	{

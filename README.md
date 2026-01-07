@@ -77,7 +77,7 @@ on [IEC 61162-1:2016 (Edition 5.0 2016-08)](https://webstore.iec.ch/publication/
 | GRS                | GNSS range residuals                                                |                                                                                                |
 | [GSA](./gsa.go)    | GNSS DOP and active satellites                                      | [1](http://aprs.gids.nl/nmea/#gsa)                                                             |
 | GST                | GNSS pseudorange noise statistics                                   |                                                                                                |
-| [GSV](./gsv.go)    | GNSS satellites in view                                             | [1](http://aprs.gids.nl/nmea/#gsv)                                                             |
+| [GSV](./gsv.go)    | GNSS satellites in view                                             | [1](http://aprs.gids.nl/nmea/#gsv) [NMEA ERRATA # 0183](https://web.nmea.org/External/WCPages/WCWebContent/webcontentpage.aspx?ContentID=258)               |
 | [HBT](./hbt.go)    | Heartbeat supervision sentence                                      |                                                                                                |
 | HCR                | Heading correction report                                           |                                                                                                |
 | [HDG](./hdg.go)    | Heading, deviation and variation                                    | [gpsd](https://gpsd.gitlab.io/gpsd/NMEA.html#_hdg_heading_deviation_variation)                 |
