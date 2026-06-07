@@ -45,6 +45,10 @@ func newGSV(s BaseSentence, opts ...ParserOption) (Sentence, error) {
 		MessageNumber:   p.Int64(1, "message number"),
 		NumberSVsInView: p.Int64(2, "number of SVs in view"),
 	}
+	if (len(m.Fields)-3)%4 == 1 {
+		m.SignalID = p.HexInt64(len(m.Fields)-1, "signal ID")
+		m.SystemID = m.SignalID // Compatibility with go-nmea <= v1.10.0
+	}
 	i := 0
 	for ; i < 4; i++ {
 		if 6+i*4 >= len(m.Fields) {
@@ -55,14 +59,9 @@ func newGSV(s BaseSentence, opts ...ParserOption) (Sentence, error) {
 			Elevation:   p.Int64(4+i*4, "elevation"),
 			Azimuth:     p.Int64(5+i*4, "azimuth"),
 			SNR:         p.Int64(6+i*4, "SNR"),
-			SignalID:    0,
+			SignalID:    m.SignalID,
 			TalkerID:    p.Talker,
 		})
-	}
-	idxSID := (len(m.Fields) - 6) % 4
-	if len(p.Fields) == idxSID+1 {
-		m.SignalID = p.HexInt64(idxSID, "signal ID")
-		m.SystemID = m.SignalID // Compatibility with go-nmea <= v1.10.0
 	}
 	return m, p.Err()
 }
