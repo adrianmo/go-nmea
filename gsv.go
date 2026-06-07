@@ -22,7 +22,7 @@ type GSV struct {
 	NumberSVsInView int64     // Total number of SVs in view
 	Info            []GSVInfo // visible satellite info (0-4 of these)
 	SignalID        int64     // GNSS frequency (NMEA 4.1+)
-	SystemID        int64     // Depreciated: Compatibility with go-nmea <= v1.10.0
+	SystemID        int64     // Deprecated: Compatibility with go-nmea <= v1.10.0
 }
 
 // GSVInfo represents information about a visible satellite
