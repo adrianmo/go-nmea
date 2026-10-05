@@ -2,6 +2,7 @@ package nmea
 
 import (
 	"fmt"
+	"math"
 	"testing"
 	"time"
 
@@ -129,6 +130,30 @@ func TestLatLongPrint(t *testing.T) {
 			assert.Equal(t, tt.dms, FormatDMS(tt.value))
 			assert.Equal(t, tt.gps, FormatGPS(tt.value))
 		})
+	}
+}
+
+func TestFormatGPSRounding(t *testing.T) {
+	tests := []struct {
+		value float64
+		want  string
+	}{
+		// Minutes that round up to 10 must not keep the single-digit padding.
+		{151 + 9.99999/60, "15110.0000"},
+		{-(151 + 9.99999/60), "15110.0000"},
+		// Minutes that round up to 60 carry into the degrees.
+		{33 + 59.99999/60, "3400.0000"},
+		{179.999999999, "18000.0000"},
+		// Small minutes keep the zero padding.
+		{12 + 0.5/60, "1200.5000"},
+	}
+	for _, tt := range tests {
+		got := FormatGPS(tt.value)
+		assert.Equal(t, tt.want, got, "FormatGPS(%v)", tt.value)
+
+		parsed, err := ParseGPS(got + " N")
+		assert.NoError(t, err)
+		assert.InDelta(t, math.Abs(tt.value), parsed, 1e-5, "ParseGPS(FormatGPS(%v))", tt.value)
 	}
 }
 
