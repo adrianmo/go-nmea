@@ -232,13 +232,18 @@ func ParseGPS(s string) (float64, error) {
 
 // FormatGPS formats a GPS/NMEA coordinate
 func FormatGPS(l float64) string {
-	padding := ""
-	degrees := math.Floor(math.Abs(l))
-	fraction := (math.Abs(l) - degrees) * 60
-	if fraction < 10 {
-		padding = "0"
+	val := math.Abs(l)
+	degrees := math.Floor(val)
+	// Round the minutes to the printed precision before formatting, so that
+	// e.g. 9.99999 is not zero-padded as a single digit and then printed as
+	// "10.0000", and 59.99999 carries into the next degree instead of being
+	// printed as an out-of-range "60.0000".
+	minutes := math.Round((val-degrees)*60*1e4) / 1e4
+	if minutes >= 60 {
+		degrees++
+		minutes -= 60
 	}
-	return fmt.Sprintf("%d%s%.4f", int(degrees), padding, fraction)
+	return fmt.Sprintf("%d%07.4f", int(degrees), minutes)
 }
 
 // ParseDecimal parses a decimal format coordinate.
