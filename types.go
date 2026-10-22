@@ -219,6 +219,9 @@ func ParseGPS(s string) (float64, error) {
 
 	degrees := math.Floor(value / 100)
 	minutes := value - (degrees * 100)
+	if minutes >= 60 {
+		return 0, fmt.Errorf("invalid minutes [%g]", minutes)
+	}
 	value = degrees + minutes/60
 
 	if dir == North || dir == East {

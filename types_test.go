@@ -42,6 +42,7 @@ func TestParseGPS(t *testing.T) {
 		{"15145.9877 S", -151.76646, false},
 		{"12345.1234 X", 0, true},
 		{"1234.1234", 0, true},
+		{"1260.0000 N", 0, true}, // minutes must be less than 60
 	}
 	for _, tt := range tests {
 		t.Run(tt.value, func(t *testing.T) {
