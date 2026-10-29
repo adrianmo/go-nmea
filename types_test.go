@@ -62,11 +62,18 @@ func TestParseDMS(t *testing.T) {
 		err      bool
 	}{
 		{"33\u00B0 12' 34.3423\"", 33.209540, false},
+		{"-33\u00B0 12' 34.3423\"", -33.209540, false},
+		{"+33\u00B0 12' 34.3423\"", 33.209540, false},
+		{"33\u00B0 12' 34.3423\" S", -33.209540, false},
+		{"33\u00B0 12' 34.3423\" W", -33.209540, false},
+		{"33\u00B0 12' 34.3423\" N", 33.209540, false},
+		{"33\u00B0 12' 34.3423\" E", 33.209540, false},
 		{"33\u00B0 1.1' 34.3423\"", 0, true},
 		{"3.3\u00B0 1' 34.3423\"", 0, true},
 		{"33\u00B0 1' 34.34.23\"", 0, true},
 		{"33 1 3434.23", 0, true},
 		{"123", 0, true},
+		{"", 0, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.value, func(t *testing.T) {
@@ -118,6 +125,11 @@ func TestLatLongPrint(t *testing.T) {
 			dms:   "33° 56' 26.058000\"",
 		},
 		{
+			value: -33.94057166666666,
+			gps:   "3356.4343",
+			dms:   "-33° 56' 26.058000\"",
+		},
+		{
 			value: 45.0,
 			dms:   "45° 0' 0.000000\"",
 			gps:   "4500.0000",
@@ -142,6 +154,8 @@ func TestTimeParse(t *testing.T) {
 		{"", Time{}, true},
 		{"112233.123", Time{true, 11, 22, 33, 123}, true},
 		{"010203.04", Time{true, 1, 2, 3, 40}, true},
+		{"123459.9999", Time{true, 12, 35, 0, 0}, true},
+		{"235959.9999", Time{true, 0, 0, 0, 0}, true},
 		{"10203.04", Time{}, false},
 		{"x0u2xd", Time{}, false},
 		{"xx2233.123", Time{}, false},

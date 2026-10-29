@@ -264,6 +264,24 @@ func ParseDMS(s string) (float64, error) {
 	tmpBytes := []byte{}
 	var err error
 
+	negative := false
+	s = strings.TrimSpace(s)
+	if len(s) == 0 {
+		return 0, nil
+	}
+	if strings.HasPrefix(s, "-") {
+		negative = true
+		s = strings.TrimSpace(s[1:])
+	} else if strings.HasPrefix(s, "+") {
+		s = strings.TrimSpace(s[1:])
+	}
+	if strings.HasSuffix(s, "S") || strings.HasSuffix(s, "s") || strings.HasSuffix(s, "W") || strings.HasSuffix(s, "w") {
+		negative = !negative
+		s = strings.TrimSpace(s[:len(s)-1])
+	} else if strings.HasSuffix(s, "N") || strings.HasSuffix(s, "n") || strings.HasSuffix(s, "E") || strings.HasSuffix(s, "e") {
+		s = strings.TrimSpace(s[:len(s)-1])
+	}
+
 	for i, r := range s {
 		switch {
 		case unicode.IsNumber(r) || r == '.':
@@ -302,6 +320,9 @@ func ParseDMS(s string) (float64, error) {
 		return 0, fmt.Errorf("parse error (trailing data [%s])", string(tmpBytes))
 	}
 	val := float64(degrees) + (float64(minutes) / 60.0) + (float64(seconds) / 60.0 / 60.0)
+	if negative {
+		val = -val
+	}
 	return val, nil
 }
 
@@ -311,7 +332,11 @@ func FormatDMS(l float64) string {
 	degrees := int(math.Floor(val))
 	minutes := int(math.Floor(60 * (val - float64(degrees))))
 	seconds := 3600 * (val - float64(degrees) - (float64(minutes) / 60))
-	return fmt.Sprintf("%d\u00B0 %d' %f\"", degrees, minutes, seconds)
+	sign := ""
+	if l < 0 {
+		sign = "-"
+	}
+	return fmt.Sprintf("%s%d\u00B0 %d' %f\"", sign, degrees, minutes, seconds)
 }
 
 // Time type
@@ -346,7 +371,21 @@ func ParseTime(s string) (Time, error) {
 	minute, _ := strconv.Atoi(s[2:4])
 	second, _ := strconv.ParseFloat(s[4:], 64)
 	whole, frac := math.Modf(second)
-	return Time{true, hour, minute, int(whole), int(math.Round(frac * 1000))}, nil
+	msec := int(math.Round(frac * 1000))
+	sec := int(whole)
+	if msec == 1000 {
+		msec = 0
+		sec++
+		if sec >= 60 {
+			sec = 0
+			minute++
+			if minute >= 60 {
+				minute = 0
+				hour = (hour + 1) % 24
+			}
+		}
+	}
+	return Time{true, hour, minute, sec, msec}, nil
 }
 
 // Date type
@@ -368,19 +407,19 @@ func ParseDate(ddmmyy string) (Date, error) {
 		return Date{}, nil
 	}
 	if len(ddmmyy) != 6 {
-		return Date{}, fmt.Errorf("parse date: exptected ddmmyy format, got '%s'", ddmmyy)
+		return Date{}, fmt.Errorf("parse date: expected ddmmyy format, got '%s'", ddmmyy)
 	}
 	dd, err := strconv.Atoi(ddmmyy[0:2])
 	if err != nil {
-		return Date{}, errors.New(ddmmyy)
+		return Date{}, fmt.Errorf("parse date: expected ddmmyy format, got '%s'", ddmmyy)
 	}
 	mm, err := strconv.Atoi(ddmmyy[2:4])
 	if err != nil {
-		return Date{}, errors.New(ddmmyy)
+		return Date{}, fmt.Errorf("parse date: expected ddmmyy format, got '%s'", ddmmyy)
 	}
 	yy, err := strconv.Atoi(ddmmyy[4:6])
 	if err != nil {
-		return Date{}, errors.New(ddmmyy)
+		return Date{}, fmt.Errorf("parse date: expected ddmmyy format, got '%s'", ddmmyy)
 	}
 	return Date{true, dd, mm, yy}, nil
 }
